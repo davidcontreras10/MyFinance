@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:customControls="clr-namespace:MyFinance.CustomControls;assembly=MyFinance"
+             xmlns:userInterface="clr-namespace:MyFinance.Models.UserInterface;assembly=MyFinance"
+             xmlns:markupExtensions="clr-namespace:MyFinance.MarkupExtensions;assembly=MyFinance"
+             x:Class="MyFinance.App">
+	<Application.Resources>
+
+		<ResourceDictionary>
+
+			<Style x:Key="FinanceGridHeader" TargetType="Label">
+				<Setter Property="TextColor" Value="Black"/>
+				<Setter Property="FontAttributes" Value="Bold"/>
+				<Setter Property="BackgroundColor" Value="White"/>
+			</Style>
+			<Style x:Key="FinanceGridValue" TargetType="Label">
+				<Setter Property="TextColor" Value="Black"/>
+				<Setter Property="BackgroundColor" Value="White"/>
+			</Style>
+			<Style x:Key="TitleMenuItem" TargetType="Label">
+				<Setter Property="FontSize" Value="28"/>
+				<Setter Property="Margin" Value="0"/>
+				<Setter Property="TextColor" Value="White"/>
+			</Style>
+			<Style x:Key="TitleSubMenuItem" TargetType="Label">
+				<Setter Property="FontSize" Value="19"/>
+				<Setter Property="TextColor" Value="BurlyWood"/>
+				<Setter Property="BackgroundColor" Value="DimGray"/>
+			</Style>
+			<Style x:Key="MainMenuItemHeaderNonSelected" TargetType="StackLayout">
+				<Setter Property="BackgroundColor" Value="DimGray"/>
+				<Setter Property="Margin" Value="0,0,0,4"/>
+			</Style>
+			<Style x:Key="MainMenuItemHeaderSelected" TargetType="StackLayout">
+				<Setter Property="BackgroundColor" Value="DarkGray"/>
+			</Style>
+			<Style x:Key="MainMenuItem" TargetType="StackLayout">
+				<Setter Property="Padding" Value="0,10,0,10"/>
+				<Setter Property="Margin" Value="0,1,0,1"/>
+				<Setter Property="BackgroundColor" Value="DimGray"/>
+			</Style>
+			<ControlTemplate x:Key="FinancePageTemplate">
+				<Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="60"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<!-- Begin Header -->
+					<StackLayout
+				        Orientation="Vertical"
+				        HorizontalOptions="FillAndExpand"
+				        VerticalOptions="FillAndExpand"
+				        Spacing="0"
+				        BackgroundColor="#2296F3"
+				        HeightRequest="60"
+				        Grid.Column="0" Grid.Row="0">
+						<StackLayout.Padding>
+							<OnPlatform x:TypeArguments="Thickness"
+					                    iOS="10, 10, 10, 10"
+					                    Android="5, 5, 5, 5"
+					                    WinPhone="10, 10, 10, 10" />
+						</StackLayout.Padding>
+						<!-- My header content to make my app the prettiest. -->
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0" Grid.Row="0" Text="My Finance" HorizontalOptions="Start" 
+							       FontSize="25" BackgroundColor="Transparent" TextColor="White" Margin="0,9,0,0"/>
+							<ActivityIndicator Grid.Column="1" Grid.Row="0"
+							                   IsRunning="False"/>
+							<Button Grid.Column="2" Grid.Row="0" 
+							        BackgroundColor="Transparent" Image="{markupExtensions:FromFileImage FileName=icons8_menu}" 
+							        Clicked="MenuButton_OnClicked"/>
+						</Grid>
+					</StackLayout>
+					<!-- End Header -->
+
+					<!-- Begin Content -->
+					<AbsoluteLayout Grid.Column="0" Grid.Row="1">
+						<StackLayout AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+						             AbsoluteLayout.LayoutFlags="All">
+							<ContentPresenter VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+						</StackLayout>
+						<ContentView AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+						             AbsoluteLayout.LayoutFlags="All"
+						             IsVisible="{Binding PageBusy, Source={x:Static userInterface:MainHeaderModel.Current}}"
+						             BackgroundColor="#C0808080"
+						             Padding="50, 50">
+							<ActivityIndicator IsRunning="{Binding PageBusy, Source={x:Static userInterface:MainHeaderModel.Current}}"/>
+						</ContentView>
+						<ContentView AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+						             AbsoluteLayout.LayoutFlags="All"
+						             IsVisible="{Binding ShowMainMenu, Source={x:Static userInterface:MainHeaderModel.Current}}"
+						             BackgroundColor="#C0808080"
+						             Padding="1, 1, 30, 30">
+							<Frame BackgroundColor="DimGray"
+							       VerticalOptions="Start"
+								IsVisible="{Binding ShowMainMenu, Source={x:Static userInterface:MainHeaderModel.Current}}">
+								<customControls:MainMenuPage/>
+							</Frame>
+						</ContentView>
+					</AbsoluteLayout>
+
+					<!-- End Content -->
+				</Grid>
+			</ControlTemplate>
+
+		</ResourceDictionary>
+
+
+	</Application.Resources>
+</Application>

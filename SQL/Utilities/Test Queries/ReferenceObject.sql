@@ -1,0 +1,22 @@
+SELECT sys.objects.object_id, sys.schemas.name AS [Schema], sys.objects.name AS Object_Name, sys.objects.type_desc AS [Type]
+FROM sys.sql_modules (NOLOCK) 
+INNER JOIN sys.objects (NOLOCK) ON sys.sql_modules.object_id = sys.objects.object_id 
+INNER JOIN sys.schemas (NOLOCK) ON sys.objects.schema_id = sys.schemas.schema_id
+WHERE
+    sys.sql_modules.definition COLLATE SQL_Latin1_General_CP1_CI_AS LIKE '%AccountType%' ESCAPE '\'
+ORDER BY sys.objects.type_desc, sys.schemas.name, sys.objects.name
+
+
+SELECT 
+R.TABLE_NAME,R.COLUMN_NAME
+FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE U
+INNER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS FK
+    ON U.CONSTRAINT_CATALOG = FK.UNIQUE_CONSTRAINT_CATALOG
+    AND U.CONSTRAINT_SCHEMA = FK.UNIQUE_CONSTRAINT_SCHEMA
+    AND U.CONSTRAINT_NAME = FK.UNIQUE_CONSTRAINT_NAME
+INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE R
+    ON R.CONSTRAINT_CATALOG = FK.CONSTRAINT_CATALOG
+    AND R.CONSTRAINT_SCHEMA = FK.CONSTRAINT_SCHEMA
+    AND R.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
+WHERE U.COLUMN_NAME = 'AccountType'
+  AND U.TABLE_NAME = 'Account'

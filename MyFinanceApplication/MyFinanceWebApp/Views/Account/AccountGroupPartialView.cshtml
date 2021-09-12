@@ -1,0 +1,33 @@
+﻿@model dynamic
+
+<div class="row">
+    <div class="col-md-4">
+        <label>Account groups</label><br />
+        <select id="account-group-list-select" class="account-group-select"></select>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-md-3">
+        <label id="account-group-name-label">Name</label><br />
+        <input type="text" id="account-group-account-name-text" />
+    </div>
+    <div class="col-md-3">
+        <label id="account-group-display-label">Display</label><br />
+        <input type="text" id="account-group-display-text" />
+    </div>
+    <div class="col-md-2">
+        <label>Position</label><br />
+        <select id="account-group-position-select" class="account-group-select"></select>
+    </div>
+    <div class="col-md-2">
+        <label>
+            <input type="checkbox" id="account-group-show-checkbox" value="show_default">
+            Show</label><br>
+    </div>
+    <div class="col-md-2">
+	    <label id="account-group-actions-label">Actions</label><br/>
+		<input type="button" id="account-group-action-delete-button" value="Delete" onclick="deleteAccountGroup()"/>
+    </div>
+</div>

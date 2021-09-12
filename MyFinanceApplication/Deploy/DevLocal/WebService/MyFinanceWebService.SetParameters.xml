@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="MyFinanceWebService" />
+  <setParameter name="SqlServerLocalConnection-Web.config Connection String" value="Server=localhost;Database=MYFNDB;User Id=FinanceAppUser; Password=FinanceAppUser;" />
+</parameters>

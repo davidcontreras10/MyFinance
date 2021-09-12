@@ -1,0 +1,77 @@
+﻿@model dynamic
+
+<div class="row row-margin-initial">
+	<div class="col-md-4">
+		<label id="account-detail-name-label">Name</label><br/>
+		<input type="text" id="account-detail-account-name-text"/>
+	</div>
+	<div class="col-md-4">
+		<label>Currency</label><br />
+		<select id="account-detail-currency-select" class="account-detail-select"></select>
+	</div>
+	<div class="col-md-4">
+		<label>Period Type</label><br />
+		<select id="account-detail-period-type-select" class="account-detail-select"></select>
+	</div>
+</div>
+
+<div class="row row-margin">
+	<div class="col-md-4">
+		<label>Account Type</label><br/>
+		<select id="account-detail-account-type-select" class="account-detail-select"></select>
+	</div>
+	<div class="col-md-4">
+		<label>Financial Entity</label><br/>
+		<select id="account-detail-financial-entity-select" class="account-detail-select"></select>
+	</div>
+	<div class="col-md-4">
+		<label>Default Spend Type</label><br/>
+		<select id="account-detail-spend-type-select" class="account-detail-select"></select>
+	</div>
+</div>
+
+<div class="row row-margin">
+	<div class="col-md-4">
+		<label>Base Budget</label><br />
+		<input id="account-detail-base-budget-input" type="number" pattern="\d*"/>
+	</div>
+	<div class="col-md-4">
+		<label>Header Color</label><br />
+		<input type="color" id="account-detail-header-color-input" class="show-color-input"/>
+	</div>
+	<div class="col-md-4">
+		<label>Border Color</label><br />
+		<input type="color" id="account-detail-border-color-input" class="show-color-input"/>
+	</div>
+</div>
+
+<div class="row row-margin" style="padding-top: 10px;">
+	<div class="col-md-4 inner-column">
+		<label>Include in accounts...</label><br />
+		<select id="account-detail-account-include-select" class="account-detail-select" multiple="multiple"></select>
+	</div>
+    <div class="col-md-4 inner-column">
+        <div>
+            <table class="table table-bordered" id="account-detail-account-include-table">
+                <thead>
+                    <tr>
+                        <th data-field="Account">Account</th>
+                        <th data-field="Exchange">Exchange</th>
+                    </tr>
+                </thead>
+                <tbody id="account-detail-account-include-tbody">
+                    <tr>
+                        <td></td>
+                        <td>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+	<div class="col-md-4">
+		<label>Group</label><br/>
+		<select id="account-detail-group-select" class="account-detail-select"></select>
+	</div>
+</div>

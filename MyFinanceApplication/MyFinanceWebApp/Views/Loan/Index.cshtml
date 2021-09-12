@@ -1,0 +1,231 @@
+﻿@using System.Linq
+@using MyFinanceWebApp.Helpers;
+@model MyFinanceWebApp.Models.LoanPageModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link rel="icon" href="~/Content/images/FinanceIcon.ico" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Content/custom-bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Views/Loan/loan-view.css" rel="stylesheet" />
+
+    @Scripts.Render("~/Scripts/jquery-1.9.1.js")
+    @Scripts.Render("~/Scripts/utils/utilities.js")
+
+    @Scripts.Render("~/Scripts/moment.min.js")
+    @Scripts.Render("~/Scripts/bootstrap.js")
+    @Scripts.Render("~/Scripts/moment.min.js")
+    @Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+    @Scripts.Render("~/Scripts/bootstrap-multiselect-collapsible-groups.js")
+    @Scripts.Render("~/Scripts/Views/Loan/index.js")
+    @Scripts.Render("~/Scripts/Views/Loan/loan-payment-partial.js")
+    @Scripts.Render("~/Scripts/Views/Loan/loan-detail.js")
+</head>
+<body>
+
+    @using (Html.BeginForm("Index", "Loan", FormMethod.Post, new { id = "loan-form" }))
+    {
+        @Html.HiddenFor(m => m.CriteriaId, Model.CriteriaId);
+        @Html.HiddenFor(m => m.CriteriaId, Model.CriteriaId);
+        @Html.HiddenFor(m => m.CriteriaId, Model.CriteriaId);
+        <script type="text/javascript">
+		var siteRoot = '@Request.ApplicationPath';
+        </script>
+
+        <div>
+            @{Html.RenderPartial("MainHeader", Model);}
+        </div>
+
+        <div id="loan-detail-modal" class="modal fade" role="dialog" style="overflow-y: auto;">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div id="loan-detail-modal-header-id" class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="loan-detail-modal-title-h4" class="modal-title">Add Loan</h4>
+                        <h5 id="loan-detail-modal-account-name"></h5>
+                    </div>
+                    <div class="modal-body">
+                        @Html.Partial("LoanPartial", null)
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" id="loan-detail-modal-button" onclick="submitAddLoan();">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="add-loan-payment-modal" class="modal fade" role="dialog" style="overflow-y: auto;">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div id="add-loan-payment-modal-header-id" class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="add-loan-payment-modal-title-h4" class="modal-title">Add Payment</h4>
+                        <h5 id="add-loan-payment-modal-account-name"></h5>
+                    </div>
+                    <div class="modal-body">
+                        @Html.Partial("LoanPaymentPartial", null)
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" id="add-loan-payment-modal-button" onclick="submitLoanPayment();">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ajax-loading-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div id="Div2" class="modal-header">
+                        <h4 id="H1" class="modal-title">Loading...</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="loader center-content"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<div class="container-fluid">
+			<h2>
+				Loans
+			</h2>
+			<div id="accordion">
+				@{ var count = 0; }
+				@foreach (var account in Model.Acccounts)
+				{
+					count++;
+					@:<br />
+					@:<div style="padding-top: 15px;">
+						<a data-toggle="collapse" href="#collapse-@count.ToString()">
+							<span class="accordion-title loan-accordion-title">
+								Account: @account.AccountName
+							</span>
+						</a>
+						@:<div id="collapse-@count.ToString()" class="collapse in">
+
+
+							for (var i = 0; i < account.Loans.Count(); i++)
+							{
+								var loan = account.Loans.ElementAt(i);
+								if (i % 2 == 0)
+								{
+									@:<div class="row">
+									}
+									<div class="col-md-6 outer-column">
+										<h4>
+											@loan.LoanName
+										</h4>
+										<br />
+										<div class="row">
+
+											<div class="col-md-12">
+
+												<div style="border: solid black 1px; padding: 10px;">
+
+													<table class="table table-bordered table-low-margin>">
+														<thead>
+															<tr>
+																<th data-field="loan-amount">Loan Amount</th>
+																<th data-field="total-payment">Payments</th>
+																<th data-field="balance">Loan Balance</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td>
+																	@ModelHtmlExtension.GetHtmlAmount(loan.LoanSpendViewModel.CurrencySymbol, loan.LoanSpendViewModel.GetConvertedAmount())
+																</td>
+																<td>
+																	@ModelHtmlExtension.GetHtmlAmount(loan.LoanSpendViewModel.CurrencySymbol, loan.PaymentSumary)
+																</td>
+																<td>
+																	@ModelHtmlExtension.GetHtmlAmount(loan.LoanSpendViewModel.CurrencySymbol, loan.PaymentPending)
+																</td>
+
+															</tr>
+														</tbody>
+
+													</table>
+													<div class="row">
+														<div class="col-md-12">
+															<input type="button" value="Add Pyament" onclick="loadAddLoanPaymentData(@loan.LoanRecordId)" />
+															<input type="button" value="Delete Loan" onclick="deleteLoan(@loan.LoanRecordId)" />
+														</div>
+														@*<div class="col-md-4">
+
+													</div>
+													<div class="col-md-4">
+
+													</div>*@
+													</div>
+
+													<br />
+													@if (loan.SpendViewModels.Any())
+													{
+														<h4>Payments</h4>
+														<table class="table table-bordered table-low-margin>">
+															<thead>
+																<tr>
+																	<th data-field="payment-amount">Payment Amount</th>
+																	<th data-field="payment-date">Payment Date</th>
+																	<th data-field="balance">Actions</th>
+																</tr>
+															</thead>
+															<tbody>
+																@foreach (var spend in loan.SpendViewModels)
+																{
+																	<tr>
+																		<td>
+																			@ModelHtmlExtension.GetHtmlAmount(spend.CurrencySymbol, spend.GetConvertedAmount())
+																		</td>
+																		<td>
+																			@spend.SpendDate.ToShortDateString()
+																		</td>
+																		<td>
+																			<input type="button" class="delete-action-text" value="X" onclick="deleteLoanSpend('@spend.SpendId')" />
+																		</td>
+																	</tr>
+																}
+															</tbody>
+
+														</table>
+													}
+
+												</div>
+
+											</div>
+										</div>
+									</div>
+
+									if ((i % 2 != 0) || (i == account.Loans.Count() - 1))
+									{
+									@:</div>
+								}
+							}
+
+						@:</div>
+					@:</div>
+				}
+			</div>
+
+		</div>
+    }
+</body>
+</html>

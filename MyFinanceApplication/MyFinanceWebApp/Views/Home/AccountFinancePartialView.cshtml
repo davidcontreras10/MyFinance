@@ -1,0 +1,47 @@
+﻿<div class="row">
+	<div class="col-md-4">
+		<input id="custom-period-pending-spends" type="checkbox" /><span>Include Pendings</span>
+	</div>
+	<div class="col-md-4">
+		<input type="checkbox" id="custom-period-loan-spends" /><span>Include Loan Transactions</span>
+	</div>
+	<div class="col-md-4">
+		<select class="form-control" id="custom-period-amount-type">
+			<option value="0">All</option>
+			<option value="1">Spends Only</option>
+			<option value="2">Income Only</option>
+		</select>
+	</div>
+</div>
+<br />
+<br />
+<div class="row">
+	<div class="col-md-12">
+		<div class="table-responsive">
+			<table class="table table-bordered table-low-margin"
+				   id="custom-period-balance-table>">
+				<thead>
+					<tr>
+						<th data-field="Budget">Budget</th>
+						<th data-field="Spent">Spending</th>
+						<th data-field="Balance">Balance</th>
+						<th data-field="OverallBalance">Overall Balance</th>
+						<th data-field="OverallBalanceToday">Balance As Of Today</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td id="custom-period-budget-value"></td>
+						<td id="custom-period-spent-value"></td>
+						<td id="custom-period-balance-value"></td>
+						<td id="custom-account-general-balance-value"></td>
+						<td id="custom-account-today-balance-value"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div>
+
+</div>

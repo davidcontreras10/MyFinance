@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:userInterface="clr-namespace:MyFinance.Models.UserInterface;assembly=MyFinance"
+             x:Class="MyFinance.CustomControls.MainMenuPage"
+             Orientation="Vertical">
+	<Label Text="My Finance" FontSize="26" FontAttributes="Bold" TextColor="Cornsilk"
+	       VerticalOptions="CenterAndExpand" 
+	       HorizontalOptions="CenterAndExpand" />
+	<Grid BackgroundColor="White" RowSpacing="0" x:Name="MainGrid">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<!--<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>-->
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<StackLayout Orientation="Vertical" Grid.Column="0" Grid.Row="0" Style="{StaticResource MainMenuItem}">
+			<StackLayout Orientation="Horizontal" Style="{DynamicResource MainPageItemStyle}">
+				<StackLayout.GestureRecognizers>
+					<TapGestureRecognizer Tapped="ExpandItem_OnTapped" 
+					                      CommandParameter="{Binding MainPageValue, Source={x:Static userInterface:MainMenuModel.Current}}"/>
+				</StackLayout.GestureRecognizers>
+				<Label Text="Main Page" Style="{StaticResource TitleMenuItem}"/>
+				<Label HorizontalOptions="EndAndExpand" Style="{StaticResource TitleMenuItem}" />
+			</StackLayout>
+			<Grid Margin="15,1,0,15" RowSpacing="1" BackgroundColor="White"
+			      IsVisible="{Binding IsCurrentPageMenuOpened, Source={x:Static userInterface:MainMenuModel.Current}}" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Label Grid.Column="0" Grid.Row="0" 
+				       Text="{Binding PendingSpendsValue, Source={x:Static userInterface:MainMenuModel.Current}}" 
+				       Style="{StaticResource TitleSubMenuItem}"/>
+			</Grid>
+		</StackLayout>
+		<!--<StackLayout Orientation="Vertical" Grid.Column="0" Grid.Row="1" Style="{StaticResource MainMenuItem}">
+			<StackLayout Orientation="Horizontal" Style="{DynamicResource AccountsPageItemStyle}">
+				<StackLayout.GestureRecognizers>
+					<TapGestureRecognizer Tapped="ExpandItem_OnTapped" 
+					                      CommandParameter="{Binding AccountsValue, Source={x:Static userInterface:MainMenuModel.Current}}"/>
+				</StackLayout.GestureRecognizers>
+				<Label Text="Accounts" Style="{StaticResource TitleMenuItem}"/>
+				<Label  HorizontalOptions="EndAndExpand" Style="{StaticResource TitleMenuItem}" />
+			</StackLayout>
+		</StackLayout>
+		<StackLayout Orientation="Vertical" Grid.Column="0" Grid.Row="2" Style="{StaticResource MainMenuItem}">
+			<StackLayout Orientation="Horizontal" Style="{DynamicResource SpendingTypesPageItemStyle}">
+				<StackLayout.GestureRecognizers>
+					<TapGestureRecognizer Tapped="ExpandItem_OnTapped" 
+					                      CommandParameter="{Binding SpendingTypesValue, Source={x:Static userInterface:MainMenuModel.Current}}"/>
+				</StackLayout.GestureRecognizers>
+				<Label Text="Spending Types" Style="{StaticResource TitleMenuItem}"/>
+				<Label  HorizontalOptions="EndAndExpand" Style="{StaticResource TitleMenuItem}" />
+			</StackLayout>
+		</StackLayout>-->
+		<StackLayout Orientation="Vertical" Grid.Column="0" Grid.Row="1" Style="{StaticResource MainMenuItem}">
+			<StackLayout Orientation="Horizontal" Style="{DynamicResource MyAccountPageItemStyle}">
+				<StackLayout.GestureRecognizers>
+					<TapGestureRecognizer Tapped="ExpandItem_OnTapped" 
+					                      CommandParameter="{Binding MyAccountValue, Source={x:Static userInterface:MainMenuModel.Current}}"/>
+				</StackLayout.GestureRecognizers>
+				<Label Text="Logout" Style="{StaticResource TitleMenuItem}"/>
+				<Label  HorizontalOptions="EndAndExpand" Style="{StaticResource TitleMenuItem}" />
+			</StackLayout>
+			<!--<Grid Margin="15,1,0,15" IsVisible="False" RowSpacing="1" BackgroundColor="White">
+			</Grid>-->
+		</StackLayout>
+	</Grid>
+</StackLayout>

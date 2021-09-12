@@ -1,0 +1,95 @@
+.gridster * {
+    margin: 0;
+    padding: 0;
+}
+
+#account-group-div {
+    padding-left: 10%;
+    padding-bottom: 2%;
+}
+
+.gridster ul {
+    list-style-type: none;
+}
+
+
+/*/
+/* demo
+/*/
+
+
+body {
+    font-size: 16px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #444;
+}
+
+.edit-icon {
+    margin-top: 5px;
+    width: 25px;
+    height: 25px;
+}
+
+    .edit-icon:hover {
+        width: 30px;
+        height: 30px;
+    }
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.center-element {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.gridster-header {
+    text-align: center;
+    font-weight: bold;
+    font-size: 2em;
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+/*/
+/* gridster
+/*/
+
+.gridster ul {
+    background-color: #334E61;
+}
+
+.gridster li {
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 100%;
+}
+
+
+.gridster {
+    margin: 0 auto;
+    opacity: .8;
+    -webkit-transition: opacity .6s;
+    -moz-transition: opacity .6s;
+    -o-transition: opacity .6s;
+    -ms-transition: opacity .6s;
+    transition: opacity .6s;
+}
+
+    .gridster .gs-w {
+        background: #DDD;
+        cursor: move;
+    }
+
+    .gridster .player {
+        background: #BBB;
+    }
+
+
+    .gridster .preview-holder {
+        border: none!important;
+        background: rgb(185, 227, 218)!important;
+    }

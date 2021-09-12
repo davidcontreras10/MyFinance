@@ -1,0 +1,11 @@
+﻿.delete-action-text {
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+    display: block;
+    margin: 0 auto;
+}
+
+.loan-accordion-title{
+	font-size: 2.2em;
+}

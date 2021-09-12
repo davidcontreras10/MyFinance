@@ -1,0 +1,31 @@
+﻿<div>
+    <div class="row">
+        <div class="col-md-5">
+            <input type="number" placeholder="Amount" pattern="\d*" class="form-control" id="loan-payment-detail-amount" />
+        </div>
+        <div class="col-md-4">
+            <select id="loan-payment-detail-currency-select" data-style="btn-new" class="form-control"></select>
+        </div>
+        <div class="col-md-3">
+            <label style="float:right; padding: 3px;">Full Payment</label>
+            <input type="checkbox" style="float: right;" id="loan-payment-full-payment" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-8">
+            <label style="float: left; padding: 8px;">Payment Date</label>
+            <input type="datetime-local" class="form-control" id="loan-payment-detail-datetime" style="width: auto;" />
+        </div>
+        <div class="col-md-4">
+            @*<input type="checkbox" id="loan-payment-detail-is-pending" />
+            <label style="padding: 0 0 0 0;">Is Pending</label>*@
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <input type="text" class="form-control" id="loan-payment-detail-description" placeholder="Description" />
+        </div>
+    </div>
+</div>

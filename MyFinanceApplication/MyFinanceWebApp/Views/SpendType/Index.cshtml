@@ -1,0 +1,126 @@
+﻿@model MyFinanceWebApp.Models.MainSpendTypePageModel
+
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>My Finance - Spending Types</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link rel="icon" href="~/Content/images/FinanceIcon.ico" />
+	<link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+	<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+	<link href="~/Content/bootstrap-multiselect.css" rel="stylesheet" />
+	<link href="~/Content/bootstrap-multiselect.css" rel="stylesheet" />
+	<link href="~/Content/GlobalStyles.css" rel="stylesheet" />
+
+	@Scripts.Render("~/Scripts/jquery-1.9.1.js")
+	@Scripts.Render("~/Scripts/utils/utilities.js")
+
+	@Scripts.Render("~/Scripts/moment.min.js")
+	@Scripts.Render("~/Scripts/bootstrap.js")
+	@Scripts.Render("~/Scripts/moment.min.js")
+	@Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+	@Scripts.Render("~/Scripts/bootstrap-multiselect-collapsible-groups.js")
+	@Scripts.Render("~/Scripts/editable-content-handler.js")
+	@Scripts.Render("~/Scripts/Views/spend-type-index.js")
+
+	<script type="text/javascript">
+		var siteRoot = '@Request.ApplicationPath';
+	</script>
+
+</head>
+<body>
+	<div>
+		@{Html.RenderPartial("MainHeader", Model);}
+	</div>
+	<div style="padding: 0 1em;">
+		<div class="row">
+			<div class="col-md-10">
+				<div id="accordion">
+
+					<a data-toggle="collapse" href="#add-spend-type-div">
+						<span class="accordion-title">New spending type...
+						</span>
+					</a>
+
+					<div id="add-spend-type-div" class="collapse">
+						<br />
+						<div class="row">
+							<div class="col-md-3">
+								<label>Name</label>
+								<input type="text" id="spend-type-name-text"/>
+							</div>
+							<div class="col-md-4">
+								<label>Description</label>
+								<input type="text" id="spend-type-description-text"/>
+							</div>
+							<div class="col-md-2">
+								<label>
+									<input type="checkbox" id="spend-type-is-selected-checkbox"/>
+									Include in my list
+								</label>
+							</div>
+							<div class="col-md-1">
+								<input type="button" value="Save" onclick="addSpendType()"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<h3>Spending type</h3>
+				<table class="table table-bordered table-low-margin" id="spend-type-list-table">
+					<tbody>
+						<tr>
+							<th>Name</th>
+							<th>Description</th>
+							<th>Actions</th>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td class="content-editable" id="element1" contenteditable>Spending type 1</td>
+							<td class="content-editable" id="element2" contenteditable>Spending type 1 Description</td>
+							<td>
+								<div class="center-content">
+									<input type="button" class="cell-button delete-button" value="X" />
+									<input type="button" id="spend-type-move-mylist-button" class="cell-button" value="&rarr;" />
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-md-6">
+				<h3>My Spending type</h3>
+				<table class="table table-bordered table-low-margin" id="spend-type-my-list-table">
+					<tbody>
+						<tr>
+							<th>Name</th>
+							<th>Description</th>
+							<th>Actions</th>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td>My Spending type 1</td>
+							<td>My Spending type 1 Description</td>
+							<td>
+								<input type="button" value="&larr;" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
