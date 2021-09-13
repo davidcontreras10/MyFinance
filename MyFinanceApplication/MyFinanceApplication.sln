@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{56909B55-60C0-41CD-AB3A-0C48EEFCE050}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinanceModel", "MyFinanceModel\MyFinanceModel.csproj", "{A46D05DF-E0DA-4743-811D-C9236B659441}"
 EndProject
@@ -24,6 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiBaseConsumer", "WebAp
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		AzureProd|Any CPU = AzureProd|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		DevTest|Any CPU = DevTest|Any CPU
 		PreProd|Any CPU = PreProd|Any CPU
@@ -31,6 +30,8 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}.AzureProd|Any CPU.ActiveCfg = AzureProd|Any CPU
+		{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}.AzureProd|Any CPU.Build.0 = AzureProd|Any CPU
 		{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}.DevTest|Any CPU.ActiveCfg = Debug|Any CPU
@@ -41,16 +42,8 @@ Global
 		{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}.Prod|Any CPU.Build.0 = Prod|Any CPU
 		{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89BCE0D0-2A00-4D68-81AE-D22AE0ED2458}.Release|Any CPU.Build.0 = Release|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.DevTest|Any CPU.ActiveCfg = Debug|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.DevTest|Any CPU.Build.0 = Debug|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.PreProd|Any CPU.ActiveCfg = PreProd|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.PreProd|Any CPU.Build.0 = PreProd|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.Prod|Any CPU.ActiveCfg = Prod|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.Prod|Any CPU.Build.0 = Prod|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56909B55-60C0-41CD-AB3A-0C48EEFCE050}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A46D05DF-E0DA-4743-811D-C9236B659441}.AzureProd|Any CPU.ActiveCfg = AzureProd|Any CPU
+		{A46D05DF-E0DA-4743-811D-C9236B659441}.AzureProd|Any CPU.Build.0 = AzureProd|Any CPU
 		{A46D05DF-E0DA-4743-811D-C9236B659441}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A46D05DF-E0DA-4743-811D-C9236B659441}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A46D05DF-E0DA-4743-811D-C9236B659441}.DevTest|Any CPU.ActiveCfg = Debug|Any CPU
@@ -61,6 +54,8 @@ Global
 		{A46D05DF-E0DA-4743-811D-C9236B659441}.Prod|Any CPU.Build.0 = Prod|Any CPU
 		{A46D05DF-E0DA-4743-811D-C9236B659441}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A46D05DF-E0DA-4743-811D-C9236B659441}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5250737E-1297-440B-8381-6E5EC36F6BD6}.AzureProd|Any CPU.ActiveCfg = AzureProd|Any CPU
+		{5250737E-1297-440B-8381-6E5EC36F6BD6}.AzureProd|Any CPU.Build.0 = AzureProd|Any CPU
 		{5250737E-1297-440B-8381-6E5EC36F6BD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5250737E-1297-440B-8381-6E5EC36F6BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5250737E-1297-440B-8381-6E5EC36F6BD6}.DevTest|Any CPU.ActiveCfg = Debug|Any CPU
@@ -71,6 +66,8 @@ Global
 		{5250737E-1297-440B-8381-6E5EC36F6BD6}.Prod|Any CPU.Build.0 = Prod|Any CPU
 		{5250737E-1297-440B-8381-6E5EC36F6BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5250737E-1297-440B-8381-6E5EC36F6BD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE78D045-132D-4EBD-96E1-E8A7F6044042}.AzureProd|Any CPU.ActiveCfg = AzureProd|Any CPU
+		{EE78D045-132D-4EBD-96E1-E8A7F6044042}.AzureProd|Any CPU.Build.0 = AzureProd|Any CPU
 		{EE78D045-132D-4EBD-96E1-E8A7F6044042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE78D045-132D-4EBD-96E1-E8A7F6044042}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE78D045-132D-4EBD-96E1-E8A7F6044042}.DevTest|Any CPU.ActiveCfg = Debug|Any CPU
@@ -81,6 +78,8 @@ Global
 		{EE78D045-132D-4EBD-96E1-E8A7F6044042}.Prod|Any CPU.Build.0 = Prod|Any CPU
 		{EE78D045-132D-4EBD-96E1-E8A7F6044042}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE78D045-132D-4EBD-96E1-E8A7F6044042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD271BAA-F8B1-4A6D-9ECD-479649861AA8}.AzureProd|Any CPU.ActiveCfg = AzureProd|Any CPU
+		{DD271BAA-F8B1-4A6D-9ECD-479649861AA8}.AzureProd|Any CPU.Build.0 = AzureProd|Any CPU
 		{DD271BAA-F8B1-4A6D-9ECD-479649861AA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DD271BAA-F8B1-4A6D-9ECD-479649861AA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD271BAA-F8B1-4A6D-9ECD-479649861AA8}.DevTest|Any CPU.ActiveCfg = Debug|Any CPU

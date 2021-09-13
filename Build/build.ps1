@@ -1,23 +1,26 @@
 $windir = [System.Environment]::ExpandEnvironmentVariables("%WINDIR%");
 
 $vs17dir = 'C:\Program Files (x86)\Microsoft Visual Studio\2017'
+$vs19dir = 'C:\Program Files (x86)\Microsoft Visual Studio\2019'
 $vs17communityDir = $vs17dir + '\Community\MSBuild\15.0\Bin'
 $vs17enterpriseDir = $vs17dir + '\Enterprise\MSBuild\15.0\Bin'
 $vs17professionalDir = $vs17dir + '\Professional\MSBuild\15.0\Bin'
+$vs17genericDir = $vs17dir + '\BuildTools\MSBuild\15.0\Bin'
+$vs19enterprise = $vs19dir + '\Enterprise\MSBuild\Current\Bin'
 
-if(Test-Path -Path $vs17communityDir){
-	$msBuild17Dir = $vs17communityDir
-}
+# if(Test-Path -Path $vs17communityDir){
+	# $msBuildDir = $vs17communityDir
+# }
 
-if(Test-Path -Path $vs17enterpriseDir){
-	$msBuild17Dir = $vs17enterpriseDir
-}
+# if(Test-Path -Path $vs17enterpriseDir){
+	# $msBuildDir = $vs17enterpriseDir
+# }
 
-if(Test-Path -Path $vs17enterpriseDir){
-	$msBuild17Dir = $vs17enterpriseDir
-}
+# if(Test-Path -Path $vs17enterpriseDir){
+	# $msBuildDir = $vs17enterpriseDir
+# }
 
-$msBuild11Dir=$windir+ '\Microsoft.NET\Framework\v4.0.30319'
+$msBuildDir = $vs19enterprise
 
 $msBuild14Dir = 'C:\Program Files (x86)\MSBuild\14.0\Bin'
 $baseProjectsDir = split-path -parent $PSScriptRoot
@@ -42,7 +45,7 @@ $nugetRestoreDataAccess = $nugetRestoreCommand + $dataAccessDir + '\DataAccessSo
 $nugetRestoreMyFinanceApplication = $nugetRestoreCommand + $myFinanceApplicationDir + '\MyFinanceApplication.sln'
 $nugetRestoreMyFinanceWebApi = $nugetRestoreCommand + $myFinanceWebApiDir + '\MyFinanceWebApi.sln'
 $nugetRestoreCurrencyService = $nugetRestoreCommand + $currencyServiceApiDir + '\CurrencyService.sln'
-$nugetRestoreCurrencyUpdateService = $nugetRestoreCommand + $currencyUpdateServiceApiDir + '\CurrencyUpdateService.sln'
+# $nugetRestoreCurrencyUpdateService = $nugetRestoreCommand + $currencyUpdateServiceApiDir + '\CurrencyUpdateService.sln'
 $nugetRestoreMyFinanceMobile = $nugetRestoreCommand + $mobileApplication + '\MyFinanceMobile.sln'
 
 Invoke-Expression $nugetRestoreDataAccess
@@ -50,15 +53,15 @@ Invoke-Expression $nugetRestoreMyFinanceApplication
 Invoke-Expression $nugetRestoreMyFinanceWebApi
 Invoke-Expression $nugetRestoreCurrencyService
 # Invoke-Expression $nugetRestoreCurrencyUpdateService
-Invoke-Expression $nugetRestoreMyFinanceMobile
+# Invoke-Expression $nugetRestoreMyFinanceMobile
 
-$buildUtilities = '& "' + $msBuild17Dir + '\msbuild.exe" ' + $utilitiesDir + '\Utilities.csproj /t:Rebuild /fl /flp:logfile="' + $logFolder + '\Utilities.log"'
-$buildDataAccess = '& "' + $msBuild17Dir + '\msbuild.exe" ' + $dataAccessDir + '\DataAccessSolution.sln /fl /flp:logfile="' + $logFolder + '\DataAccessSolution.log"'
-$buildyFinanceApplication = '& "' + $msBuild17Dir + '\msbuild.exe" ' + $myFinanceApplicationDir + '\MyFinanceApplication.sln /t:Rebuild /fl /flp:logfile="' + $logFolder + '\MyFinanceApplication.log"'
-$buildMyFinanceWebApi = '& "' + $msBuild17Dir + '\msbuild.exe" ' + $myFinanceWebApiDir + '\MyFinanceWebApi.sln /t:Rebuild /fl /flp:logfile="' + $logFolder + '\MyFinanceWebApi.log"'
-$buildCurrencyService = '& "' + $msBuild17Dir + '\msbuild.exe" ' + $currencyServiceApiDir + '\CurrencyService.sln /t:Rebuild /fl /flp:logfile="' + $logFolder + '\CurrencyService.log"'
-$buildCurrencyUpdateService = '& "' + $msBuild17Dir + '\msbuild.exe" ' + $currencyUpdateServiceApiDir + '\CurrencyUpdateService.csproj /t:Rebuild /fl /flp:logfile="' + $logFolder + '\CurrencyUpdateService.log"'
-$buildMyFinanceMobile = '& "' + $msBuild17Dir + '\msbuild.exe" ' + $mobileApplication + '\MyFinanceMobile.sln /t:Rebuild /fl /flp:logfile="' + $logFolder + '\MyFinanceMobile.log"'
+$buildUtilities = '& "' + $msBuildDir + '\msbuild.exe" ' + $utilitiesDir + '\Utilities.csproj /t:Rebuild /fl /flp:logfile="' + $logFolder + '\Utilities.log"'
+$buildDataAccess = '& "' + $msBuildDir + '\msbuild.exe" ' + $dataAccessDir + '\DataAccessSolution.sln /fl /flp:logfile="' + $logFolder + '\DataAccessSolution.log"'
+$buildyFinanceApplication = '& "' + $msBuildDir + '\msbuild.exe" ' + $myFinanceApplicationDir + '\MyFinanceApplication.sln /t:Rebuild /fl /flp:logfile="' + $logFolder + '\MyFinanceApplication.log"'
+$buildMyFinanceWebApi = '& "' + $msBuildDir + '\msbuild.exe" ' + $myFinanceWebApiDir + '\MyFinanceWebApi.sln /t:Rebuild /fl /flp:logfile="' + $logFolder + '\MyFinanceWebApi.log"'
+$buildCurrencyService = '& "' + $msBuildDir + '\msbuild.exe" ' + $currencyServiceApiDir + '\CurrencyService.sln /t:Rebuild /fl /flp:logfile="' + $logFolder + '\CurrencyService.log"'
+# $buildCurrencyUpdateService = '& "' + $msBuildDir + '\msbuild.exe" ' + $currencyUpdateServiceApiDir + '\CurrencyUpdateService.csproj /t:Rebuild /fl /flp:logfile="' + $logFolder + '\CurrencyUpdateService.log"'
+# $buildMyFinanceMobile = '& "' + $msBuildDir + '\msbuild.exe" ' + $mobileApplication + '\MyFinanceMobile.sln /t:Rebuild /fl /flp:logfile="' + $logFolder + '\MyFinanceMobile.log"'
 
 Invoke-Expression $buildUtilities
 # Write-Output $Success
