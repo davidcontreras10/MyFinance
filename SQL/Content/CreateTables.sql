@@ -27,6 +27,74 @@ END
 GO
 BEGIN
 
+CREATE TABLE [dbo].[DailyJob](
+	[DailyJobId] [int] IDENTITY(1,1) NOT NULL,
+	[JobDate] [DateTime] NOT NULL,
+ CONSTRAINT [PK_DailyJob] PRIMARY KEY CLUSTERED 
+(
+	[DailyJobId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+CREATE TABLE [dbo].[EntitiesSupported](
+	[EntitiesSupportedId] [int] IDENTITY(1,1) NOT NULL,
+	[EntityName] [varchar](500) NULL,
+	[EntitySearchKey] [varchar](500) NOT NULL,
+ CONSTRAINT [PK_EntitiesSupported] PRIMARY KEY CLUSTERED 
+(
+	[EntitiesSupportedId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+CREATE TABLE [dbo].[EntitiesSupported](
+	[EntitiesSupportedId] [int] IDENTITY(1,1) NOT NULL,
+	[EntityName] [varchar](500) NULL,
+	[EntitySearchKey] [varchar](500) NOT NULL,
+ CONSTRAINT [PK_Currency] PRIMARY KEY CLUSTERED 
+(
+	[EntitiesSupportedId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+CREATE TABLE [dbo].[BccrWebServiceIndicator](
+	[EntityName] [varchar](500) NOT NULL,
+	[SellCode] [varchar](50) NOT NULL,
+	[PurchaseCode] [varchar](50) NOT NULL,
+ CONSTRAINT [PK_BccrWebServiceIndicator] PRIMARY KEY CLUSTERED 
+(
+	[EntityName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+)
+
+
+
+
+/****** Object:  Table [dbo].[MethodsSupported]    Script Date: 9/12/2021 11:22:59 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[MethodsSupported](
+	[EntitiesSupportedId] [int] NOT NULL,
+	[MethodId] [int] NOT NULL,
+	[Colones] [bit] NULL
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[MethodsSupported]  WITH NOCHECK ADD  CONSTRAINT [MethodsSupported_FK_EntitiesSupportedId] FOREIGN KEY([EntitiesSupportedId])
+REFERENCES [dbo].[EntitiesSupported] ([EntitiesSupportedId])
+GO
+
+ALTER TABLE [dbo].[MethodsSupported] CHECK CONSTRAINT [MethodsSupported_FK_EntitiesSupportedId]
+GO
+
+
+
+
 CREATE TABLE [dbo].[ApplicationResource](
 	[ApplicationResourceId] [INT] NOT NULL,
 	[ApplicationResourceName] [nvarchar](500) NOT NULL,
