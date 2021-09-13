@@ -7,7 +7,7 @@ namespace CurrencyService.Services
     {
         public string GetConnectionString()
         {
-            return ConfigurationManager.ConnectionStrings["ExchangeCurrencyServiceDev"].ConnectionString;
+            return ConfigurationManager.ConnectionStrings["ExchangeCurrencyService"].ConnectionString;
         }
 
 	    public ConnectionAdminModes ConnectionAdminMode => ConnectionAdminModes.ConnectionPooling;
