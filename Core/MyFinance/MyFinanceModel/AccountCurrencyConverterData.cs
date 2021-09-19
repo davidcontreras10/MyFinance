@@ -1,0 +1,14 @@
+﻿namespace MyFinance.MyFinanceModel
+{
+    public class AccountCurrencyConverterData
+    {
+        #region Attributes
+
+        public int AccountId { get; set; }
+        public string AccountName { get; set; }
+        public int AmountCurrencyId { get; set; }
+        public int AccountCurrencyId { get; set; }
+
+        #endregion 
+    }
+}

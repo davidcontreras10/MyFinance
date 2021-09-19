@@ -141,7 +141,6 @@
     <Compile Include="Services\AccountsPeriodsService.cs" />
     <Compile Include="Services\AuthServices\IUserAuthorizeService.cs" />
     <Compile Include="Services\AuthServices\UserAuthorizeService.cs" />
-    <Compile Include="Services\ConnectionStrings.cs" />
     <Compile Include="Services\CurrencyService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\IAccountFinanceService.cs" />
