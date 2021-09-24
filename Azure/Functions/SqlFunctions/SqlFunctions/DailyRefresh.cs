@@ -8,9 +8,12 @@ namespace SqlFunctions
 {
     public static class DailyRefresh
     {
-	    // ReSharper disable once UnusedMember.Local
+	    
+	    // ReSharper disable UnusedMember.Local
 	    private const string TestCron = "0 */2 * * * *";
-	    private const string DailyCron = "0 3 * * 1";
+	    private const string DailyCron = "0 0 3 * * *";
+	    private const string WeeklyCron = "0 0 3 * * 1";
+	    // ReSharper restore UnusedMember.Local
 
 		[FunctionName(nameof(DailyRefresh))]
         public static async Task Run([TimerTrigger(DailyCron)]TimerInfo myTimer, ILogger log)
@@ -22,8 +25,10 @@ namespace SqlFunctions
 				log.LogError(error);
 				throw new Exception(error);
 	        }
-	        using (var conn = new SqlConnection(str))
-	        {
+
+			log.LogInformation("Connected. Executing script.");
+			using (var conn = new SqlConnection(str))
+			{
 		        conn.Open();
 		        var text = @"
 					BEGIN
@@ -39,12 +44,13 @@ namespace SqlFunctions
 							FETCH NEXT FROM tempusersCursor INTO @currentUserId
 						END
 						CLOSE tempusersCursor
-						INSERT INTO [dbo].[DailyJob] (JobDate, EventDesc) VALUES (@currentDate, 'Test From function local formal script');
+						INSERT INTO [dbo].[DailyJob] (JobDate, EventDesc) VALUES (@currentDate, 'Function local script EveryDay local');
 					END
 					";
 
 				using (var cmd = new SqlCommand(text, conn))
-		        {
+				{
+					cmd.CommandTimeout = conn.ConnectionTimeout;
 			        await cmd.ExecuteNonQueryAsync();
 		        }
 	        }
