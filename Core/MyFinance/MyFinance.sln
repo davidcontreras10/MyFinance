@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{C5CDC6D2-A71F-4F94-A2A5-14B297A46D27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Utilities\Utilities.csproj", "{C5CDC6D2-A71F-4F94-A2A5-14B297A46D27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseDataAccess", "BaseDataAccess\BaseDataAccess.csproj", "{6A7CD9F7-9A18-47CD-8565-DB8EDB220537}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseDataAccess", "BaseDataAccess\BaseDataAccess.csproj", "{6A7CD9F7-9A18-47CD-8565-DB8EDB220537}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiBaseConsumer", "WebApiBaseConsumer\WebApiBaseConsumer.csproj", "{63E5800D-A3E3-478E-8642-5687092C97D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiBaseConsumer", "WebApiBaseConsumer\WebApiBaseConsumer.csproj", "{63E5800D-A3E3-478E-8642-5687092C97D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinanceModel", "MyFinanceModel\MyFinanceModel.csproj", "{88158D85-8714-4BB7-9384-FAA0C8EDCB0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFinanceModel", "MyFinanceModel\MyFinanceModel.csproj", "{88158D85-8714-4BB7-9384-FAA0C8EDCB0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{46FD90D6-A8A1-4A60-8AEE-A8E15DC6967A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{46FD90D6-A8A1-4A60-8AEE-A8E15DC6967A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{48E9FEFD-FA05-440A-9A09-FBACD1C66107}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Backend\Backend.csproj", "{48E9FEFD-FA05-440A-9A09-FBACD1C66107}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinanceWebApp", "MyFinanceWebApp\MyFinanceWebApp.csproj", "{CC6EA524-A0ED-4B44-9B09-4394F4E2F6EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{48E9FEFD-FA05-440A-9A09-FBACD1C66107}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48E9FEFD-FA05-440A-9A09-FBACD1C66107}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48E9FEFD-FA05-440A-9A09-FBACD1C66107}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC6EA524-A0ED-4B44-9B09-4394F4E2F6EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC6EA524-A0ED-4B44-9B09-4394F4E2F6EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC6EA524-A0ED-4B44-9B09-4394F4E2F6EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC6EA524-A0ED-4B44-9B09-4394F4E2F6EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

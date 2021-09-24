@@ -1,0 +1,44 @@
+﻿@model MyFinance.MyFinanceWebApp.Models.LoginModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link href="~/css/global-styles.css" rel="stylesheet" />
+    <link href="~/css/user/login.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <ul class="form-list form-login" role="presentation">
+            @using (Html.BeginForm("Login", "User", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <li>
+                    @Html.LabelFor(m => m.Username)
+                    @Html.TextBoxFor(m => m.Username)
+                    @Html.ValidationMessageFor(m => m.Username)
+                </li>
+                <li>
+                    @Html.LabelFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password)
+                    @Html.ValidationMessageFor(m => m.Password)
+                </li>
+                <li>
+                    @Html.CheckBoxFor(m => m.RememberMe, new {@checked = true})
+                    @Html.LabelFor(m => m.RememberMe, new {@class = "checkbox"})
+                </li>
+                <li>
+                    <input type="submit" value="Go"/>
+                </li>
+            }
+        </ul>
+    </div>
+</body>
+</html>

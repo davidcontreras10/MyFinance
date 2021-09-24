@@ -1,0 +1,34 @@
+﻿
+
+.validation-summary-errors {
+    margin: 10px;
+    color: red;
+}
+
+.field-validation-error {
+    margin-left: 10px;
+    color: red;
+}
+
+.form-list {
+    list-style-type: none;
+}
+
+.form-list li{
+    margin: 10px;
+}
+
+.cell-button {
+    margin: 0 0.2em;
+}
+
+.delete-button {
+    color: red;
+}
+
+.center-content {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
