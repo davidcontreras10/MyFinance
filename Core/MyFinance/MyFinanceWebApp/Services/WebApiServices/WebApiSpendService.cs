@@ -8,6 +8,7 @@ using MyFinance.MyFinanceModel.ClientViewModel;
 using MyFinance.MyFinanceModel.ViewModel;
 using MyFinance.MyFinanceModel.WebMethodsModel;
 using MyFinance.MyFinanceWebApp.Constants;
+using MyFinance.MyFinanceWebApp.Models;
 using MyFinance.WebApiBaseConsumer;
 
 namespace MyFinance.MyFinanceWebApp.Services.WebApiServices

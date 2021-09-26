@@ -2,7 +2,9 @@
 using System.Net.Http;
 using MyFinance.MyFinanceModel.ClientViewModel;
 using MyFinance.MyFinanceModel.ViewModel;
+using MyFinance.MyFinanceWebApp.Models;
 using MyFinance.WebApiBaseConsumer;
+using AccountGroupDetailViewModel = MyFinance.MyFinanceModel.ViewModel.AccountGroupDetailViewModel;
 
 namespace MyFinance.MyFinanceWebApp.Services.WebApiServices
 {

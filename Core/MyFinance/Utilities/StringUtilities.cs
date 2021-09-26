@@ -9,6 +9,18 @@ namespace MyFinance.Utilities
 {
     public static class StringUtilities
     {
+	    public static string ToCamelCase(this string value)
+	    {
+		    if (string.IsNullOrWhiteSpace(value))
+		    {
+			    throw new ArgumentNullException(nameof(value));
+		    }
+
+		    var stringBuilder = new StringBuilder(value);
+		    stringBuilder[0] = stringBuilder[0].ToString().ToLower()[0];
+		    return stringBuilder.ToString();
+	    }
+
         public static Guid ConvertToGuid(object value)
         {
             if (value == null)

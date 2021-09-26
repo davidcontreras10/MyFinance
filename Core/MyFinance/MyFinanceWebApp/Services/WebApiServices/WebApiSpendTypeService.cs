@@ -3,6 +3,7 @@ using System.Net.Http;
 using MyFinance.Backend.ServicesExceptions;
 using MyFinance.MyFinanceModel.ClientViewModel;
 using MyFinance.MyFinanceModel.ViewModel;
+using MyFinance.MyFinanceWebApp.Models;
 using MyFinance.WebApiBaseConsumer;
 
 namespace MyFinance.MyFinanceWebApp.Services.WebApiServices

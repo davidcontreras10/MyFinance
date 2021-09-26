@@ -21,8 +21,8 @@ namespace MyFinanceWebApp.Controllers
 
 		public HomeController(ISpendService spendService, ITransferService transferService, IHtmlHeaderHelper htmlHeaderHelper, IAccountService accountService)
 		{
-			SpendService = spendService ?? throw new ArgumentNullException(nameof(spendService));
-			AccountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
+			SpendService = spendService;
+			AccountService = accountService;
 			TransferService = transferService;
 			HtmlHeaderHelper = htmlHeaderHelper;
 		}

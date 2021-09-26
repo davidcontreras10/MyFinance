@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyFinance.MyFinanceWebApp.Models;
+using MyFinance.MyFinanceWebApp.Services;
+using MyFinance.MyFinanceWebApp.Services.WebApiServices;
 
 namespace MyFinance.MyFinanceWebApp
 {
@@ -22,7 +25,11 @@ namespace MyFinance.MyFinanceWebApp
 		{
 			services.AddControllersWithViews();
 			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-				.AddCookie(o => o.LoginPath = new PathString("/user/login"));
+				.AddCookie(o => o.LoginPath = new PathString("/auth/login"));
+
+			services.AddSingleton<IAppSettings, AppSettings>();
+
+			services.AddScoped<IUserService, WebApiUserService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

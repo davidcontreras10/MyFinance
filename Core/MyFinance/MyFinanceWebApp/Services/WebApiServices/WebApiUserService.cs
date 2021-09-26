@@ -13,7 +13,7 @@ namespace MyFinance.MyFinanceWebApp.Services.WebApiServices
 {
     public class WebApiUserService : MvcWebApiBaseService, IUserService
     {
-	    public AuthToken GetAuthToken(string username, string password)
+	    public async Task<AuthToken> GetAuthTokenAsync(string username, string password)
 	    {
 		    var url = GetBaseUrl("token");
 		    var parameters = new Dictionary<string, string>
@@ -31,10 +31,10 @@ namespace MyFinance.MyFinanceWebApp.Services.WebApiServices
                 Model = content
             };
 
-            var response = GetResponse(request);
+            var response = await GetResponseAsync(request);
 		    if (response.IsSuccessStatusCode)
 		    {
-			    var token = response.Content.ReadAsAsync<AuthToken>().Result;
+			    var token = await response.Content.ReadAsAsync<AuthToken>();
 			    return token;
 		    }
 
@@ -54,11 +54,11 @@ namespace MyFinance.MyFinanceWebApp.Services.WebApiServices
             return result ?? new LoginResult();
         }
 
-	    public bool IsSessionValid(string token)
+	    public async Task<bool> IsSessionValidAsync(string token)
 	    {
 			var url = CreateMethodUrl(WebServicesConstants.IN_SESSION);
             var request = new WebApiRequest(url, HttpMethod.Get, token);
-            var result = GetResponseAs<bool>(request);
+            var result = await GetResponseAsAsync<bool>(request);
 		    return result;
 	    }
 
@@ -145,7 +145,7 @@ namespace MyFinance.MyFinanceWebApp.Services.WebApiServices
             return success;
         }
 
-        public AppUser GetUserById(string userId, string token)
+        public async Task<AppUser> GetUserByIdAsync(string userId, string token)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -154,7 +154,7 @@ namespace MyFinance.MyFinanceWebApp.Services.WebApiServices
 
             var url = CreateRootUrl(parameters);
             var request = new WebApiRequest(url, HttpMethod.Get, token);
-            var appUser = GetResponseAs<AppUser>(request);
+            var appUser = await GetResponseAsAsync<AppUser>(request);
             return appUser;
         }
 

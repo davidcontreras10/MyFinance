@@ -1,4 +1,5 @@
 ﻿using System;
+using MyFinance.MyFinanceWebApp.Models;
 using MyFinance.WebApiBaseConsumer;
 
 namespace MyFinance.MyFinanceWebApp.Services.WebApiServices
