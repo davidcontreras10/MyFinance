@@ -13,6 +13,12 @@ namespace MyFinance.MyFinanceModel.ViewModel
         public IEnumerable<FullAccountInfoViewModel> Accounts { get; set; }
     }
 
+    public class AccountsRow : List<FullAccountInfoViewModel>
+    {
+	    public int ColSize { get; set; }
+	    public string BootstrapColSizeClass { get; set; }
+    }
+
     public class FullAccountInfoViewModel
     {
         #region Attributes
@@ -39,7 +45,7 @@ namespace MyFinance.MyFinanceModel.ViewModel
             set => _accountType = value;
         }
 
-        public string GetTableTypeSyle()
+        public string GetTableTypeStyle()
         {
             switch (_accountType)
             {

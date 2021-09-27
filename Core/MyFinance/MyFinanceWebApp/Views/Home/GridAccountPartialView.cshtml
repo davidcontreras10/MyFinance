@@ -1,0 +1,60 @@
+﻿@model MyFinance.MyFinanceModel.ViewModel.FullAccountInfoViewModel
+@{
+    Layout = null;
+}
+
+<div class="row" @Html.Raw(Model.HeaderStyleValue)>
+    <div class="col-md-4">
+        <span class="main-box-title">@Model.AccountName</span>
+    </div>
+    <div class="col-md-7">
+        <span class="main-box-title" id="@($" period-title-{Model.AccountId}")">No Period</span>
+    </div>
+    <br />
+    <br />
+</div>
+<br />
+<div class="row">
+    <div class="col-md-3">
+        <label class="box-title" onclick="@($" showCustomPeriodModal({Model.AccountId})")">Period Summary</label>
+    </div>
+    <div class="col-md-9">
+        <div style="float: right;">
+            <select class="select-control-period form-control" id="@($" select-control-period-{Model.AccountId}")">
+                <option value="0">No Period</option>
+                @foreach (var accountPeriod in Model.AccountPeriods.OrderByDescending(item => item.InitialDate))
+                {
+                <option value="@accountPeriod.AccountPeriodId" selected="@(accountPeriod.AccountPeriodId == Model.CurrentPeriodId)">
+                    @accountPeriod.GetDateInfo(false)
+                </option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-low-margin @(Model.GetTableTypeStyle())"
+               id="account-balance-table-<%= account.AccountId %>">
+            <thead>
+                <tr>
+                    <th data-field="Budget">Budget</th>
+                    <th data-field="Spent">Spending</th>
+                    <th data-field="Balance">Balance</th>
+                    <th data-field="OverallBalance">Overall Balance</th>
+                    <th data-field="OverallBalanceToday">Balance As Of Today</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="period-budget-value-<%= account.AccountId %>"></td>
+                    <td id="period-spent-value-<%= account.AccountId %>"></td>
+                    <td id="period-balance-value-<%= account.AccountId %>"></td>
+                    <td id="account-general-balance-value-<%= account.AccountId %>">N/A</td>
+                    <td id="account-today-balance-value-<%= account.AccountId %>">N/A</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

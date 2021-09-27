@@ -241,7 +241,6 @@
 
 						<br />
 						<div class="row">
-
 							<div class="col-md-12">
 								<table class="table table-bordered table-low-margin <%= (account.GetTableTypeSyle()) %>"
 									id="account-balance-table-<%= account.AccountId %>">

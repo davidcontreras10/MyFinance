@@ -1,6 +1,5 @@
-﻿/// <reference path="../jquery-1.9.1.intellisense.js"/>
-/// <reference path="../bootstrap-datetimepicker.js" />
-/// <reference path="../bootstrap-multiselect.js" />
+﻿/// <reference path="../../lib/jquery/dist/jquery.js"/>
+
 /// <reference path="../utils/utilities.js" />
 /// <reference path="main-view-utils.js" />
 /// <reference path="add-spend-view.js" />
@@ -14,36 +13,9 @@ function loadSpendDetailControls() {
 
 function loadControls() {
 	$("#accordion").collapse();
-	loadSpendDetailControls();
-	loadAddSpendControls();
-	$("#select-control-period").multiselect({
-		onChange: function () {
-			
-		}
-	});
-	$(".datetimepicker-control").datetimepicker({
-		defaultDate: new Date()
-		//format: 'MM/DD/YYYY HH:mm:ss'
-	});
+	//loadSpendDetailControls();
+	//loadAddSpendControls();
 
-	$(".datepicker-control").datetimepicker({
-		//defaultDate: new Date()
-		format: "MM/DD/YYYY"
-	});
-
-	$(".select-spend-type").multiselect();
-	$(".select-control").multiselect();
-	$(".select-control-period").multiselect({
-		buttonText: function () {
-			return "Change Period";
-		},
-		onChange: function (option) {
-			const val = option.val();
-			const valArray = new Array();
-			valArray.push(val);
-			loadAccountFinanceData(valArray);
-		}
-	});
 	$("#add-period-submit").click(function () {
 
 	});

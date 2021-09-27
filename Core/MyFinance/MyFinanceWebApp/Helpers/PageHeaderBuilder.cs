@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using MyFinance.MyFinanceWebApp.Models;
 
 namespace MyFinance.MyFinanceWebApp.Helpers
@@ -41,15 +40,15 @@ namespace MyFinance.MyFinanceWebApp.Helpers
         private static MenuItem GetHomeMenuItem(bool active, IUrlHelper urlHelper)
         {
             return active
-                ? (MenuItem)new DropDownMenuItem
+                ? new DropDownMenuItem
                 {
-                    Name = "Home",
-                    IsActive = true,
-                    Items = new MenuItem[]
-                    {
-                        new JsActionMenuItem{ Name = "Hide pending data", JavascriptCode = "updatePendingDataStatus()", Id = "show-pending-data-button"},
-                        new JsActionMenuItem{ Name = "Toggle Summary", JavascriptCode = "showHideSummaryFinanceTable()", Id = "show-hide-summary-button"}
-                    }
+	                Name = "Home",
+	                IsActive = true,
+	                Items = new MenuItem[]
+	                {
+		                new JsActionMenuItem{ Name = "Hide pending data", JavascriptCode = "updatePendingDataStatus()", Id = "show-pending-data-button"},
+		                new JsActionMenuItem{ Name = "Toggle Summary", JavascriptCode = "showHideSummaryFinanceTable()", Id = "show-hide-summary-button"}
+	                }
                 }
                 : new CustomLinkMenuItem { Name = "Home", Link = urlHelper.Action("Index", "Home") };
         }
@@ -57,32 +56,32 @@ namespace MyFinance.MyFinanceWebApp.Helpers
         private static MenuItem GetAccountMenuItem(bool active, IUrlHelper urlHelper)
         {
             return active
-                ? (MenuItem) new DropDownMenuItem
+                ? new DropDownMenuItem
                 {
-                    Name = "Accounts",
-                    IsActive = true,
-                    Items = new MenuItem[]
-                    {
-                        new JsActionMenuItem {Name = "New...", JavascriptCode = "loadAddAccountViewModel()"},
-                        new JsActionMenuItem
-                        {
-                            Name = "Save positions",
-                            Id = "account-save-positions-link",
-                            JavascriptCode = "submitAccountPositions()"
-                        },
-                        new JsActionMenuItem
-                        {
-                            Name = "Restore default positions",
-                            Id = "account-restore-positions-link",
-                            JavascriptCode = "restoreAccountPositions()"
-                        },
-                        new JsActionMenuItem
-                        {
-                            Name = "Manage Account Groups...",
-                            Id = "account-group-link",
-                            JavascriptCode = "loadAccountGroupList()"
-                        }
-                    }
+	                Name = "Accounts",
+	                IsActive = true,
+	                Items = new MenuItem[]
+	                {
+		                new JsActionMenuItem {Name = "New...", JavascriptCode = "loadAddAccountViewModel()"},
+		                new JsActionMenuItem
+		                {
+			                Name = "Save positions",
+			                Id = "account-save-positions-link",
+			                JavascriptCode = "submitAccountPositions()"
+		                },
+		                new JsActionMenuItem
+		                {
+			                Name = "Restore default positions",
+			                Id = "account-restore-positions-link",
+			                JavascriptCode = "restoreAccountPositions()"
+		                },
+		                new JsActionMenuItem
+		                {
+			                Name = "Manage Account Groups...",
+			                Id = "account-group-link",
+			                JavascriptCode = "loadAccountGroupList()"
+		                }
+	                }
                 }
                 : new CustomLinkMenuItem {Name = "Account", Link = urlHelper.Action("Index", "Account") };
         }

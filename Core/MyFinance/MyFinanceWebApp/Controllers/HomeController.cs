@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,13 +35,15 @@ namespace MyFinance.MyFinanceWebApp.Controllers
 			_accountService = accountService;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
 			var authToken = GetUserToken();
-			//var mainViewModelData = await _accountService.GetAccountsByUserIdAsync(authToken);
+			var mainViewModelData = await _accountService.GetAccountsByUserIdAsync(authToken);
+			mainViewModelData.AccountGroupMainViewViewModels =
+				mainViewModelData.AccountGroupMainViewViewModels.OrderBy(acc => acc.AccountGroupPosition);
 			var result = new MainViewPageModel
 			{
-				Model = new UserAccountsViewModel(),
+				Model = mainViewModelData,
 				HeaderModel = CreateMainHeaderModel(),
 				HtmlHeaderHelper = _htmlHeaderHelper
 			};
