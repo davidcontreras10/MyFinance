@@ -27,6 +27,13 @@ namespace MyFinance.MyFinanceWebApp.Controllers
 			_logger = logger;
 		}
 
+		[AllowAnonymous]
+		public IActionResult LogOff()
+		{
+			ClearCredentialsCookie();
+			return View("Login");
+		}
+
 		[RequireHttps]
 		[AllowAnonymous]
 		public async Task<IActionResult> Login(string returnUrl)

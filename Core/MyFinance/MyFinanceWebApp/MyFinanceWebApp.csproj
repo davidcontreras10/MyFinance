@@ -7,9 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\css\user\**" />
+    <Content Remove="wwwroot\css\user\**" />
+    <EmbeddedResource Remove="wwwroot\css\user\**" />
+    <None Remove="wwwroot\css\user\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Constants\" />
     <Folder Include="CustomHandlers\" />
-    <Folder Include="wwwroot\css\user\" />
+    <Folder Include="Views\Loan\" />
     <Folder Include="wwwroot\js\views\" />
   </ItemGroup>
 

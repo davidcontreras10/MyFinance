@@ -1,0 +1,188 @@
+﻿.accordion-title {
+	font-size: 2em;
+	padding-left: 10px;
+}
+
+.main-box-title {
+    font-size: 20px;
+    float: none;
+    text-align: center;
+    font-weight: bold;
+}
+
+.box-title {
+    font-size: 20px;
+}
+
+.box-title:hover {
+    text-decoration: underline;
+}
+
+.form-div {
+    border: solid black 1px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+
+.action-label {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+.delete-action-text {
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+}
+
+.edit-action-text {
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.action-link {
+    cursor: pointer;
+}
+
+input[readonly] {
+    background: rgb(235, 235, 228);
+}
+
+.row-distance {
+    padding-top: 13px;
+}
+
+.label-block {
+    display: block;
+}
+
+.row-no-margin {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+/*.btn-group{
+    float: right !important;
+}*/
+
+.spend-amount-visible {
+    display: inline;
+}
+
+.spend-amount-hidden {
+    display: none;
+}
+
+.spend-action-amount {
+    margin-left: 5px;
+    font-size: 10px;
+    background: url(../images/switch.ico) no-repeat;
+    cursor: pointer;
+    width: 13px;
+    height: 13px;
+    border: none;
+    background-size: 100%;
+}
+
+.table-low-margin > tbody > tr > td {
+    padding: 4px;
+}
+
+/*saving*/
+.table-savings tr > th:nth-of-type(1), .table-savings tr > td:nth-of-type(1) {
+    display: none;
+}
+
+.table-savings tr > th:nth-of-type(2), .table-savings tr > td:nth-of-type(2) {
+    display: none;
+}
+
+/*saving*/
+.table-checking tr > th:nth-of-type(5), .table-checking tr > td:nth-of-type(5) {
+    display: none;
+}
+
+/*Bank*/
+.table-bank tr > th:nth-of-type(1), .table-bank tr > td:nth-of-type(1) {
+    display: none;
+}
+
+.table-bank tr > th:nth-of-type(2), .table-bank tr > td:nth-of-type(2) {
+    display: none;
+}
+
+.table-bank tr > th:nth-of-type(4), .table-bank tr > td:nth-of-type(4) {
+    display: none;
+}
+
+.spend-amount {
+    color: red;
+}
+
+.saving-amount {
+    color: green;
+}
+
+.outer-column {
+    border: solid cadetblue 5px;
+}
+
+.z1500-modal {
+    z-index: 1500 !important;
+}
+
+.center-content {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid blue;
+    border-bottom: 16px solid blue;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+label {
+    margin-bottom: 2px;
+}
+
+.transfer-amount-type-section {
+    padding-top: 4px;
+}
+
+.summary-account-div {
+    border: 1px black solid;
+    float: left;
+    margin-right: 5px;
+    margin-bottom: 3px;
+    padding: 2px;
+}
+
+.loading-element {
+    border: 2px solid red;
+}
+
+.basic-input {
+	margin-bottom: 20px;
+}

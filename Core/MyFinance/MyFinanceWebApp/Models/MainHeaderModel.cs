@@ -82,9 +82,19 @@ namespace MyFinance.MyFinanceWebApp.Models
         public abstract MenuItemType MenuType { get; }
         public bool IsActive { get; set; }
 
+        public bool HasId()
+        {
+	        return !string.IsNullOrWhiteSpace(Id);
+        }
+
 	    public string GetId()
 	    {
 		    return string.IsNullOrEmpty(Id) ? "" : $" id='{Id}'";
+	    }
+
+	    public T As<T>() where T : MenuItem
+	    {
+		    return this as T;
 	    }
     }
 

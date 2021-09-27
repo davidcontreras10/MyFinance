@@ -86,6 +86,8 @@ namespace MyFinanceWebApp.Models
 	    {
 		    return string.IsNullOrEmpty(Id) ? "" : $" id='{Id}'";
 	    }
+
+
     }
 
     public class SimpleMenuItem : MenuItem

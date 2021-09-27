@@ -1,7 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MyFinance.MyFinanceModel.ViewModel;
+using MyFinance.MyFinanceWebApp.Helpers;
 using MyFinance.MyFinanceWebApp.Models;
 using MyFinance.MyFinanceWebApp.Services;
 
@@ -33,7 +36,16 @@ namespace MyFinance.MyFinanceWebApp.Controllers
 
 		public IActionResult Index()
 		{
-			return View();
+			var authToken = GetUserToken();
+			//var mainViewModelData = await _accountService.GetAccountsByUserIdAsync(authToken);
+			var result = new MainViewPageModel
+			{
+				Model = new UserAccountsViewModel(),
+				HeaderModel = CreateMainHeaderModel(),
+				HtmlHeaderHelper = _htmlHeaderHelper
+			};
+
+			return View("MainView", result);
 		}
 
 		public IActionResult Privacy()
@@ -41,10 +53,9 @@ namespace MyFinance.MyFinanceWebApp.Controllers
 			return View();
 		}
 
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
+		private MainHeaderModel CreateMainHeaderModel()
 		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+			return PageHeaderBuilder.GetHeader(Url, PageHeaderBuilder.AppMenuItem.Home);
 		}
 	}
 }

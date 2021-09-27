@@ -28,8 +28,11 @@ namespace MyFinance.MyFinanceWebApp
 				.AddCookie(o => o.LoginPath = new PathString("/auth/login"));
 
 			services.AddSingleton<IAppSettings, AppSettings>();
-
+			services.AddSingleton<IHtmlHeaderHelper, BootstrapHtmlHeaderHelper>();
 			services.AddScoped<IUserService, WebApiUserService>();
+			services.AddScoped<ITransferService, WebApiTransferService>();
+			services.AddScoped<ISpendService, WebApiSpendService>();
+			services.AddScoped<IAccountService, WebApiAccountService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

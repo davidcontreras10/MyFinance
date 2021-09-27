@@ -1,0 +1,52 @@
+﻿<div class="row">
+    <div class="col-md-6">
+        <label class="form-field-label">Source Account</label>
+        <select id="loan-detail-source-account" class="form-control">
+            <option>Semanal</option>
+        </select>
+    </div>
+    
+    <div class="col-md-6">
+        <div>
+            <label class="form-field-label">Destination Account</label>
+            <div style="float: right;">
+                <input type="checkbox" id="loan-detail-same-as-source" style="margin:0;"/>
+                <label style="font-size: 9px; font-weight: normal;">Same as source</label>
+            </div>
+        </div>
+        <select id="loan-detail-destination-account" class="form-control">
+            <option>Mensual</option>
+        </select>
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-md-6">
+        <input type="number" id="loan-detail-amount" pattern="\d*" class="form-control" placeholder="Amount" />
+    </div>
+    
+    <div class="col-md-6">
+        <select id="loan-detail-currency" class="form-control">
+            <option>Colones</option>
+        </select>
+    </div>
+</div>
+
+<br/>
+
+<div class="row">
+    <div class="col-md-6">
+        <input type="text" id="loan-detail-name" class="form-control" placeholder="Name" />
+    </div>
+
+    <div class="col-md-6">
+        <input type="datetime-local" id="loan-detail-date" class="form-control"/>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <input type="text" placeholder="Description" class="form-control" id="loan-detail-description"/>
+    </div>
+</div>

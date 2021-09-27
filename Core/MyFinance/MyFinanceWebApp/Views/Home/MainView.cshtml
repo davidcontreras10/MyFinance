@@ -1,0 +1,169 @@
+﻿@model MyFinance.MyFinanceWebApp.Models.MainViewPageModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/custom-bootstrap.css" rel="stylesheet" />
+    <link href="~/css/views/loan/loan-view.css" rel="stylesheet" />
+
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/js/utils/utilities.js"></script>
+    <script src="~/lib/moment.js/moment.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/views/loan/index.js"></script>
+    <script src="~/js/views/loan/loan-payment-partial.js"></script>
+    <script src="~/js/views/loan/loan-detail.js"></script>
+</head>
+<body>
+
+	<div>
+		 @await Html.PartialAsync("MainHeader", Model, ViewData) 
+	</div>
+
+	<div id="custom-period-modal" class="modal fade" role="dialog" style="overflow-y: auto;">
+		<div class="modal-dialog modal-lg">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div id="custom-period-modal-header-id" class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 id="custom-period-model-title-h4" class="modal-title">Account Summary</h4>
+					<h5 id="custom-period-sub-title"></h5>
+				</div>
+				<div class="modal-body">
+                    @await Html.PartialAsync("AccountFinancePartialView", Model)
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="add-trx-modal" class="modal fade" role="dialog" style="overflow-y: auto;">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div id="add-trx-modal-header" class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h5 id="add-trx-account-name"></h5>
+					<h4 id="add-trx-title" class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+                    @await Html.PartialAsync("BasicTrxPartialView", Model)
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" id="add-trx-modal-button" onclick="submitAddBasicTrx()">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="add-spend-modal" class="modal fade" role="dialog" style="overflow-y: auto;">
+		<div class="modal-dialog modal-lg">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div id="add-modal-header-id" class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 id="add-model-title-h4" class="modal-title">New Expense</h4>
+					<h5 id="add-spend-account-name"></h5>
+				</div>
+				<div class="modal-body">
+                    @await Html.PartialAsync("AddSpendPartialView", Model)
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" id="spend-modal-button" onclick="submitAddSpend()">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="transfer-modal" class="modal fade" role="dialog" style="overflow-y: auto;">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div id="transfer-modal-header-id" class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 id="transfer-modal-title" class="modal-title">Transfers</h4>
+				</div>
+				<div class="modal-body">
+                    @await Html.PartialAsync("TransferPartialView", Model)
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" id="transfer-modal-submit" onclick="submitTransferModal()">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="ajax-loading-modal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div id="Div2" class="modal-header">
+					<h4 id="H1" class="modal-title">Loading...</h4>
+				</div>
+				<div class="modal-body">
+					<div class="loader center-content"></div>
+				</div>
+				<div class="modal-footer">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="myModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Create Period</h4>
+				</div>
+				<div class="modal-body">
+                    @await Html.PartialAsync("PeriodPartialView", Model)
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" id="add-period-submit">Save</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div id="spend-detail-modal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Edit Spending</h4>
+				</div>
+				<div class="modal-body">
+                    @await Html.PartialAsync("SpendDetailPartialView", Model)
+                </div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" id="save-spend-detail-submit" onclick="spendDetailUpdate()">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="accounts-summary" class="row" style="display: none; margin: 15px; padding: 5px;">
+    </div>
+
+</body>
+</html>
+

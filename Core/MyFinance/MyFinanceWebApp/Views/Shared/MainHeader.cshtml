@@ -1,27 +1,92 @@
-﻿@model MyFinance.MyFinanceWebApp.Models.BaseModel
+﻿@using MyFinance.MyFinanceWebApp.Helpers
+@using MyFinance.MyFinanceWebApp.Models
+@model MyFinance.MyFinanceWebApp.Models.BaseModel
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">@Model.HeaderModel.PageTitle</a>
-        </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">@Model.HeaderModel.PageTitle</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                @Model.HtmlHeaderHelper.CreateMenuList(Model.HeaderModel.LeftMenuItems)
-            </ul>
-
-            <ul class="nav navbar-nav navbar-right">
-                @Model.HtmlHeaderHelper.CreateMenuList(Model.HeaderModel.RightMenuItems)
-            </ul>
-        </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            @*<li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>*@
+            @foreach (var menu in Model.HeaderModel.LeftMenuItems)
+            {
+            <li class="@menu.ListClass()">
+                @if (menu.MenuType == MenuItemType.Simple)
+                {
+                    <a class="nav-link" href="#">@menu.Name</a>
+                }
+                else if (menu.MenuType == MenuItemType.DropDown)
+                {
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @menu.Name
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @foreach (var ddMenu in menu.As<DropDownMenuItem>().Items)
+                        {
+                            if (ddMenu.MenuType == MenuItemType.CustomLinkAction)
+                            {
+                                <a @(ddMenu.HasId() ? $"id={ddMenu.Id}" : "") class="dropdown-item" href="@(ddMenu.As<CustomLinkMenuItem>().Link)">@ddMenu.Name</a>
+                            }
+                            else if (ddMenu.MenuType == MenuItemType.JsAction)
+                            {
+                                <a @(ddMenu.HasId() ? $"id={ddMenu.Id}" : "") class="dropdown-item" href="#" onclick="@(ddMenu.As<JsActionMenuItem>().JavascriptCode)">@ddMenu.Name</a>
+                            }
+                        }
+                    </div>
+                }
+                else if (menu.MenuType == MenuItemType.CustomLinkAction)
+                {
+                    <a @(menu.HasId() ? $"id={menu.Id}" : "") class="nav-link" href="@(menu.As<CustomLinkMenuItem>().Link)">@menu.Name</a>
+                }
+                else if (menu.MenuType == MenuItemType.JsAction)
+                {
+                    <a @(menu.HasId() ? $"id={menu.Id}" : "") class="nav-link" href="#" onclick="@(menu.As<JsActionMenuItem>().JavascriptCode)">@menu.Name</a>
+                }
+            </li>
+            }
+        </ul>
+        <ul class="navbar-nav my-2 my-lg-0">
+            @foreach (var menu in Model.HeaderModel.RightMenuItems)
+            {
+                <li class="@menu.ListClass()">
+                    @if (menu.MenuType == MenuItemType.Simple)
+                    {
+                        <a class="nav-link" href="#">@menu.Name</a>
+                    }
+                    else if (menu.MenuType == MenuItemType.DropDown)
+                    {
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @menu.Name
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @foreach (var ddMenu in menu.As<DropDownMenuItem>().Items)
+                            {
+                                if (ddMenu.MenuType == MenuItemType.CustomLinkAction)
+                                {
+                                    <a @(ddMenu.HasId() ? $"id={ddMenu.Id}" : "") class="dropdown-item" href="@(ddMenu.As<CustomLinkMenuItem>().Link)">@ddMenu.Name</a>
+                                }
+                                else if (ddMenu.MenuType == MenuItemType.JsAction)
+                                {
+                                    <a @(ddMenu.HasId() ? $"id={ddMenu.Id}" : "") class="dropdown-item" href="#" onclick="@(ddMenu.As<JsActionMenuItem>().JavascriptCode)">@ddMenu.Name</a>
+                                }
+                            }
+                        </div>
+                    }
+                    else if (menu.MenuType == MenuItemType.CustomLinkAction)
+                    {
+                        <a @(menu.HasId() ? $"id={menu.Id}" : "") class="nav-link" href="@(menu.As<CustomLinkMenuItem>().Link)">@menu.Name</a>
+                    }
+                    else if (menu.MenuType == MenuItemType.JsAction)
+                    {
+                        <a @(menu.HasId() ? $"id={menu.Id}" : "") class="nav-link" href="#" onclick="@(menu.As<JsActionMenuItem>().JavascriptCode)">@menu.Name</a>
+                    }
+                </li>
+            }
+        </ul>
     </div>
 </nav>
