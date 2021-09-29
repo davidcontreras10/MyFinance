@@ -51,6 +51,14 @@ namespace MyFinance.MyFinanceWebApp.Helpers
         }
     }
 
+    public static class FullAccountInfoViewModelExtension
+    {
+	    public static string GetId(this FullAccountInfoViewModel model, string prefix)
+	    {
+		    return $"{prefix}{model.AccountId}";
+	    }
+    }
+
     public static class LoanHtmlExtension
     {
         public static string GetId(this LoanReportViewModel loanReportViewModel, string objectValue = "")

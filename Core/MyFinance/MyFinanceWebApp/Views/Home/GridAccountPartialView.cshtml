@@ -1,4 +1,5 @@
-﻿@model MyFinance.MyFinanceModel.ViewModel.FullAccountInfoViewModel
+﻿@using MyFinance.MyFinanceWebApp.Helpers
+@model MyFinance.MyFinanceModel.ViewModel.FullAccountInfoViewModel
 @{
     Layout = null;
 }
@@ -24,9 +25,9 @@
                 <option value="0">No Period</option>
                 @foreach (var accountPeriod in Model.AccountPeriods.OrderByDescending(item => item.InitialDate))
                 {
-                <option value="@accountPeriod.AccountPeriodId" selected="@(accountPeriod.AccountPeriodId == Model.CurrentPeriodId)">
-                    @accountPeriod.GetDateInfo(false)
-                </option>
+                    <option value="@accountPeriod.AccountPeriodId" selected="@(accountPeriod.AccountPeriodId == Model.CurrentPeriodId)">
+                        @accountPeriod.GetDateInfo(false)
+                    </option>
                 }
             </select>
         </div>
@@ -36,7 +37,7 @@
 <div class="row">
     <div class="col-md-12">
         <table class="table table-bordered table-low-margin @(Model.GetTableTypeStyle())"
-               id="account-balance-table-<%= account.AccountId %>">
+               id="@(Model.GetId("account-balance-table-"))">
             <thead>
                 <tr>
                     <th data-field="Budget">Budget</th>
@@ -48,13 +49,36 @@
             </thead>
             <tbody>
                 <tr>
-                    <td id="period-budget-value-<%= account.AccountId %>"></td>
-                    <td id="period-spent-value-<%= account.AccountId %>"></td>
-                    <td id="period-balance-value-<%= account.AccountId %>"></td>
-                    <td id="account-general-balance-value-<%= account.AccountId %>">N/A</td>
-                    <td id="account-today-balance-value-<%= account.AccountId %>">N/A</td>
+                    <td id="@(Model.GetId("period-budget-value-"))"></td>
+                    <td id="@(Model.GetId("period-spent-value-"))"></td>
+                    <td id="@(Model.GetId("period-balance-value-"))"></td>
+                    <td id="@(Model.GetId("account-general-balance-value-"))">N/A</td>
+                    <td id="@(Model.GetId("account-today-balance-value-"))">N/A</td>
                 </tr>
             </tbody>
         </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <input type="button" value="New Expense" style="color: red;" onclick="@($"openAddBasicTrxModal({Model.AccountId}, 1)")" />
+        <input type="button" value="Add Income" style="color: green;" onclick="@($"openAddBasicTrxModal({Model.AccountId}, 2)")" />
+        <input type="button" value="Transfer" style="color: blue;" onclick="@($"executeTransferAction(1, {Model.AccountId})")" />
+    </div>
+</div>
+<br />
+<div>
+    <input type="button" onclick="@($"openCustomPeriodEvent({Model.AccountId})")" id="@Model.GetId("account-summary-button-")" 
+           value="Account Summary"/>
+    <input type="button" onclick="@($"showHideSpendList({Model.AccountId})")" 
+           id="@Model.GetId("details-button-")"
+           value="Show Period Activity"/>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div id="@Model.GetId("details-container-")" style="display: block;">
+            <table class="table table-bordered table-low-margin" id="@Model.GetId("table-details-")">
+            </table>
+        </div>
     </div>
 </div>

@@ -39,15 +39,11 @@ namespace MyFinance.MyFinanceModel.ViewModel
 
         public FrontStyleData FrontStyle { get; set; }
 
-        public AccountType Type
-        {
-            get => _accountType;
-            set => _accountType = value;
-        }
+        public AccountType Type { get; set; }
 
         public string GetTableTypeStyle()
         {
-            switch (_accountType)
+            switch (Type)
             {
                 case AccountType.Checking:
                     return "table-checking";
@@ -75,8 +71,6 @@ namespace MyFinance.MyFinanceModel.ViewModel
         #endregion
 
         #region Privates
-
-        private AccountType _accountType;
 
         #endregion
 
