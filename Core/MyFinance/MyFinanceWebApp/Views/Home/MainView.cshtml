@@ -43,7 +43,7 @@
                         @await Html.PartialAsync("AccountFinancePartialView", Model)
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -62,8 +62,8 @@
                         @await Html.PartialAsync("BasicTrxPartialView", Model)
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-default" id="add-trx-modal-button" onclick="submitAddBasicTrx()">Save</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" id="add-trx-modal-button" onclick="submitAddBasicTrx()">Save</button>
                     </div>
                 </div>
             </div>
@@ -82,8 +82,8 @@
                         @await Html.PartialAsync("AddSpendPartialView", Model)
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-default" id="spend-modal-button" onclick="submitAddSpend()">Save</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" id="spend-modal-button" onclick="submitAddSpend()">Save</button>
                     </div>
                 </div>
             </div>
@@ -101,8 +101,8 @@
                         @await Html.PartialAsync("TransferPartialView", Model)
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-default" id="transfer-modal-submit" onclick="submitTransferModal()">Submit</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" id="transfer-modal-submit" onclick="submitTransferModal()">Submit</button>
                     </div>
                 </div>
             </div>
@@ -135,8 +135,8 @@
                         @await Html.PartialAsync("PeriodPartialView", Model)
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-default" id="add-period-submit">Save</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" id="add-period-submit">Save</button>
                     </div>
                 </div>
 
@@ -155,8 +155,8 @@
                         @await Html.PartialAsync("SpendDetailPartialView", Model)
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-default" id="save-spend-detail-submit" onclick="spendDetailUpdate()">Save</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" id="save-spend-detail-submit" onclick="spendDetailUpdate()">Save</button>
                     </div>
                 </div>
             </div>
@@ -178,7 +178,7 @@
                         <div class="row">
                             @foreach (var account in accountRow)
                             {
-                                <div class="@accountRow.BootstrapColSizeClass" @Html.Raw(account.BorderStyleValue)=>
+                                <div class="@accountRow.BootstrapColSizeClass" @Html.Raw(account.BorderStyleValue)>
                                     @await Html.PartialAsync("GridAccountPartialView", account)
                                 </div>
                             }
