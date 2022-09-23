@@ -6,6 +6,7 @@ using System;
 using System.Data;
 using Ut = Utilities.SystemDataUtilities;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace CurrencyService.Services
 {
@@ -28,9 +29,9 @@ namespace CurrencyService.Services
 
         #region Public Methods
 
-        public IEnumerable<BccrVentanillaModel> GetBccrVentanillaModel(string entityName, DateTime dateTime)
+        public async Task<IEnumerable<BccrVentanillaModel>> GetBccrVentanillaModelAsync(string entityName, DateTime dateTime)
         {
-            return GetBccrVentanillaModelWebService(entityName, dateTime);
+            return await GetBccrVentanillaModelWebServiceAsync(entityName, dateTime);
         }
 
         public EntityMethodInfo GetEntityMethodInfo(int methodId)
@@ -61,13 +62,13 @@ namespace CurrencyService.Services
             return dictionary;
         }
 
-        private IEnumerable<BccrVentanillaModel> GetBccrVentanillaModelWebService(string entityName, DateTime dateTime)
+        private async Task<IEnumerable<BccrVentanillaModel>> GetBccrVentanillaModelWebServiceAsync(string entityName, DateTime dateTime)
         {
             var initialDate = dateTime.AddMonths(-1);
             var endDate = dateTime.AddDays(1);
             var codes = GetBccrWebServiceExchangeCodeByEntity(entityName);
-            var sellList = _bccrWebService.GetBccrSingleVentanillaModels(codes["sell"], initialDate, endDate);
-            var purchaseList = _bccrWebService.GetBccrSingleVentanillaModels(codes["purchase"], initialDate, endDate);
+            var sellList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["sell"], initialDate, endDate);
+            var purchaseList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["purchase"], initialDate, endDate);
             var list = CreateBccrVentanillaModel(sellList, purchaseList);
             return list;
         }

@@ -65,6 +65,9 @@
     <Reference Include="MyFinanceModel">
       <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\MyFinanceModel.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
       <HintPath>..\packages\Swashbuckle.Core.5.3.2\lib\net40\Swashbuckle.Core.dll</HintPath>
       <Private>True</Private>
@@ -100,9 +103,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.Formatting">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
@@ -116,6 +116,8 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Properties\DataSources\System.Data.DataSet.datasource" />
+    <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\Prod.pubxml" />
     <None Include="Service References\BancoCentralServiceReference\wsIndicadoresEconomicos.disco" />
     <None Include="Service References\BancoCentralServiceReference\configuration91.svcinfo" />

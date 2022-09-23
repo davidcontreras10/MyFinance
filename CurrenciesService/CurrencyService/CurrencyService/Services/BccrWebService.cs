@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 using CurrencyService.wsindicadoreseconomicosSoap;
 using Utilities;
 using WebApiBaseConsumer;
@@ -16,23 +19,23 @@ namespace CurrencyService.Services
 	{
 		private readonly wsindicadoreseconomicosSoapClient _secureService = new wsindicadoreseconomicosSoapClient("wsindicadoreseconomicosSoap12");
 
-		protected override string ControllerName => "wsindicadoreseconomicos.asmx";
+		protected override string ControllerName => "";
 
-		public IEnumerable<BccrSingleVentanillaModel> GetBccrSingleVentanillaModels(string indicador, DateTime initial, DateTime end)
+		public async Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime initial, DateTime end)
 		{
-			DataSet dataSet = GetIndicador(indicador, initial, end);
-			if (dataSet == null || dataSet.Tables.Count < 1)
+			var dataTable = await GetIndicatorHttp(indicador, initial, end);
+			if (dataTable == null)
 			{
 				return new List<BccrSingleVentanillaModel>();
 			}
-			return CreateBccrSingleVentanillaModel(dataSet.Tables[0]);
+			return CreateBccrSingleVentanillaModel(dataTable);
 		}
 
-		private DataSet GetIndicatorHttp(string indicator, DateTime initial, DateTime end)
+		private async Task<DataTable> GetIndicatorHttp(string indicator, DateTime initial, DateTime end)
 		{
-			string inicio = initial.ToString("dd/MM/yyyy");
-			string final = end.ToString("dd/MM/yyyy");
-			string url = CreateRootUrl(new Dictionary<string, object>
+			var inicio = initial.ToString("dd/MM/yyyy");
+			var final = end.ToString("dd/MM/yyyy");
+			var url = CreateRootUrl(new Dictionary<string, object>
 		{
 			{ "Indicador", indicator },
 			{ "FechaInicio", inicio },
@@ -42,8 +45,28 @@ namespace CurrencyService.Services
 			{ "CorreoElectronico", "dcontre10@gmail.com" },
 			{ "Token", "1IO9ALGN0O" }
 		});
+			ServicePointManager
+					.ServerCertificateValidationCallback +=
+				(sender, cert, chain, sslPolicyErrors) => true;
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-			return GetResponse(new WebApiRequest(url, HttpMethod.Get)).Content.ReadAsAsync<DataSet>().Result;
+			var request = new WebApiRequest(url, HttpMethod.Get)
+			{
+				Headers = new Dictionary<string, string>
+				{
+					{"User-Agent", "PostmanRuntime/7.29.2"},
+					{"Connection", "close"},
+					{"Accept", "*/*"},
+					{"Cache-Control", "no-cache"},
+					{"Access-Control-Allow-Origin", "*"}
+				}
+			};
+			var response = await GetResponseAsync(request);
+			var jsonResponse = await response.Content.ReadAsStringAsync();
+			jsonResponse = HttpUtility.HtmlDecode(jsonResponse);
+			var reader = new StringReader(jsonResponse);
+			var theDataSet = new DataSet();
+			theDataSet.ReadXml(reader);
+			return theDataSet.Tables.Count > 1 ? theDataSet.Tables[1] : null;
 		}
 
 		private DataSet GetIndicador(string indicador, DateTime initial, DateTime end)
@@ -86,7 +109,7 @@ namespace CurrencyService.Services
 
 		protected override string GetApiBaseDomain()
 		{
-			return "https://gee.bccr.fi.cr/Indicadores/Suscripciones/WS";
+			return "https://181.193.30.41/Indicadores/Suscripciones/WS/wsindicadoreseconomicos.asmx/ObtenerIndicadoresEconomicosXML";
 		}
 	}
 }
