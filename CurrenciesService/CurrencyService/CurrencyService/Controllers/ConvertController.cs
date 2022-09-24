@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using HtmlAgilityPack;
 using MyFinanceModel.WebMethodsModel;
 
 namespace CurrencyService.Controllers
@@ -30,38 +32,26 @@ namespace CurrencyService.Controllers
         #region Actions
 
         [HttpGet]
+        public string CheckAccess(string url)
+        {
+            return CheckHtmlDoc(url);
+        }
+
+        [HttpGet]
         public async Task<ExchangeRateResult> ExchangeRateResultByMethodId(int methodId, DateTime dateTime)
         {
+	        System.Diagnostics.Trace.TraceInformation("ExchangeRateResultByMethodId called Log");
 	        try
 	        {
 		        return await GetExchangeRateResultAsync(methodId, dateTime);
-	        }
+			}
 	        catch (Exception e)
 	        {
-		        try
-		        {
-			        var hostInfo = Dns.GetHostByName("gee.bccr.fi.cr");
-			        var ips = hostInfo.AddressList.Aggregate(string.Empty, (current, ipAddress) => current + $"Ip: {ipAddress}, ");
-			        return new ExchangeRateResult
-			        {
-				        ErrorDetails = ips
-			        };
-		        }
-		        catch (Exception exception)
-		        {
-			        Console.WriteLine(exception);
-			        return new ExchangeRateResult
-			        {
-				        ErrorDetails = exception.ToString()
-			        };
-		        }
 
-		        Console.WriteLine(e);
-		        return new ExchangeRateResult
-		        {
-			        ErrorDetails = e.ToString()
-		        };
+		        System.Diagnostics.Trace.TraceError($"Exchange Error:{Environment.NewLine}{e}");
+		        throw;
 	        }
+            
         }
 
         [HttpPost]
@@ -84,6 +74,45 @@ namespace CurrencyService.Controllers
         #endregion
 
         #region Private Methods
+
+        private string CheckHtmlDoc(string url)
+        {
+	        try
+	        {
+		        var web = new HtmlWeb();
+		        var doc = web.Load(url);
+		        return doc.ParsedText;
+	        }
+	        catch (Exception e)
+	        {
+		        System.Diagnostics.Trace.TraceError(e.ToString());
+		        return e.ToString();
+	        }
+
+        }
+
+        private string CheckUrl(string url)
+        {
+	        var urlCheck = new Uri(url);
+	        var request = (HttpWebRequest) WebRequest.Create(urlCheck);
+	        request.Timeout = 60 * 1000;
+	        try
+	        {
+		        var response = request.GetResponse();
+		        var encoding = Encoding.ASCII;
+		        System.Diagnostics.Trace.TraceError("No Exception!");
+		        using (var reader = new System.IO.StreamReader(response.GetResponseStream(), encoding))
+		        {
+			        var responseText = reader.ReadToEnd();
+			        return responseText;
+		        }
+	        }
+	        catch (Exception e)
+	        {
+		        System.Diagnostics.Trace.TraceError(e.ToString());
+		        return e.ToString();
+	        }
+        }
 
         private async Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime)
         {

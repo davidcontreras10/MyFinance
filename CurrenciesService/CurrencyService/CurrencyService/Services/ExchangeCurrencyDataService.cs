@@ -6,6 +6,7 @@ using System;
 using System.Data;
 using Ut = Utilities.SystemDataUtilities;
 using System.Data.SqlClient;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace CurrencyService.Services
@@ -14,7 +15,7 @@ namespace CurrencyService.Services
     {
         #region Private Attributes
 
-        private readonly BccrWebService _bccrWebService;
+        private readonly BccrCurrencyService _bccrWebService;
 
         #endregion
 
@@ -22,7 +23,12 @@ namespace CurrencyService.Services
 
         public ExchangeCurrencyDataService(IConnectionConfig connectionConfig) : base(connectionConfig)
         {
-            _bccrWebService = new BccrWebService();
+	        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+	        ServicePointManager
+			        .ServerCertificateValidationCallback +=
+		        (sender, cert, chain, sslPolicyErrors) => true;
+	        _bccrWebService = new BccrCurrencyService(new BccrWebApiService());
+	        //_bccrWebService = new BccrCurrencyService(new BccrSoapWebRepository());
         }
 
         #endregion
