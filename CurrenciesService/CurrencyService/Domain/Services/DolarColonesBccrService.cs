@@ -10,7 +10,6 @@ namespace Domain.Services
 	public interface IDolarColonesBccrService
 	{
 		Task<ExchangeRateResult> GetExchangeRateResultByMethodIdAsync(int methodId, DateTime dateTime);
-		Task<ExchangeRateResult> GetDolToColExchangeRateResultAsync(DateTime dateTime, string entityName);
 	}
 
 	public class DolarColonesBccrService : IDolarColonesBccrService
