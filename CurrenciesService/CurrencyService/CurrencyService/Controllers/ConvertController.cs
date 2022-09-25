@@ -7,7 +7,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using HtmlAgilityPack;
 using MyFinanceModel.WebMethodsModel;
 
 namespace CurrencyService.Controllers
@@ -75,23 +74,7 @@ namespace CurrencyService.Controllers
 
         #region Private Methods
 
-        private string CheckHtmlDoc(string url)
-        {
-	        try
-	        {
-		        var web = new HtmlWeb();
-		        var doc = web.Load(url);
-		        return doc.ParsedText;
-	        }
-	        catch (Exception e)
-	        {
-		        System.Diagnostics.Trace.TraceError(e.ToString());
-		        return e.ToString();
-	        }
-
-        }
-
-        private string CheckUrl(string url)
+        private static string CheckUrl(string url)
         {
 	        var urlCheck = new Uri(url);
 	        var request = (HttpWebRequest) WebRequest.Create(urlCheck);
