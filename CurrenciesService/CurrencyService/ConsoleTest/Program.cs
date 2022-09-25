@@ -1,6 +1,4 @@
-﻿using CurrencyService;
-using CurrencyService.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,38 +36,7 @@ namespace ConsoleTest
         //        }
         //    }
         //}
-
-        private static void TestBccrWebService()
-        {
-            var service = new BccrWebService();
-            bool seguir = true;
-            while (seguir)
-            {
-                var date1 = DateTime.Now;
-                var response2 = service.GetBccrSingleVentanillaModels("3215", DateTime.Today.AddDays(-1), DateTime.Today);
-                var response1 = service.GetBccrSingleVentanillaModels("3181", DateTime.Today.AddDays(-1), DateTime.Today);
-                var datesMatch = response1.ElementAt(0).LastUpdate == response2.ElementAt(0).LastUpdate;
-                var date2 = DateTime.Now;
-                Console.WriteLine(string.Format("Init: {0} -- End: {1}", date1.ToString("hh.mm.ss.ffffff"), date2.ToString("hh.mm.ss.ffffff")));
-                var line = Console.ReadLine();
-                if (line == "fin")
-                    seguir = false;
-            }
-        }
-
-        private static void TestIEnumerableSort()
-        {
-            var dateTimeContainer = new List<DateTimeContainer>();
-            dateTimeContainer.Add(new DateTimeContainer { Value = DateTime.Now.AddDays(-5) });
-            dateTimeContainer.Add(new DateTimeContainer { Value = DateTime.Now.AddDays(-3) });
-            dateTimeContainer.Add(new DateTimeContainer { Value = DateTime.Now.AddDays(-6) });
-            dateTimeContainer.Add(new DateTimeContainer { Value = DateTime.Now.AddDays(-2) });
-            var orderedList = dateTimeContainer.OrderByDescending(item => item.Value);
-            foreach(var value in orderedList)
-            {
-                Console.WriteLine(value.Value.ToShortDateString());
-            }
-        }
+        
 
         private class DateTimeContainer
         {
