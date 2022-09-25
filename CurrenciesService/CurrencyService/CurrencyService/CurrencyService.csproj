@@ -14,7 +14,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CurrencyService</RootNamespace>
-    <AssemblyName>CurrencyService</AssemblyName>
+    <AssemblyName>DContre.MyFinance.CurrencyService</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
