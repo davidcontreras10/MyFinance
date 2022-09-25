@@ -4,6 +4,7 @@ using System.Linq;
 using CurrencyService.Models;
 using MyFinanceModel;
 using System;
+using System.Threading.Tasks;
 
 namespace CurrencyService.Services
 {
@@ -26,43 +27,43 @@ namespace CurrencyService.Services
 
         #region Public Method
 
-        public ExchangeRateResult GetExchangeRateResultByMethodId(int methodId, DateTime dateTime)
+        public async Task<ExchangeRateResult> GetExchangeRateResultByMethodIdAsync(int methodId, DateTime dateTime)
         {
             var entityMethodInfo = _exchangeCurrencyDataService.GetEntityMethodInfo(methodId);
             return entityMethodInfo == null
                 ? ExchangeRateResult.CreateNotImplementedExchangeRateResult(methodId)
-                : GetExchangeRateResultByMethodId(entityMethodInfo, dateTime);
+                : await GetExchangeRateResultByMethodIdAsync(entityMethodInfo, dateTime);
         }
 
-        public ExchangeRateResult GetBacColToDolExchangeRateResult(DateTime dateTime)
+        public async Task<ExchangeRateResult> GetBacColToDolExchangeRateResultAsync(DateTime dateTime)
         {
             var entityName = GetBacSanJoseEntityName();
-            return GetColToDolExchangeRateResult(dateTime, entityName);
+            return await GetColToDolExchangeRateResultAsync(dateTime, entityName);
         }
 
-        public ExchangeRateResult GetBacDolToColExchangeRateResult(DateTime dateTime)
+        public async Task<ExchangeRateResult> GetBacDolToColExchangeRateResultAsync(DateTime dateTime)
         {
             var entityName = GetBacSanJoseEntityName();
-            return GetDolToColExchangeRateResult(dateTime, entityName);
+            return await GetDolToColExchangeRateResultAsync(dateTime, entityName);
         }
 
-        public ExchangeRateResult GetPromericaColToDolExchangeRateResult(DateTime dateTime)
+        public async Task<ExchangeRateResult> GetPromericaColToDolExchangeRateResultAsync(DateTime dateTime)
         {
             var entityName = GetPromericaEntityName();
-            return GetColToDolExchangeRateResult(dateTime, entityName);
+            return await GetColToDolExchangeRateResultAsync(dateTime, entityName);
         }
 
-        public ExchangeRateResult GetPromericaDolToColExchangeRateResult(DateTime dateTime)
+        public async Task<ExchangeRateResult> GetPromericaDolToColExchangeRateResultAsync(DateTime dateTime)
         {
             var entityName = GetPromericaEntityName();
-            return GetDolToColExchangeRateResult(dateTime, entityName);
+            return await GetDolToColExchangeRateResultAsync(dateTime, entityName);
         }
 
         #endregion
 
         #region Private Methods
 
-        private ExchangeRateResult GetExchangeRateResultByMethodId(EntityMethodInfo entityMethodInfo, DateTime dateTime)
+        private async Task<ExchangeRateResult> GetExchangeRateResultByMethodIdAsync(EntityMethodInfo entityMethodInfo, DateTime dateTime)
         {
             if (entityMethodInfo == null)
                 throw new ArgumentNullException("entityMethodInfo");
@@ -73,13 +74,13 @@ namespace CurrencyService.Services
             }
 
             return entityMethodInfo.Colones
-                ? GetColToDolExchangeRateResult(dateTime, entityMethodInfo.EntitySearchKey)
-                : GetDolToColExchangeRateResult(dateTime, entityMethodInfo.EntitySearchKey);
+                ? await GetColToDolExchangeRateResultAsync(dateTime, entityMethodInfo.EntitySearchKey)
+                : await GetDolToColExchangeRateResultAsync(dateTime, entityMethodInfo.EntitySearchKey);
         }
 
-        private ExchangeRateResult GetColToDolExchangeRateResult(DateTime dateTime, string entityName)
+        private async Task<ExchangeRateResult> GetColToDolExchangeRateResultAsync(DateTime dateTime, string entityName)
         {
-            var exchangeRateData = GetExchangeRateResult(dateTime, entityName);
+            var exchangeRateData = await GetExchangeRateResultAsync(dateTime, entityName);
             if (exchangeRateData == null || !exchangeRateData.Success)
             {
                 return CreateErrorExchangeRateResult(exchangeRateData);
@@ -97,9 +98,9 @@ namespace CurrencyService.Services
             };
         }
 
-        public ExchangeRateResult GetDolToColExchangeRateResult(DateTime dateTime, string entityName)
+        public async Task<ExchangeRateResult> GetDolToColExchangeRateResultAsync(DateTime dateTime, string entityName)
         {
-            var exchangeRateData = GetExchangeRateResult(dateTime, entityName);
+            var exchangeRateData = await GetExchangeRateResultAsync(dateTime, entityName);
             if (exchangeRateData == null || !exchangeRateData.Success)
             {
                 return CreateErrorExchangeRateResult(exchangeRateData);
@@ -133,18 +134,19 @@ namespace CurrencyService.Services
             return entityName;
         }
 
-        private ExchangeRateData GetExchangeRateResult(DateTime datetime, string entityName)
+        private async Task<ExchangeRateData> GetExchangeRateResultAsync(DateTime datetime, string entityName)
         {
-            var exchangeResults = _exchangeCurrencyDataService.GetBccrVentanillaModel(entityName, datetime);
-            if(exchangeResults == null || !exchangeResults.Any())
+            var exchangeResults = await _exchangeCurrencyDataService.GetBccrVentanillaModelAsync(entityName, datetime);
+            if (exchangeResults == null || !exchangeResults.Any())
             {
-                return new ExchangeRateData
-                {
-                    ErrorType = ExchangeRateResult.ResultError.EntityHasNoResults,
-                    ResultTypeValue = ExchangeRateResult.ResultType.Error,
-                    Success = false
-                };
+	            return new ExchangeRateData
+	            {
+		            ErrorType = ExchangeRateResult.ResultError.EntityHasNoResults,
+		            ResultTypeValue = ExchangeRateResult.ResultType.Error,
+		            Success = false
+	            };
             }
+
             if (IsTooEarly(exchangeResults, datetime))
             {
                 return new ExchangeRateData

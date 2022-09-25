@@ -49,9 +49,8 @@
     <Reference Include="DataAccess">
       <HintPath>..\..\..\MyFinanceApplication\DataAccess\bin\Debug\DataAccess.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.11.46.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.46\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -64,6 +63,9 @@
     </Reference>
     <Reference Include="MyFinanceModel">
       <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\MyFinanceModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
       <HintPath>..\packages\Swashbuckle.Core.5.3.2\lib\net40\Swashbuckle.Core.dll</HintPath>
@@ -100,9 +102,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.Formatting">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
@@ -116,18 +115,14 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Properties\DataSources\System.Data.DataSet.datasource" />
-    <None Include="Properties\PublishProfiles\Prod.pubxml" />
-    <None Include="Service References\BancoCentralServiceReference\wsIndicadoresEconomicos.disco" />
-    <None Include="Service References\BancoCentralServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\BancoCentralServiceReference\configuration.svcinfo" />
-    <None Include="Service References\BancoCentralServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\wsindicadoreseconomicosSoap\wsindicadoreseconomicos.disco" />
-    <None Include="Service References\wsindicadoreseconomicosSoap\configuration91.svcinfo" />
-    <None Include="Service References\wsindicadoreseconomicosSoap\configuration.svcinfo" />
-    <None Include="Service References\wsindicadoreseconomicosSoap\Reference.svcmap">
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange2 - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange2 - Web Deploy.pubxml" />
+    <None Include="Service References\BccrServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\BccrServiceReference\configuration.svcinfo" />
+    <None Include="Service References\BccrServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -147,26 +142,23 @@
     <Compile Include="Models\EntityMethodInfo.cs" />
     <Compile Include="Models\ExchangeRateData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\BancoCentralServiceReference\Reference.cs">
+    <Compile Include="Service References\BccrServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Service References\wsindicadoreseconomicosSoap\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Services\BccrWebService.cs" />
+    <Compile Include="Services\BccrCurrencyService.cs" />
+    <Compile Include="Services\BccrSoapWebRepository.cs" />
+    <Compile Include="Services\BccrWebApiService.cs" />
     <Compile Include="Services\CurrencyServiceConnectionConfig.cs" />
     <Compile Include="Services\DolarColonesBccrService.cs" />
     <Compile Include="Services\ExchangeCurrencyDataService.cs" />
+    <Compile Include="Services\IBccrCurrencyRepository.cs" />
     <Compile Include="Utils\WebClientUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <None Include="Service References\BancoCentralServiceReference\wsIndicadoresEconomicos.wsdl" />
-    <None Include="Service References\wsindicadoreseconomicosSoap\wsindicadoreseconomicos.wsdl" />
+    <None Include="Service References\BccrServiceReference\wsindicadoreseconomicos.wsdl" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -184,8 +176,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\BancoCentralServiceReference\" />
-    <WCFMetadataStorage Include="Service References\wsindicadoreseconomicosSoap\" />
+    <WCFMetadataStorage Include="Service References\BccrServiceReference\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
