@@ -2,7 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 
-namespace CurrencyService.Services
+namespace Domain.Repositories
 {
 	public interface IBccrCurrencyRepository
 	{

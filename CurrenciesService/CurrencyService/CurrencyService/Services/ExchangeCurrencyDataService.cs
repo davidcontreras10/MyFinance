@@ -8,10 +8,12 @@ using Ut = Utilities.SystemDataUtilities;
 using System.Data.SqlClient;
 using System.Net;
 using System.Threading.Tasks;
+using Domain.Repositories;
+using Domain.Services;
 
 namespace CurrencyService.Services
 {
-    public class ExchangeCurrencyDataService : SqlServerBaseService
+    public class ExchangeCurrencyDataService : SqlServerBaseService, IExchangeCurrencyDataService
     {
         #region Private Attributes
 

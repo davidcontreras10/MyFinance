@@ -18,7 +18,7 @@ namespace CurrencyService.Controllers
 
         public ConvertController()
         {
-            _dolarColonesBccrService = new DolarColonesBccrService();
+            _dolarColonesBccrService = new DolarColonesBccrService(new ExchangeCurrencyDataService(new CurrencyServiceConnectionConfig()));
         }
 
         #endregion

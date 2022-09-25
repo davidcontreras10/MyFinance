@@ -120,12 +120,6 @@
     <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange2 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\MyFinanceCurrencyExchange2 - Web Deploy.pubxml" />
-    <None Include="Service References\BccrServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\BccrServiceReference\configuration.svcinfo" />
-    <None Include="Service References\BccrServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -134,31 +128,15 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ConvertController.cs" />
-    <Compile Include="Exceptions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\BccrVentanillaModel.cs" />
-    <Compile Include="Models\EntityMethodInfo.cs" />
-    <Compile Include="Models\ExchangeRateData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\BccrServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Services\BccrCurrencyService.cs" />
-    <Compile Include="Services\BccrSoapWebRepository.cs" />
-    <Compile Include="Services\BccrWebApiService.cs" />
     <Compile Include="Services\CurrencyServiceConnectionConfig.cs" />
-    <Compile Include="Services\DolarColonesBccrService.cs" />
     <Compile Include="Services\ExchangeCurrencyDataService.cs" />
-    <Compile Include="Services\IBccrCurrencyRepository.cs" />
-    <Compile Include="Utils\WebClientUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <None Include="Service References\BccrServiceReference\wsindicadoreseconomicos.wsdl" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -176,7 +154,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\BccrServiceReference\" />
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{52c502ab-0495-4382-a567-f1995c93b25e}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

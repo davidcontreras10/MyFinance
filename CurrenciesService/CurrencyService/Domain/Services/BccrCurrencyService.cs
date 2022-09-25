@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using CurrencyService.Models;
+using Domain.Repositories;
 using Utilities;
 
 namespace CurrencyService.Services
