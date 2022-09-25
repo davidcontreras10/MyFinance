@@ -9,7 +9,12 @@ using Utilities;
 
 namespace Domain.Services
 {
-	public class BccrCurrencyService
+	public interface IBccrCurrencyService
+	{
+		Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime initial, DateTime end);
+	}
+
+	public class BccrCurrencyService : IBccrCurrencyService
 	{
 		private readonly IBccrCurrencyRepository _bccrCurrencyRepository;
 

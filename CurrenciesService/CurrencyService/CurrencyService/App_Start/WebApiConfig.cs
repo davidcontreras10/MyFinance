@@ -4,6 +4,7 @@ using Autofac;
 using Autofac.Integration.WebApi;
 using CurrencyService.Services;
 using DataAccess;
+using Domain.Repositories;
 using Domain.Services;
 
 namespace CurrencyService
@@ -40,6 +41,8 @@ namespace CurrencyService
 	        builder.RegisterType<CurrencyServiceConnectionConfig>().As<IConnectionConfig>();
 	        builder.RegisterType<ExchangeCurrencyDataService>().As<IExchangeCurrencyDataService>();
 	        builder.RegisterType<DolarColonesBccrService>().As<IDolarColonesBccrService>();
+	        builder.RegisterType<BccrCurrencyService>().As<IBccrCurrencyService>();
+	        builder.RegisterType<BccrWebApiService>().As<IBccrCurrencyRepository>();
         }
     }
 }

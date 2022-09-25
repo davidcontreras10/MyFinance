@@ -18,19 +18,22 @@ namespace CurrencyService.Services
     {
         #region Private Attributes
 
-        private readonly BccrCurrencyService _bccrWebService;
+        private readonly IBccrCurrencyService _bccrWebService;
 
         #endregion
 
         #region Constructor
 
-        public ExchangeCurrencyDataService(IConnectionConfig connectionConfig) : base(connectionConfig)
+        public ExchangeCurrencyDataService(
+	        IConnectionConfig connectionConfig,
+	        IBccrCurrencyService bccrCurrencyService
+        ) : base(connectionConfig)
         {
 	        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 	        ServicePointManager
 			        .ServerCertificateValidationCallback +=
 		        (sender, cert, chain, sslPolicyErrors) => true;
-	        _bccrWebService = new BccrCurrencyService(new BccrWebApiService());
+	        _bccrWebService = bccrCurrencyService;
         }
 
         #endregion
