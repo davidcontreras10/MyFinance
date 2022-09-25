@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using CurrencyService.Models;
 using DataAccess;
 using System;
 using System.Data;
@@ -8,6 +7,8 @@ using Ut = Utilities.SystemDataUtilities;
 using System.Data.SqlClient;
 using System.Net;
 using System.Threading.Tasks;
+using Domain;
+using Domain.Models;
 using Domain.Repositories;
 using Domain.Services;
 
@@ -30,7 +31,6 @@ namespace CurrencyService.Services
 			        .ServerCertificateValidationCallback +=
 		        (sender, cert, chain, sslPolicyErrors) => true;
 	        _bccrWebService = new BccrCurrencyService(new BccrWebApiService());
-	        //_bccrWebService = new BccrCurrencyService(new BccrSoapWebRepository());
         }
 
         #endregion

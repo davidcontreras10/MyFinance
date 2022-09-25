@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using CurrencyService.Models;
+using Domain.Models;
 using Domain.Repositories;
 using Utilities;
 
-namespace CurrencyService.Services
+namespace Domain.Services
 {
 	public class BccrCurrencyService
 	{

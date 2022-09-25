@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CurrencyService.Models;
+using Domain.Models;
 
 namespace Domain.Services
 {

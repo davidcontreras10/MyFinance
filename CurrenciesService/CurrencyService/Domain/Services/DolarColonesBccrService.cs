@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using CurrencyService.Models;
-using MyFinanceModel;
-using System;
 using System.Threading.Tasks;
-using DataAccess;
 using Domain.Models;
-using Domain.Services;
+using MyFinanceModel;
 
-namespace CurrencyService.Services
+namespace Domain.Services
 {
-    public class DolarColonesBccrService
-    {
+	public interface IDolarColonesBccrService
+	{
+		Task<ExchangeRateResult> GetExchangeRateResultByMethodIdAsync(int methodId, DateTime dateTime);
+		Task<ExchangeRateResult> GetDolToColExchangeRateResultAsync(DateTime dateTime, string entityName);
+	}
+
+	public class DolarColonesBccrService : IDolarColonesBccrService
+	{
         #region Constructors
 
         public DolarColonesBccrService(IExchangeCurrencyDataService exchangeCurrencyDataService)

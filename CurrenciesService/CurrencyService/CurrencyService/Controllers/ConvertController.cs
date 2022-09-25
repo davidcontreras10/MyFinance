@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Domain.Services;
 using MyFinanceModel.WebMethodsModel;
 
 namespace CurrencyService.Controllers
@@ -15,16 +16,16 @@ namespace CurrencyService.Controllers
     {
         #region Constructor
 
-        public ConvertController()
+        public ConvertController(IDolarColonesBccrService dolarColonesBccrService)
         {
-            _dolarColonesBccrService = new DolarColonesBccrService(new ExchangeCurrencyDataService(new CurrencyServiceConnectionConfig()));
+	        _dolarColonesBccrService = dolarColonesBccrService;
         }
 
         #endregion
 
         #region Attributes
 
-        private readonly DolarColonesBccrService _dolarColonesBccrService;
+        private readonly IDolarColonesBccrService _dolarColonesBccrService;
 
         #endregion
 
@@ -57,9 +58,9 @@ namespace CurrencyService.Controllers
         public async Task<IEnumerable<ExchangeRateResult>> ExchangeRateResultByMethodIds([FromBody]ExchangeRateResultModel model)
         {
             if (model == null)
-                throw new ArgumentNullException("model");
+                throw new ArgumentNullException(nameof(model));
             if (model.MethodIds == null || !model.MethodIds.Any())
-                throw new ArgumentException("Cannot be null or empty", "model");
+                throw new ArgumentException("Cannot be null or empty", nameof(model));
             var methodIds = model.MethodIds;
             var dateTime = model.DateTime;
             var list = new List<ExchangeRateResult>();

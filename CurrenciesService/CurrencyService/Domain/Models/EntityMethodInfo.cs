@@ -1,4 +1,4 @@
-﻿namespace CurrencyService.Models
+﻿namespace Domain.Models
 {
     public class EntityMethodInfo
     {
