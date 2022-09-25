@@ -34,7 +34,7 @@ namespace CurrencyService.Controllers
         [HttpGet]
         public string CheckAccess(string url)
         {
-            return CheckHtmlDoc(url);
+            return CheckUrl(url);
         }
 
         [HttpGet]
