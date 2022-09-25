@@ -2,7 +2,6 @@
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using MyFinanceModel.WebMethodsModel;
-using MyFinanceWebApi.QueryHeaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,28 +70,6 @@ namespace MyFinanceWebApiConsoleTest
 			var array = str.Split(',');
 
 		}
-
-        private static void QueryTest()
-        {
-            var testArrayObject = new ClientAccountInclude[]
-                {
-                    new ClientAccountInclude{ AccountId = 1, AccountIncludeId = 2, CurrencyConverterMethodId = 3},
-                    new ClientAccountInclude{ AccountId = 1, AccountIncludeId = 2, CurrencyConverterMethodId = 3},
-                    new ClientAccountInclude{ AccountId = 1, AccountIncludeId = 2, CurrencyConverterMethodId = 3},
-                    new ClientAccountInclude{ AccountId = 1, AccountIncludeId = 2, CurrencyConverterMethodId = 3}
-                };
-
-            var testObject = new ClientAddAccount
-            {
-                AccountIncludes = testArrayObject,
-                AccountGroupId = 4,
-                AccountName = "test account"
-            };
-
-            var result = QueryProcessor.ProcessQuery(testArrayObject.ToList(), "[].AccountIncludeId", QueryProcessor.QueryActionTtype.Remove);
-            var json = result.ToString();
-            var resultObject = result.ToObject<IEnumerable<ClientAccountInclude>>();
-        }
 
         private static int counter;
         public static string CreateRandomString(int length)
