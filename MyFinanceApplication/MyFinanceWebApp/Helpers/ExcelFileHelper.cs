@@ -29,7 +29,37 @@ namespace MyFinanceWebApp.Helpers
 			AccountFinanceViewModel accountFinanceViewModel
 		)
 		{
-			excelWorksheet.Cells[1, 1].Value = accountFinanceViewModel.AccountPeriodName;
+			var title = $"Account: {accountFinanceViewModel.AccountName} -- {accountFinanceViewModel.AccountPeriodName}";
+			excelWorksheet.Cells[1, 1].Value = title;
+			const int startRowPosition = 2;
+			const int startColPosition = 1;
+			WriteSpendsList(excelWorksheet, accountFinanceViewModel.SpendViewModels, startRowPosition, startColPosition,
+				accountFinanceViewModel.CurrencyId, accountFinanceViewModel.CurrencySymbol);
+		}
+
+		private static void WriteSpendsList(
+			ExcelWorksheet worksheet,
+			IReadOnlyCollection<SpendViewModel> spendViewModels,
+			int startRow,
+			int startCol,
+			int accountCurrencyId,
+			string accountCurrencySymbol
+		)
+		{
+			var rowPos = startRow;
+			var colPos = startCol;
+			foreach (var spendViewModel in spendViewModels)
+			{
+				var baseCells = GetSpendViewModelLine(spendViewModel, accountCurrencyId, accountCurrencySymbol);
+				foreach (var baseExcelCell in baseCells)
+				{
+					baseExcelCell.GenerateExcelCell(worksheet.Cells[rowPos, colPos]);
+					colPos++;
+				}
+
+				rowPos++;
+				colPos = startCol;
+			}
 		}
 
 		private static IBaseExcelCell[] GetSpendViewModelLine(
