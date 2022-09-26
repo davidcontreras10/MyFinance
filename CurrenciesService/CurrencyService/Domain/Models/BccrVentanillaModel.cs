@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CurrencyService.Models
+namespace Domain.Models
 {
     public class BccrVentanillaModel
     {

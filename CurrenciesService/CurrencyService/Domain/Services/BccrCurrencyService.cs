@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using CurrencyService.Models;
+using Domain.Models;
+using Domain.Repositories;
 using Utilities;
 
-namespace CurrencyService.Services
+namespace Domain.Services
 {
-	public class BccrCurrencyService
+	public interface IBccrCurrencyService
+	{
+		Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime initial, DateTime end);
+	}
+
+	public class BccrCurrencyService : IBccrCurrencyService
 	{
 		private readonly IBccrCurrencyRepository _bccrCurrencyRepository;
 

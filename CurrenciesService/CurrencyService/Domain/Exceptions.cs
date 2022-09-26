@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CurrencyService
+namespace Domain
 {
     public class InvalidExchangeRateCreationException : Exception
     {

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DContre.MyFinance.CurrencyService.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DataAccess">
+      <HintPath>..\..\..\MyFinanceApplication\DataAccess\bin\Debug\DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="MyFinanceModel">
+      <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\MyFinanceModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Utilities">
+      <HintPath>..\..\..\Utilities\Utilities\bin\Debug\Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="WebApiBaseConsumer">
+      <HintPath>..\..\..\MyFinanceApplication\WebApiBaseConsumer\bin\Debug\WebApiBaseConsumer.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

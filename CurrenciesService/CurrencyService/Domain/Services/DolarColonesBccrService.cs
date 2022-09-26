@@ -1,27 +1,31 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using CurrencyService.Models;
-using MyFinanceModel;
-using System;
 using System.Threading.Tasks;
+using Domain.Models;
+using MyFinanceModel;
 
-namespace CurrencyService.Services
+namespace Domain.Services
 {
-    public class DolarColonesBccrService
-    {
+	public interface IDolarColonesBccrService
+	{
+		Task<ExchangeRateResult> GetExchangeRateResultByMethodIdAsync(int methodId, DateTime dateTime);
+	}
+
+	public class DolarColonesBccrService : IDolarColonesBccrService
+	{
         #region Constructors
 
-        public DolarColonesBccrService()
+        public DolarColonesBccrService(IExchangeCurrencyDataService exchangeCurrencyDataService)
         {
-            _exchangeCurrencyDataService = new ExchangeCurrencyDataService(new CurrencyServiceConnectionConfig());
+	        _exchangeCurrencyDataService = exchangeCurrencyDataService;
         }
 
         #endregion
 
         #region Attributes
 
-        private readonly ExchangeCurrencyDataService _exchangeCurrencyDataService;
+        private readonly IExchangeCurrencyDataService _exchangeCurrencyDataService;
 
         #endregion
 
@@ -35,29 +39,6 @@ namespace CurrencyService.Services
                 : await GetExchangeRateResultByMethodIdAsync(entityMethodInfo, dateTime);
         }
 
-        public async Task<ExchangeRateResult> GetBacColToDolExchangeRateResultAsync(DateTime dateTime)
-        {
-            var entityName = GetBacSanJoseEntityName();
-            return await GetColToDolExchangeRateResultAsync(dateTime, entityName);
-        }
-
-        public async Task<ExchangeRateResult> GetBacDolToColExchangeRateResultAsync(DateTime dateTime)
-        {
-            var entityName = GetBacSanJoseEntityName();
-            return await GetDolToColExchangeRateResultAsync(dateTime, entityName);
-        }
-
-        public async Task<ExchangeRateResult> GetPromericaColToDolExchangeRateResultAsync(DateTime dateTime)
-        {
-            var entityName = GetPromericaEntityName();
-            return await GetColToDolExchangeRateResultAsync(dateTime, entityName);
-        }
-
-        public async Task<ExchangeRateResult> GetPromericaDolToColExchangeRateResultAsync(DateTime dateTime)
-        {
-            var entityName = GetPromericaEntityName();
-            return await GetDolToColExchangeRateResultAsync(dateTime, entityName);
-        }
 
         #endregion
 
@@ -66,7 +47,7 @@ namespace CurrencyService.Services
         private async Task<ExchangeRateResult> GetExchangeRateResultByMethodIdAsync(EntityMethodInfo entityMethodInfo, DateTime dateTime)
         {
             if (entityMethodInfo == null)
-                throw new ArgumentNullException("entityMethodInfo");
+                throw new ArgumentNullException(nameof(entityMethodInfo));
 
             if (entityMethodInfo.EntitySearchKey != null && entityMethodInfo.EntitySearchKey == "DEFAULT")
             {
@@ -116,22 +97,6 @@ namespace CurrencyService.Services
                 ResultTypeValue = exchangeRateData.ResultTypeValue,
                 ErrorType = exchangeRateData.ErrorType
             };
-        }
-
-        private static string GetBacSanJoseEntityName()
-        {
-            var entityName = ConfigurationManager.AppSettings["BacBankName"];
-            if (string.IsNullOrEmpty(entityName))
-                throw new Exception("Invalid Entity exception");
-            return entityName;
-        }
-
-        private static string GetPromericaEntityName()
-        {
-            var entityName = ConfigurationManager.AppSettings["PromericaBankName"];
-            if (string.IsNullOrEmpty(entityName))
-                throw new Exception("Invalid Entity exception");
-            return entityName;
         }
 
         private async Task<ExchangeRateData> GetExchangeRateResultAsync(DateTime datetime, string entityName)
