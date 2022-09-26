@@ -271,6 +271,7 @@
 								<input type="button" value="New Expense" style="color: red;" onclick="openAddBasicTrxModal(<%= account.AccountId %>, 1);" />
 								<input type="button" value="Add Income" style="color: green;" onclick="openAddBasicTrxModal(<%= account.AccountId %>, 2);" />
 								<input type="button" value="Transfer" style="color: blue;" onclick="executeTransferAction(1,<%= account.AccountId %>);" />
+								<input type="button" value="Excel" style="color: rgb(30, 60, 30);" onclick="downloadPeriod(<%= account.CurrentPeriodId %>);" />
 							</div>
 						</div>
 						<br />

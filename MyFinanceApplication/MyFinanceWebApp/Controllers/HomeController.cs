@@ -65,6 +65,20 @@ namespace MyFinanceWebApp.Controllers
 
 		[JsonErrorHandling]
 		[HttpGet]
+		public ActionResult GetAccountFile(int accountPeriodId)
+		{
+			var testFile = @"C:\Users\david.contreras\Documents\Boms\5Conflicts.xlsx";
+			var bytes = System.IO.File.ReadAllBytes(testFile);
+			var response = new
+			{
+				bytes,
+				fileName = "TestFile.xlsx"
+			};
+			return JsonCamelCaseResult(response);
+		}
+
+		[JsonErrorHandling]
+		[HttpGet]
 		public ActionResult GetAddTrxViewModel(int accountPeriodId)
 		{
 			var authToken = GetUserToken();
