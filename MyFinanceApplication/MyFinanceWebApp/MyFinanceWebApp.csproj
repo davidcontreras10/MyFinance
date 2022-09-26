@@ -256,11 +256,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CustomAppSettings.cs" />
+    <Compile Include="Helpers\ExcelFileHelper.cs" />
     <Compile Include="Helpers\Generic.cs" />
     <Compile Include="Helpers\LocalHelper.cs" />
     <Compile Include="Helpers\ModelHtmlExtension.cs" />
     <Compile Include="Helpers\PageHeaderBuilder.cs" />
     <Compile Include="Models\CustomViewModel.cs" />
+    <Compile Include="Models\ExcelFileModels.cs" />
     <Compile Include="Models\Exceptions.cs" />
     <Compile Include="Models\MainHeaderModel.cs" />
     <Compile Include="Models\ModelClasses.cs" />

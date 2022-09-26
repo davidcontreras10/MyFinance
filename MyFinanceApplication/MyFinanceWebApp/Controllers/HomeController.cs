@@ -65,10 +65,12 @@ namespace MyFinanceWebApp.Controllers
 
 		[JsonErrorHandling]
 		[HttpGet]
-		public ActionResult GetAccountFile(int accountPeriodId)
+		public async Task<ActionResult> GetAccountFileAsync(int accountPeriodId, bool isPending)
 		{
-			var testFile = @"C:\Users\david.contreras\Documents\Boms\5Conflicts.xlsx";
-			var bytes = System.IO.File.ReadAllBytes(testFile);
+			var accountViewModels =
+				await AccountService.GetAccountFinanceViewModelAsync(new[] {accountPeriodId}, isPending,
+					GetUserToken());
+			var bytes = ExcelFileHelper.GenerateFile(accountViewModels.ToList());
 			var response = new
 			{
 				bytes,

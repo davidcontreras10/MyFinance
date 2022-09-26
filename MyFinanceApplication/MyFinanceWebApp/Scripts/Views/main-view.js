@@ -416,9 +416,10 @@ function getAccountSummaryTableHeader() {
 
 function downloadPeriod(accountPeriodId) {
 	const urlParameters = {
-		accountPeriodId: accountPeriodId
+		accountPeriodId: accountPeriodId,
+		isPending: showPendingData
 	}
-	const url = window.CreateUrl('home', 'GetAccountFile', urlParameters);
+	const url = window.CreateUrl('home', 'GetAccountFileAsync', urlParameters);
 	$.ajax({
 		type: "GET",
 		url: url,
