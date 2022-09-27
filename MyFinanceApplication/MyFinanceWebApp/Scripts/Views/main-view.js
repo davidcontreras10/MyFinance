@@ -414,7 +414,8 @@ function getAccountSummaryTableHeader() {
     return thead;
 }
 
-function downloadPeriod(accountPeriodId) {
+function downloadPeriod(accountId) {
+	const accountPeriodId = GetAccountPeriodIdbyAccountId(accountId);
 	const urlParameters = {
 		accountPeriodId: accountPeriodId,
 		isPending: showPendingData

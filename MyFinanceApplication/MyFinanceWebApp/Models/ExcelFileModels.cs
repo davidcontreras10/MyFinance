@@ -1,44 +1,93 @@
-﻿using OfficeOpenXml;
+﻿using System;
+using System.Drawing;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace MyFinanceWebApp.Models
 {
-	public interface IBaseExcelCell
+	public class ExcelCellStyle
 	{
-		void GenerateExcelCell(ExcelRange excelRange);
+		public int? FontSize { get; set; }
+		public Color? BackgroundColor { get; set; }
+		public Color? FontColor { get; set; }
+		public bool? FontBold { get; set; }
 	}
 
-	public class ExcelBasicCell : IBaseExcelCell
+	public abstract class BaseExcelCell
 	{
-		private readonly object _value;
+		protected object Value { get; }
 
-		public ExcelBasicCell(object value)
+		public ExcelCellStyle CellStyle { get; set; }
+
+		protected BaseExcelCell(object value)
 		{
-			_value = value;
+			Value = value;
 		}
 
 		public void GenerateExcelCell(ExcelRange excelRange)
 		{
-			excelRange.Value = _value;
+			excelRange.Value = Value;
+			if (CellStyle?.BackgroundColor != null)
+			{
+				excelRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+				excelRange.Style.Fill.BackgroundColor.SetColor(CellStyle.BackgroundColor.Value);
+			}
+
+			if (CellStyle?.FontSize != null)
+			{
+				excelRange.Style.Font.Size = CellStyle.FontSize.Value;
+			}
+
+			if (CellStyle?.FontColor != null)
+			{
+				excelRange.Style.Font.Color.SetColor(CellStyle.FontColor.Value);
+			}
+
+			if (CellStyle?.FontBold != null)
+			{
+				excelRange.Style.Font.Bold = CellStyle.FontBold.Value;
+			}
+
+			GenerateCustomExcelCell(excelRange);
+		}
+
+		protected abstract void GenerateCustomExcelCell(ExcelRange excelRange);
+	}
+
+	public class ExcelBasicCell : BaseExcelCell
+	{
+		public ExcelBasicCell(object value): base(value){}
+
+		protected override void GenerateCustomExcelCell(ExcelRange excelRange)
+		{
 		}
 	}
 
-	public class ExcelCurrencyNumber : IBaseExcelCell
+	public class ExcelCurrencyNumber : BaseExcelCell
 	{
 		private readonly string _currencySymbol;
-		private readonly float _value;
 		private string Format => $"{_currencySymbol}#,##0.00";
 
-		public ExcelCurrencyNumber(string currencySymbol, float value)
+		public ExcelCurrencyNumber(string currencySymbol, float value) : base(value)
 		{
 			_currencySymbol = currencySymbol;
-			_value = value;
 		}
 
-
-		public void GenerateExcelCell(ExcelRange excelRange)
+		protected override void GenerateCustomExcelCell(ExcelRange excelRange)
 		{
-			excelRange.Value = _value;
 			excelRange.Style.Numberformat.Format = Format;
+		}
+	}
+
+	public class DateTimeExcelCell : BaseExcelCell
+	{
+		public DateTimeExcelCell(DateTime value) : base(value)
+		{
+		}
+
+		protected override void GenerateCustomExcelCell(ExcelRange excelRange)
+		{
+			excelRange.Style.Numberformat.Format = "yyyy-mm-dd";
 		}
 	}
 }

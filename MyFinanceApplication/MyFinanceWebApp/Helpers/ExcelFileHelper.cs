@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Web;
 using MyFinanceModel.ViewModel;
 using MyFinanceWebApp.Models;
 using OfficeOpenXml;
@@ -29,12 +29,47 @@ namespace MyFinanceWebApp.Helpers
 			AccountFinanceViewModel accountFinanceViewModel
 		)
 		{
-			var title = $"Account: {accountFinanceViewModel.AccountName} -- {accountFinanceViewModel.AccountPeriodName}";
-			excelWorksheet.Cells[1, 1].Value = title;
-			const int startRowPosition = 2;
-			const int startColPosition = 1;
-			WriteSpendsList(excelWorksheet, accountFinanceViewModel.SpendViewModels, startRowPosition, startColPosition,
-				accountFinanceViewModel.CurrencyId, accountFinanceViewModel.CurrencySymbol);
+			try
+			{
+				WriteTitle(excelWorksheet, accountFinanceViewModel);
+				const int startColPosition = 1;
+				const int spendHeadersRow = 2;
+				WriteSpendsHeader(excelWorksheet, spendHeadersRow, startColPosition);
+				const int startRowPosition = spendHeadersRow + 1;
+				var spends = accountFinanceViewModel.SpendViewModels.OrderBy(x => x.SpendDate).ToList();
+				WriteSpendsList(excelWorksheet, spends, startRowPosition, startColPosition,
+					accountFinanceViewModel.CurrencyId, accountFinanceViewModel.CurrencySymbol);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw new Exception("Error trying to draw the file", e);
+			}
+		}
+
+		private static void WriteSpendsHeader(ExcelWorksheet excelWorksheet, int headerRow, int startCol)
+		{
+			var headers = GetSpendHeaders();
+			foreach (var baseExcelCell in headers)
+			{
+				baseExcelCell.GenerateExcelCell(excelWorksheet.Cells[headerRow, startCol++]);
+			}
+		}
+
+		private static void WriteTitle(ExcelWorksheet excelWorksheet, AccountFinanceViewModel accountFinanceViewModel)
+		{
+			var title =
+				$"Account: {accountFinanceViewModel.AccountName} -- {accountFinanceViewModel.AccountPeriodName}";
+			var titleCell = new ExcelBasicCell(title)
+			{
+				CellStyle = new ExcelCellStyle
+				{
+					FontSize = 15,
+					FontBold = true
+				}
+			};
+			titleCell.GenerateExcelCell(excelWorksheet.Cells[1, 1]);
+			excelWorksheet.Cells[1, 8].Merge = true;
 		}
 
 		private static void WriteSpendsList(
@@ -48,9 +83,14 @@ namespace MyFinanceWebApp.Helpers
 		{
 			var rowPos = startRow;
 			var colPos = startCol;
+			var maxCols = 0;
 			foreach (var spendViewModel in spendViewModels)
 			{
 				var baseCells = GetSpendViewModelLine(spendViewModel, accountCurrencyId, accountCurrencySymbol);
+				if (baseCells.Length > maxCols)
+				{
+					maxCols = baseCells.Length;
+				}
 				foreach (var baseExcelCell in baseCells)
 				{
 					baseExcelCell.GenerateExcelCell(worksheet.Cells[rowPos, colPos]);
@@ -60,18 +100,65 @@ namespace MyFinanceWebApp.Helpers
 				rowPos++;
 				colPos = startCol;
 			}
+
+			var startHeader = startRow - 1;
+			worksheet.Cells[startHeader, startCol, spendViewModels.Count + startHeader, maxCols].AutoFitColumns();
 		}
 
-		private static IBaseExcelCell[] GetSpendViewModelLine(
+		private static BaseExcelCell[] GetSpendHeaders()
+		{
+			var headerStyle = new ExcelCellStyle
+			{
+				BackgroundColor = Color.FromArgb(227, 227, 227)
+			};
+			return new BaseExcelCell[]
+			{
+				new ExcelBasicCell("Date")
+				{
+					CellStyle = headerStyle
+				},
+				new ExcelBasicCell("Original Amount")
+				{
+					CellStyle = headerStyle
+				},
+				new ExcelBasicCell("Account Amount")
+				{
+					CellStyle = headerStyle
+				},
+				new ExcelBasicCell("Description")
+				{
+					CellStyle = headerStyle
+				}
+			};
+		}
+
+		private static BaseExcelCell[] GetSpendViewModelLine(
 			SpendViewModel spendViewModel,
 			int accountCurrencyId,
 			string accountCurrencySymbol
 		)
 		{
-			var originalAmount = new ExcelCurrencyNumber(spendViewModel.CurrencySymbol, spendViewModel.OriginalAmount);
-			var accountAmount = new ExcelCurrencyNumber(accountCurrencySymbol, spendViewModel.ConvertedAmount);
-			return new IBaseExcelCell[]
+			var isSaving = spendViewModel.AmountTypeId == 2;
+			var multiplier = isSaving ? 1 : -1;
+			var color = isSaving ? Color.Green : Color.Red;
+			var originalAmount = new ExcelCurrencyNumber(spendViewModel.CurrencySymbol, spendViewModel.OriginalAmount * multiplier)
 			{
+				CellStyle = new ExcelCellStyle
+				{
+					FontColor = color
+				}
+			};
+			var accountAmount = new ExcelCurrencyNumber(accountCurrencySymbol, spendViewModel.ConvertedAmount * multiplier)
+			{
+				CellStyle = new ExcelCellStyle
+				{
+					FontColor = color
+				}
+			};
+			var date = new DateTimeExcelCell(spendViewModel.SpendDate);
+			return new BaseExcelCell[]
+			{
+				date,
 				originalAmount,
 				accountAmount,
 				new ExcelBasicCell(spendViewModel.Description)
