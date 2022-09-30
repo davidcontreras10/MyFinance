@@ -43,12 +43,12 @@ namespace MyFinanceWebApi.Controllers
         [ValidateModelState]
         [Route]
         [HttpPost]
-        public void AddAccount([FromBody]ClientAddAccount clientAddAccount)
+		public void AddAccount([FromBody] ClientAddAccount clientAddAccount)
         {
             var userId = GetUserId();
             _accountService.AddAccount(userId, clientAddAccount);
         }
-
+			
 	    [Route("supportedAccountInclude")]
 	    [HttpGet]
 	    public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(

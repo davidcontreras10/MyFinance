@@ -31,7 +31,8 @@ namespace MyFinanceBackend.Models
         public int AmountType { get; set; }
         public DateTime? SetPaymentDate { get; set; }
         public bool IsPending { get; set; }
-
+        public string SpendDescription { get; set; }
+        
         #endregion
     }
 

@@ -5,11 +5,25 @@ using System.Linq;
 using MyFinanceModel.ViewModel;
 using MyFinanceWebApp.Models;
 using OfficeOpenXml;
+using Utilities;
 
 namespace MyFinanceWebApp.Helpers
 {
 	public class ExcelFileHelper
 	{
+		public static string GetFileName(IEnumerable<AccountFinanceViewModel> accounts)
+		{
+			if (accounts == null || !accounts.Any())
+			{
+				return string.Empty;
+			}
+
+			var concatenatedNames = accounts.Aggregate(string.Empty, (current, account) => current + (account.AccountName + "_"));
+			concatenatedNames += DateTime.Now.ToString("u");
+			concatenatedNames = concatenatedNames.Truncate(35) + ".xlsx";
+			return concatenatedNames;
+		}
+
 		public static byte[] GenerateFile(IReadOnlyCollection<AccountFinanceViewModel> accounts)
 		{
 			using (var package = new ExcelPackage())
@@ -58,8 +72,7 @@ namespace MyFinanceWebApp.Helpers
 
 		private static void WriteTitle(ExcelWorksheet excelWorksheet, AccountFinanceViewModel accountFinanceViewModel)
 		{
-			var title =
-				$"Account: {accountFinanceViewModel.AccountName} -- {accountFinanceViewModel.AccountPeriodName}";
+			var title = $"{accountFinanceViewModel.AccountName} -- {accountFinanceViewModel.AccountPeriodName}";
 			var titleCell = new ExcelBasicCell(title)
 			{
 				CellStyle = new ExcelCellStyle
@@ -86,7 +99,7 @@ namespace MyFinanceWebApp.Helpers
 			var maxCols = 0;
 			foreach (var spendViewModel in spendViewModels)
 			{
-				var baseCells = GetSpendViewModelLine(spendViewModel, accountCurrencyId, accountCurrencySymbol);
+				var baseCells = GetSpendViewModelLine(spendViewModel, accountCurrencySymbol);
 				if (baseCells.Length > maxCols)
 				{
 					maxCols = baseCells.Length;
@@ -125,6 +138,10 @@ namespace MyFinanceWebApp.Helpers
 				{
 					CellStyle = headerStyle
 				},
+				new ExcelBasicCell("Type")
+				{
+					CellStyle = headerStyle
+				},
 				new ExcelBasicCell("Description")
 				{
 					CellStyle = headerStyle
@@ -134,25 +151,27 @@ namespace MyFinanceWebApp.Helpers
 
 		private static BaseExcelCell[] GetSpendViewModelLine(
 			SpendViewModel spendViewModel,
-			int accountCurrencyId,
 			string accountCurrencySymbol
 		)
 		{
 			var isSaving = spendViewModel.AmountTypeId == 2;
 			var multiplier = isSaving ? 1 : -1;
-			var color = isSaving ? Color.Green : Color.Red;
+			var fontColor = isSaving ? Color.Green : Color.Red;
+			var background = spendViewModel.IsPending ? (Color?)Color.LavenderBlush : null;
 			var originalAmount = new ExcelCurrencyNumber(spendViewModel.CurrencySymbol, spendViewModel.OriginalAmount * multiplier)
 			{
 				CellStyle = new ExcelCellStyle
 				{
-					FontColor = color
+					FontColor = fontColor,
+					BackgroundColor = background
 				}
 			};
 			var accountAmount = new ExcelCurrencyNumber(accountCurrencySymbol, spendViewModel.ConvertedAmount * multiplier)
 			{
 				CellStyle = new ExcelCellStyle
 				{
-					FontColor = color
+					FontColor = fontColor,
+					BackgroundColor = background
 				}
 			};
 			var date = new DateTimeExcelCell(spendViewModel.SpendDate);
@@ -161,6 +180,7 @@ namespace MyFinanceWebApp.Helpers
 				date,
 				originalAmount,
 				accountAmount,
+				new ExcelBasicCell(spendViewModel.SpendTypeName),
 				new ExcelBasicCell(spendViewModel.Description)
 			};
 		}

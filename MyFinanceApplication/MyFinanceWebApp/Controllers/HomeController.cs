@@ -74,7 +74,7 @@ namespace MyFinanceWebApp.Controllers
 			var response = new
 			{
 				bytes,
-				fileName = "TestFile.xlsx"
+				fileName = ExcelFileHelper.GetFileName(accountViewModels)
 			};
 			return JsonCamelCaseResult(response);
 		}

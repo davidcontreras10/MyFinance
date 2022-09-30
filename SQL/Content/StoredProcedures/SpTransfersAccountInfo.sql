@@ -88,7 +88,8 @@ DECLARE @AccountFinanceRtTemp TABLE(
 	IsPending BIT,
 	SetPaymentDate DATETIME,
 	IsValid BIT,
-	IsLoan BIT
+	IsLoan BIT,
+	SpendDescription NVARCHAR(500)
 );
 
 --==============================================================================================================================================

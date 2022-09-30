@@ -1190,7 +1190,8 @@ namespace MyFinanceBackend.Data
 				SpendTypeName = resultSet.SpendTypeName,
 				AmountTypeId = resultSet.AmountType,
 				SetPaymentDate = resultSet.SetPaymentDate,
-				IsPending = resultSet.IsPending
+				IsPending = resultSet.IsPending,
+				Description = resultSet.SpendDescription
 			};
 		}
 
