@@ -387,6 +387,8 @@
     <Content Include="Scripts\gridster-custom.js" />
     <Content Include="Scripts\gridster-responsive.js" />
     <Content Include="Scripts\index.js" />
+    <None Include="Properties\PublishProfiles\myfinanceapp - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\myfinanceapp - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
@@ -468,7 +470,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

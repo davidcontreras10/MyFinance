@@ -421,12 +421,14 @@ function downloadPeriod(accountId) {
 		isPending: showPendingData
 	}
 	const url = window.CreateUrl('home', 'GetAccountFileAsync', urlParameters);
+	window.showLoadingModal(null);
 	$.ajax({
 		type: "GET",
 		url: url,
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: function (data) {
+			window.hideLoadingModal(null);
 			//Convert Base64 string to Byte Array.
 			const bytes = Base64ToBytes(data.bytes);
 			const fileName = data.fileName;
@@ -448,7 +450,8 @@ function downloadPeriod(accountId) {
 				$("body").remove(a);
 			}
 		},
-		error: function(error) {
+		error: function (error) {
+			window.hideLoadingModal(null);
 			console.error(error);
 		}
 	});
