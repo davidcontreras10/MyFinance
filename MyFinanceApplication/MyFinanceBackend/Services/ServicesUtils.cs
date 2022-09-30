@@ -1025,7 +1025,8 @@ namespace MyFinanceBackend.Services
                 AccountPeriodSpent = Ut.GetFloat(dataRow, DatabaseConstants.COL_ACCOUNT_PERIOD_SPENT),
                 AmountType = Ut.GetInt(dataRow, DatabaseConstants.COL_AMOUNT_TYPE),
                 SetPaymentDate = dataRow.ToDateTime(DatabaseConstants.COL_SPEND_SET_PAYMENT_DATE),
-                IsPending = dataRow.ToBool(DatabaseConstants.COL_IS_PENDING)
+                IsPending = dataRow.ToBool(DatabaseConstants.COL_IS_PENDING),
+                SpendDescription = dataRow.ToString(DatabaseConstants.COL_SPEND_DESCRIPTION)
             };
 
             if (model.SetPaymentDate == default(DateTime))

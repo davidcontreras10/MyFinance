@@ -65,6 +65,22 @@ namespace MyFinanceWebApp.Controllers
 
 		[JsonErrorHandling]
 		[HttpGet]
+		public async Task<ActionResult> GetAccountFileAsync(int accountPeriodId, bool isPending)
+		{
+			var accountViewModels =
+				await AccountService.GetAccountFinanceViewModelAsync(new[] {accountPeriodId}, isPending,
+					GetUserToken());
+			var bytes = ExcelFileHelper.GenerateFile(accountViewModels.ToList());
+			var response = new
+			{
+				bytes,
+				fileName = ExcelFileHelper.GetFileName(accountViewModels)
+			};
+			return JsonCamelCaseResult(response);
+		}
+
+		[JsonErrorHandling]
+		[HttpGet]
 		public ActionResult GetAddTrxViewModel(int accountPeriodId)
 		{
 			var authToken = GetUserToken();

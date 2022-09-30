@@ -414,7 +414,59 @@ function getAccountSummaryTableHeader() {
     return thead;
 }
 
+function downloadPeriod(accountId) {
+	const accountPeriodId = GetAccountPeriodIdbyAccountId(accountId);
+	const urlParameters = {
+		accountPeriodId: accountPeriodId,
+		isPending: showPendingData
+	}
+	const url = window.CreateUrl('home', 'GetAccountFileAsync', urlParameters);
+	window.showLoadingModal(null);
+	$.ajax({
+		type: "GET",
+		url: url,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function (data) {
+			window.hideLoadingModal(null);
+			//Convert Base64 string to Byte Array.
+			const bytes = Base64ToBytes(data.bytes);
+			const fileName = data.fileName;
+			//Convert Byte Array to BLOB.
+			const blob = new Blob([bytes], { type: "application/octetstream" });
+
+			//Check the Browser type and download the File.
+			const isIE = false || !!document.documentMode;
+			if (isIE) {
+				window.navigator.msSaveBlob(blob, fileName);
+			} else {
+				const url = window.URL || window.webkitURL;
+				const link = url.createObjectURL(blob);
+				const a = $("<a id='temp_download_link'/>");
+				a.attr("download", fileName);
+				a.attr("href", link);
+				$("body").append(a);
+				a[0].click();
+				$("#temp_download_link").remove();
+			}
+		},
+		error: function (error) {
+			window.hideLoadingModal(null);
+			console.error(error);
+		}
+	});
+}
+
 //Internal
+
+function Base64ToBytes(base64) {
+	const s = window.atob(base64);
+	const bytes = new Uint8Array(s.length);
+	for (let i = 0; i < s.length; i++) {
+		bytes[i] = s.charCodeAt(i);
+	}
+	return bytes;
+}
 
 function GetCurrentAccountPeriods() {
 	return getArraySelectedValues(".select-control-period");
@@ -422,6 +474,7 @@ function GetCurrentAccountPeriods() {
 
 //LOAD
 $(function () {
+	window.downloadPeriod = downloadPeriod;
 	loadControls();
 	loadInitialView();
 	//initialTest();

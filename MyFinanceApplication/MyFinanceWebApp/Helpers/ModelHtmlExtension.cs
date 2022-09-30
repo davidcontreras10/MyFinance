@@ -27,7 +27,7 @@ namespace MyFinanceWebApp.Helpers
             //var spanTag = string.Format("<nobr><span class='{0}' id='{1}'>", GetAmountClass(), GetHtmlSpendId());
             //return spanTag + currencySymbol + NumUtils.GetCurrencyFormatted(GetConvertedAmount()) +
             //       "</span></nobr>";
-            return spendViewModel.GetAmountHtmlString(spendViewModel.GetConvertedAmount(), currencySymbol);
+            return spendViewModel.GetAmountHtmlString(spendViewModel.ConvertedAmount, currencySymbol);
         }
 
         public static string GetAmountClass(this SpendViewModel spendViewModel)

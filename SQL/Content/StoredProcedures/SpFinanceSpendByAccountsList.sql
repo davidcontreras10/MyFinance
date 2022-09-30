@@ -112,7 +112,8 @@ DECLARE @AccountFinanceTemp TABLE(
 	IsPending BIT,
 	SetPaymentDate DATETIME,
 	IsValid BIT,
-	IsLoan BIT
+	IsLoan BIT,
+	SpendDescription NVARCHAR(500)
 );
 
 --==============================================================================================================================================
@@ -201,7 +202,7 @@ BEGIN TRY
 		accfntmp.SpendTypeName = spt.Name, accfntmp.SpendCurrencyName = crrSp.Name,
 		accfntmp.SpendCurrencySymbol = crrSp.Symbol, accfntmp.AmountType = sp.AmountTypeId,
 		accfntmp.IsPending = sp.IsPending, accfntmp.IsLoan = dbo.IsLoanSpendId(sp.SpendId),
-		accfntmp.SetPaymentDate = sp.SetPaymentDate, accfntmp.IsValid = 1
+		accfntmp.SetPaymentDate = sp.SetPaymentDate, accfntmp.IsValid = 1, accfntmp.SpendDescription = sp.Description
 	FROM @AccountFinanceTemp accfntmp
 	JOIN @AccountPeriodTable accptt ON accptt.AccountPeriodId = accfntmp.AccountPeriodId
 	JOIN dbo.Spend sp ON sp.SpendId = accfntmp.SpendId

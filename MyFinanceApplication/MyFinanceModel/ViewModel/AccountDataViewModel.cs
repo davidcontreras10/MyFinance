@@ -57,47 +57,16 @@ namespace MyFinanceModel.ViewModel
         #region Num Property
 
 // ReSharper disable InconsistentNaming
-        public string numBudget
-        {
-	        get
-	        {
-		        Debug.WriteLine($"AccountId: {AccountId} PeriodId: {AccountPeriodId} Get {nameof(numBudget)}");
-		        return GetAmountValue(Budget);
-	        }
-        }
-        public string numSpent
-        {
-	        get
-	        {
-		        Debug.WriteLine($"AccountId: {AccountId} PeriodId: {AccountPeriodId} Get {nameof(numSpent)}");
-				return GetAmountValue(Spent);
-	        }
-        }
-        public string numPeriodBalance
-        {
-	        get
-	        {
-		        Debug.WriteLine($"AccountId: {AccountId} PeriodId: {AccountPeriodId} Get {nameof(numPeriodBalance)}");
-				return GetAmountValue(PeriodBalance);
-	        }
-        }
-        public string numGeneralBalance
-        {
-	        get
-	        {
-		        Debug.WriteLine($"AccountId: {AccountId} PeriodId: {AccountPeriodId} Get {nameof(numGeneralBalance)}");
-				return GetAmountValue(GeneralBalance);
-	        }
-        }
-        public string numGeneralBalanceToday
-        {
-	        get
-	        {
-		        Debug.WriteLine($"AccountId: {AccountId} PeriodId: {AccountPeriodId} Get {nameof(numGeneralBalanceToday)}");
-				return GetAmountValue(GeneralBalanceToday);
-	        }
-        }
-// ReSharper restore InconsistentNaming
+        public string numBudget => GetAmountValue(Budget);
+
+        public string numSpent => GetAmountValue(Spent);
+
+        public string numPeriodBalance => GetAmountValue(PeriodBalance);
+
+        public string numGeneralBalance => GetAmountValue(GeneralBalance);
+
+        public string numGeneralBalanceToday => GetAmountValue(GeneralBalanceToday);
+        // ReSharper restore InconsistentNaming
 
         #endregion
 
@@ -182,7 +151,7 @@ namespace MyFinanceModel.ViewModel
             return (int)Numerator == 1 && (int)Denominator == 1;
         }
 
-        public float GetConvertedAmount()
+        private float GetConvertedAmount()
         {
             return (int)Denominator == 0 ? 0 : (OriginalAmount * Numerator) / Denominator;
         }
