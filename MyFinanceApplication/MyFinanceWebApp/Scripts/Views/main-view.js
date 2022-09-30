@@ -442,12 +442,12 @@ function downloadPeriod(accountId) {
 			} else {
 				const url = window.URL || window.webkitURL;
 				const link = url.createObjectURL(blob);
-				const a = $("<a />");
+				const a = $("<a id='temp_download_link'/>");
 				a.attr("download", fileName);
 				a.attr("href", link);
 				$("body").append(a);
 				a[0].click();
-				$("body").remove(a);
+				$("#temp_download_link").remove();
 			}
 		},
 		error: function (error) {
