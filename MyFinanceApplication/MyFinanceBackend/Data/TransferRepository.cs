@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using DataAccess;
 using MyFinanceBackend.Constants;
 using MyFinanceBackend.Services;
-using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 
 namespace MyFinanceBackend.Data
@@ -71,7 +69,7 @@ namespace MyFinanceBackend.Data
             var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNT_DEFAULT_CURRENCY_VALUES_LIST, parameters);
             if (dataSet == null || dataSet.Tables.Count == 0)
                 return 0;
-            return Utilities.DataRowConvert.ToInt(dataSet.Tables[0].Rows[0],
+            return DContre.MyFinance.StUtilities.DataRowConvert.ToInt(dataSet.Tables[0].Rows[0],
                 DatabaseConstants.COL_ACCOUNT_CURRENCY_CONVERTER_METHOD_ID);
         }
 

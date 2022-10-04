@@ -4,11 +4,11 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using DataAccess;
+using DContre.MyFinance.StUtilities;
 using MyFinanceBackend.Constants;
 using MyFinanceBackend.Services;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
-using Utilities;
 
 namespace MyFinanceBackend.Data
 {

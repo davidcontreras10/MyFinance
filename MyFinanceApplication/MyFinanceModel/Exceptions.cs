@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Serialization;
+using DContre.MyFinance.StUtilities;
 using MyFinanceModel.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Utilities;
 
 namespace MyFinanceModel
 {

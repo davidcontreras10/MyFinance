@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DContre.MyFinance.StUtilities</AssemblyName>
+    <RootNamespace>DContre.MyFinance.StUtilities</RootNamespace>
+  </PropertyGroup>
+
+</Project>

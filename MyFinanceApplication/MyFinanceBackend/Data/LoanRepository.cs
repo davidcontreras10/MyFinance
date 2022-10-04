@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using MyFinanceModel.ViewModel;
 using MyFinanceBackend.Models;
 using System.Data;
-using Utilities;
+using DContre.MyFinance.StUtilities;
 
 namespace MyFinanceBackend.Data
 {

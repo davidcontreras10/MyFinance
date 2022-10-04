@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using DContre.MyFinance.StUtilities;
 using MyFinanceModel.ViewModel;
 using MyFinanceWebApp.Models;
 using OfficeOpenXml;
-using Utilities;
 
 namespace MyFinanceWebApp.Helpers
 {

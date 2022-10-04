@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using DataAccess;
+using DContre.MyFinance.StUtilities;
 using MyFinanceBackend.Constants;
 using MyFinanceBackend.Models;
 using MyFinanceBackend.Services;
 using MyFinanceModel.ClientViewModel;
-using Utilities;
 
 namespace MyFinanceBackend.Data
 {
