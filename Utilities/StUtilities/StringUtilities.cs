@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace StUtilities
+namespace DContre.MyFinance.StUtilities
 {
     public static class StringUtilities
     {
@@ -19,15 +19,17 @@ namespace StUtilities
 
         public static bool ConvertToBool(object value)
         {
-            if (value == null)
-                return false;
-            if (value is bool)
-                return (bool)value;
-            if (value is int)
-                return (int)value != 0;
-
-            bool result;
-            return bool.TryParse(value.ToString(), out result) && result;
+            switch (value)
+            {
+	            case null:
+		            return false;
+	            case bool b:
+		            return b;
+	            case int i:
+		            return i != 0;
+	            default:
+		            return bool.TryParse(value.ToString(), out var result) && result;
+            }
         }
 
         public static string StringDefinedPart(this string value, char initial, char final)
@@ -104,18 +106,20 @@ namespace StUtilities
 
         public static int ConverToInt(string value)
         {
-            int result;
-            return !int.TryParse(value, out result) ? 0 : result;
+	        return !int.TryParse(value, out var result) ? 0 : result;
         }
 
         public static int GetInt(object value)
         {
-            if (value == null)
-                return 0;
-            if (value is int)
-                return (int)value;
-            int result;
-            return int.TryParse(value.ToString(), out result) ? result : 0;
+            switch (value)
+            {
+	            case null:
+		            return 0;
+	            case int i:
+		            return i;
+	            default:
+		            return int.TryParse(value.ToString(), out var result) ? result : 0;
+            }
         }
 
         public static bool EqualStrings(object value1, object value2)

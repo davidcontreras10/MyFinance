@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StUtilities
+namespace DContre.MyFinance.StUtilities
 {
     public static class DateTimeExtensions
     {

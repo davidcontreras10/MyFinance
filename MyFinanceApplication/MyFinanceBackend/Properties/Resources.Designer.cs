@@ -19,7 +19,7 @@ namespace MyFinanceBackend.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -66,13 +66,13 @@ namespace MyFinanceBackend.Properties {
         ///&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;Reset Password&lt;/title&gt;
+        ///    &lt;title&gt;Reset Password Request&lt;/title&gt;
         ///&lt;/head&gt;
         ///&lt;body&gt;
-        ///    &lt;h1&gt;Reset Password&lt;/h1&gt;
+        ///    &lt;h1&gt;Reset Password Request&lt;/h1&gt;
         ///    &lt;h3&gt;Hello {0}&lt;/h3&gt;
         ///    &lt;p&gt;It looks like you requested a new password&lt;/p&gt;
-        ///    &lt;p&gt;If that sounds right, you can create your new password by on the link below&lt;/p&gt;
+        ///    &lt;p&gt;If that sounds right, you can create your new password by clicking on the link below&lt;/p&gt;
         ///    &lt;a href=&quot;{1}&quot;&gt;Reset Password&lt;/a&gt;
         ///    &lt;p&gt;This link will be valid for the next {2} hours&lt;/p&gt;
         ///&lt;/body&gt;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StUtilities
+namespace DContre.MyFinance.StUtilities
 {
     public interface IGenericSelectionElementAsociable
     {

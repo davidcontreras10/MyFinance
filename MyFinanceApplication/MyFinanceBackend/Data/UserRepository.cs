@@ -7,7 +7,7 @@ using MyFinanceBackend.Constants;
 using MyFinanceBackend.Services;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
-using Utilities;
+using DContre.MyFinance.StUtilities;
 
 namespace MyFinanceBackend.Data
 {

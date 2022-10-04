@@ -59,6 +59,9 @@
     <Reference Include="DataAccess">
       <HintPath>..\..\..\MyFinanceApplication\DataAccess\bin\Debug\DataAccess.dll</HintPath>
     </Reference>
+    <Reference Include="DContre.MyFinance.StUtilities">
+      <HintPath>..\..\..\Utilities\StUtilities\bin\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
@@ -210,9 +213,6 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Utilities">
-      <HintPath>..\..\..\Utilities\Utilities\bin\Debug\Utilities.dll</HintPath>
-    </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.1.0\lib\net40\WebActivatorEx.dll</HintPath>
       <Private>True</Private>

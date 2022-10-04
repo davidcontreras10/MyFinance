@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 
-namespace StUtilities
+namespace DContre.MyFinance.StUtilities
 {
 	public static class SystemDataUtilities
 	{

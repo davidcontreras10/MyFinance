@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinanceWebApi", "MyFinanceWebApi\MyFinanceWebApi.csproj", "{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinanceWebApiConsoleTest", "MyFinanceWebApiConsoleTest\MyFinanceWebApiConsoleTest.csproj", "{E290089B-1C66-45F4-B74C-97C648507354}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AzureProd|Any CPU = AzureProd|Any CPU
@@ -29,18 +27,6 @@ Global
 		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Prod|Any CPU.Build.0 = Debug|Any CPU
 		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.AzureProd|Any CPU.ActiveCfg = AzureProd|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.AzureProd|Any CPU.Build.0 = AzureProd|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.DevTest|Any CPU.ActiveCfg = Debug|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.DevTest|Any CPU.Build.0 = Debug|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.PreProd|Any CPU.ActiveCfg = PreProd|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.PreProd|Any CPU.Build.0 = PreProd|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.Prod|Any CPU.ActiveCfg = Debug|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.Prod|Any CPU.Build.0 = Debug|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E290089B-1C66-45F4-B74C-97C648507354}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
