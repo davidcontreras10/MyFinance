@@ -27,10 +27,9 @@ namespace SqlFunctions
 	        }
 
 			log.LogInformation("Connected. Executing script.");
-			using (var conn = new SqlConnection(str))
-			{
-		        conn.Open();
-		        var text = @"
+			await using var conn = new SqlConnection(str);
+			conn.Open();
+			var text = @"
 					BEGIN
 						DECLARE @currentUserId UNIQUEIDENTIFIER
 						DECLARE @currentDate DATETIME = GETDATE()
@@ -48,12 +47,8 @@ namespace SqlFunctions
 					END
 					";
 
-				using (var cmd = new SqlCommand(text, conn))
-				{
-					cmd.CommandTimeout = conn.ConnectionTimeout;
-			        await cmd.ExecuteNonQueryAsync();
-		        }
-	        }
+			await using var cmd = new SqlCommand(text, conn) {CommandTimeout = conn.ConnectionTimeout};
+			await cmd.ExecuteNonQueryAsync();
         }
     }
 }
