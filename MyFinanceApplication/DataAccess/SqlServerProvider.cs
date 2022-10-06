@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DataAccess
 {
@@ -111,13 +112,43 @@ namespace DataAccess
             }
         }
 
+        public static async Task<SqlConnection> GetSqlConnectionAsync(string connectionString)
+        {
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception($"Invalid Connection string {connectionString}");
+            }
+            var sqlConnection =
+                _sqlConnections.FirstOrDefault(item => SameConnectionString(item.ConnectionString, connectionString));
+            if (sqlConnection == null)
+            {
+                sqlConnection = new SqlConnection(connectionString);
+                _sqlConnections.Add(sqlConnection);
+            }
+            if (sqlConnection.State != ConnectionState.Open)
+            {
+                try
+                {
+                    await sqlConnection.OpenAsync();
+                }
+                catch (Exception)
+                {
+                    _sqlConnections.Remove(sqlConnection);
+                    sqlConnection = new SqlConnection(connectionString);
+                    await sqlConnection.OpenAsync();
+                    _sqlConnections.Add(sqlConnection);
+                }
+            }
+            return sqlConnection;
+        }
+
         public static SqlConnection GetSqlConnection(string connectionString)
         {
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new Exception($"Invalid Connection string {connectionString}");
             }
-            SqlConnection sqlConnection =
+            var sqlConnection =
                 _sqlConnections.FirstOrDefault(item => SameConnectionString(item.ConnectionString, connectionString));
             if (sqlConnection == null)
             {
