@@ -85,7 +85,10 @@ namespace DataAccess
             throw new Exception("Invalid connection mode");
         }
 
-        protected async Task<DataSet> ExecuteStoredProcedureAsync(string storedProcedure, params SqlParameter[] parameters)
+        protected async Task<DataSet> ExecuteStoredProcedureAsync(
+            string storedProcedure,
+            params SqlParameter[] parameters
+        )
         {
             return await ExecuteStoredProcedureAsync(storedProcedure, parameters.ToList());
         }
@@ -127,7 +130,6 @@ namespace DataAccess
                 {
                     sqlDataAdapter.Fill(ds);
                 }
-
             }
 
             return ds;
