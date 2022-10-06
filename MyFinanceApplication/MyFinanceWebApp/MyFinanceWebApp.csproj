@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -26,6 +27,7 @@
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
     <Use64BitIISExpress />
     <TargetFrameworkProfile />
+    <TypeScriptToolsVersion>4.2</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -244,6 +246,7 @@
     <Compile Include="Controllers\FinanceAppBaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoanController.cs" />
+    <Compile Include="Controllers\ScheduledTasksController.cs" />
     <Compile Include="Controllers\SpendTypeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="CustomHandlers\BackendTokenException.cs" />
@@ -266,6 +269,7 @@
     <Compile Include="Models\Exceptions.cs" />
     <Compile Include="Models\MainHeaderModel.cs" />
     <Compile Include="Models\ModelClasses.cs" />
+    <Compile Include="Models\ScheduledTasksViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\BaseService.cs" />
@@ -377,6 +381,13 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="NgClient\.gitignore" />
+    <Content Include="NgClient\karma.conf.js" />
+    <Content Include="NgClient\src\app\app.component.css" />
+    <Content Include="NgClient\src\app\app.component.html" />
+    <Content Include="NgClient\src\favicon.ico" />
+    <Content Include="NgClient\src\index.html" />
+    <Content Include="NgClient\src\styles.css" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap-multiselect-collapsible-groups.js" />
@@ -387,6 +398,18 @@
     <Content Include="Scripts\gridster-custom.js" />
     <Content Include="Scripts\gridster-responsive.js" />
     <Content Include="Scripts\index.js" />
+    <Content Include="NgClient\.browserslistrc" />
+    <Content Include="NgClient\.editorconfig" />
+    <Content Include="NgClient\.vscode\extensions.json" />
+    <Content Include="NgClient\.vscode\launch.json" />
+    <Content Include="NgClient\.vscode\tasks.json" />
+    <Content Include="NgClient\angular.json" />
+    <Content Include="NgClient\package.json" />
+    <Content Include="NgClient\README.md" />
+    <Content Include="NgClient\src\assets\.gitkeep" />
+    <Content Include="NgClient\tsconfig.app.json" />
+    <Content Include="NgClient\tsconfig.json" />
+    <Content Include="NgClient\tsconfig.spec.json" />
     <None Include="Properties\PublishProfiles\myfinanceapp - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\myfinanceapp - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
@@ -403,6 +426,13 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\NgClient\3rdpartylicenses.txt" />
+    <Content Include="Scripts\NgClient\favicon.ico" />
+    <Content Include="Scripts\NgClient\index.html" />
+    <Content Include="Scripts\NgClient\main.js" />
+    <Content Include="Scripts\NgClient\polyfills.js" />
+    <Content Include="Scripts\NgClient\runtime.js" />
+    <Content Include="Scripts\NgClient\styles.css" />
     <Content Include="Scripts\npm.js" />
     <Content Include="Scripts\Views\account-detail-partial-view.js" />
     <Content Include="Scripts\Views\account-group-partial-view.js" />
@@ -449,6 +479,7 @@
     <Content Include="Views\Loan\LoanPartial.cshtml" />
     <Content Include="Views\Home\AccountFinancePartialView.cshtml" />
     <Content Include="Views\Home\BasicTrxPartialView.cshtml" />
+    <Content Include="Views\ScheduledTasks\Index.cshtml" />
     <None Include="Web.AzureProd.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -493,6 +524,20 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="NgClient\src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="NgClient\src\app\app.component.spec.ts" />
+    <TypeScriptCompile Include="NgClient\src\app\app.component.ts" />
+    <TypeScriptCompile Include="NgClient\src\app\app.module.ts" />
+    <TypeScriptCompile Include="NgClient\src\environments\environment.prod.ts" />
+    <TypeScriptCompile Include="NgClient\src\environments\environment.ts" />
+    <TypeScriptCompile Include="NgClient\src\main.ts" />
+    <TypeScriptCompile Include="NgClient\src\polyfills.ts" />
+    <TypeScriptCompile Include="NgClient\src\test.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Prod|AnyCPU'">
     <OutputPath>bin\</OutputPath>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -515,6 +560,7 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">

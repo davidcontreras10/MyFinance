@@ -12,7 +12,8 @@ namespace MyFinanceWebApp.Helpers
             Account = 2,
             SpendType = 3,
             MyAccount = 4,
-            Loan = 5
+            Loan = 5,
+            ScheduledTasks = 6
         }
 
         public static MainHeaderModel GetHeader(UrlHelper urlHelper, AppMenuItem activeMenuItem)
@@ -24,11 +25,12 @@ namespace MyFinanceWebApp.Helpers
                 {
                     GetHomeMenuItem(activeMenuItem == AppMenuItem.Home, urlHelper),
                     GetAccountMenuItem(activeMenuItem == AppMenuItem.Account, urlHelper),
-                    GetSpendTypeMenuItem(activeMenuItem == AppMenuItem.SpendType,urlHelper),
-                    GetLoanMenuItem(activeMenuItem == AppMenuItem.Loan,urlHelper)
+                    GetSpendTypeMenuItem(activeMenuItem == AppMenuItem.SpendType, urlHelper),
+                    GetLoanMenuItem(activeMenuItem == AppMenuItem.Loan, urlHelper),
+                    GetScheduledTasksItem(activeMenuItem == AppMenuItem.ScheduledTasks, urlHelper)
                 },
 
-                RightMenuItems = new []
+                RightMenuItems = new[]
                 {
                     GetMyAccountMenuItem(activeMenuItem == AppMenuItem.MyAccount, urlHelper)
                 }
@@ -91,6 +93,13 @@ namespace MyFinanceWebApp.Helpers
             return active
                 ? (MenuItem) new SimpleMenuItem {Name = "Spending Types", IsActive = true}
                 : new CustomLinkMenuItem {Name = "Spending Type", Link = urlHelper.Action("Index", "SpendType")};
+        }
+
+        private static MenuItem GetScheduledTasksItem(bool active, UrlHelper urlHelper)
+        {
+            return active
+                ? (MenuItem)new SimpleMenuItem { Name = "Scheduled Tasks", IsActive = true }
+                : new CustomLinkMenuItem { Name = "Scheduled Tasks", Link = urlHelper.Action("Index", "ScheduledTasks") };
         }
 
         private static MenuItem GetLoanMenuItem(bool active, UrlHelper urlHelper)

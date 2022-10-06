@@ -1,0 +1,28 @@
+﻿@model MyFinanceWebApp.Models.ScheduledTasksViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>MyApp</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="~/Scripts/NgClient/favicon.ico">
+    <link rel="stylesheet" href="~/Scripts/NgClient/styles.css">
+    <link rel="icon" href="~/Content/images/FinanceIcon.ico" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+<div>
+    @{Html.RenderPartial("MainHeader", Model);}
+</div>
+<app-root></app-root>
+<script src="~/Scripts/NgClient/runtime.js" type="module"></script>
+<script src="~/Scripts/NgClient/polyfills.js" type="module"></script>
+<script src="~/Scripts/NgClient/main.js" type="module"></script>
+</body>
+</html>
