@@ -3,14 +3,26 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AutomaticTasksComponent } from './automatic-tasks/automatic-tasks.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTableModule } from '@angular/material/table'
+import {MatListModule} from '@angular/material/list';
+import { TasksListComponent } from './tasks-list/tasks-list.component';
+import { TaskDetailComponent } from './task-detail/task-detail.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AutomaticTasksComponent,
+    TasksListComponent,
+    TaskDetailComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NoopAnimationsModule,
+    MatTableModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

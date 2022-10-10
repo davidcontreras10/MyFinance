@@ -1,0 +1,8 @@
+table {
+    width: 100%;
+  }
+
+.partial-list{
+  max-height: 60%;
+  overflow-y: scroll;
+}

@@ -1,0 +1,12 @@
+<mat-selection-list #shoes [multiple]="false" (selectionChange)="onSelection(shoes.selectedOptions.selected[0].value)">
+    <mat-list-option *ngFor="let task of tasks" [value]="task">
+      <div class="row">
+        <div class="col-md-6">
+            {{task.Id}}
+        </div>
+        <div class="col-md-6">
+            {{task.Name}}
+        </div>
+      </div>
+    </mat-list-option>
+  </mat-selection-list>
