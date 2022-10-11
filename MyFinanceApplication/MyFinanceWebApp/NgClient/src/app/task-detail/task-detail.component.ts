@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AutomaticTask } from '../automatic-tasks/automatic-tasks.component';
+import { IAutomaticTask } from '../automatic-tasks/automatic-tasks.model';
 
 @Component({
   selector: 'app-task-detail',
@@ -9,14 +9,7 @@ import { AutomaticTask } from '../automatic-tasks/automatic-tasks.component';
 export class TaskDetailComponent implements OnInit {
 
   @Input()
-  selectedTask: AutomaticTask
-
-  constructor() { 
-    this.selectedTask = {
-      Id: 0,
-      Name: ""
-    }
-  }
+  selectedTask!: IAutomaticTask
 
   ngOnInit(): void {
   }

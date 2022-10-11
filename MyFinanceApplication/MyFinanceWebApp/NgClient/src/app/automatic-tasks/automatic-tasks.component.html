@@ -1,8 +1,8 @@
 <div class="container">
-  <div class="col-md-6">
+  <div class="col-md-6 partial-view">
     <app-tasks-list [tasks]="loadedTasks" (selectedChanged)="onSelectedTaskChanged($event)"></app-tasks-list>
   </div>
-  <div class="col-md-6 partial-list">
+  <div class="col-md-6">
     <app-task-detail [selectedTask]="selectedTask"></app-task-detail>
   </div>
 </div>

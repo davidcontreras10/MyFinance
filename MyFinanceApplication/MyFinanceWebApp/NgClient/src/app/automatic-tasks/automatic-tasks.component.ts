@@ -1,64 +1,48 @@
 import { Component, OnInit } from '@angular/core';
-
-export interface AutomaticTask {
-  Id: number,
-  Name: string
-}
+import { IAutomaticTask, SpInAutomaticTask, SpInTrxType, TransferAutomaticTask } from './automatic-tasks.model';
 
 @Component({
   selector: 'app-automatic-tasks',
   templateUrl: './automatic-tasks.component.html',
   styleUrls: ['./automatic-tasks.component.css']
 })
-export class AutomaticTasksComponent {
-  public selectedTask: AutomaticTask;
+export class AutomaticTasksComponent implements OnInit {
+  public selectedTask!: IAutomaticTask;
+  public loadedTasks!: IAutomaticTask[];
 
-  constructor() {
-    this.selectedTask = { Id: 0, Name: "" };
-  }
-
-  public onSelectedTaskChanged(selectedOption: AutomaticTask): void {
-    console.log('Task changed received: ', selectedOption);
+  public onSelectedTaskChanged(selectedOption: IAutomaticTask): void {
     this.selectedTask = selectedOption;
   }
 
-  loadedTasks: AutomaticTask[] = [
-    {
-      Id: 1,
-      Name: "100$ every month"
-    },
-    {
-      Id: 2,
-      Name: "50$ every week"
-    },
-    {
-      Id: 3,
-      Name: "300$ every month"
-    },
-    {
-      Id: 4,
-      Name: "100$ every month"
-    },
-    {
-      Id: 5,
-      Name: "50$ every week"
-    },
-    {
-      Id: 6,
-      Name: "300$ every month"
-    },
-    {
-      Id: 7,
-      Name: "100$ every month"
-    },
-    {
-      Id: 8,
-      Name: "50$ every week"
-    },
-    {
-      Id: 9,
-      Name: "300$ every month"
-    }
-  ];
+  constructor(){
+  }
+  
+  ngOnInit(): void {
+    this.loadedTasks = this._loadSampleTasks();
+  }
 
+  private _loadSampleTasks(): IAutomaticTask[] {
+    const tasks: IAutomaticTask[] = [];
+    for (let i = 1; i <= 10; i++) {
+      let newTask = null;
+      let isEven = i % 2 === 0;
+      if (i < 5) {
+        newTask = new SpInAutomaticTask();
+        newTask.trxType = isEven ? SpInTrxType.Spend : SpInTrxType.Income;
+      } else {
+        newTask = new TransferAutomaticTask();
+        newTask.toAccountName = `DestinationAcc_${i}`;
+      }
+
+      newTask.id = i.toString();
+      newTask.accountName = `Account ${i}`;
+      newTask.amount = i * 10;
+      newTask.currencySymbol = '$';
+      newTask.name = `Para ahorro ${i}`;
+
+      tasks.push(newTask);
+    }
+
+    return tasks;
+  }
 }

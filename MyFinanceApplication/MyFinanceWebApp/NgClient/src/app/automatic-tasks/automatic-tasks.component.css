@@ -1,8 +1,8 @@
 table {
-    width: 100%;
-  }
+  width: 100%;
+}
 
-.partial-list{
-  max-height: 60%;
-  overflow-y: scroll;
+.partial-view{
+  max-height: 60vh;
+  overflow-y: auto;
 }
