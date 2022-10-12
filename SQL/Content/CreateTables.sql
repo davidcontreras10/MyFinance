@@ -270,7 +270,6 @@ CREATE TABLE [dbo].[TransferTrxDef](
 	[TrxAmount] [Float] NOT NULL,
 	[SpendTypeId] [INT] NOT NULL,
 	[AmountCurrencyId] [INT] NOT NULL,
-	[FromAccountId] [INT] NOT NULL,
 	[ToAccountId] [INT] NOT NULL
  CONSTRAINT [PK_TransferTrxDef] PRIMARY KEY CLUSTERED 
 (
@@ -286,12 +285,8 @@ REFERENCES [dbo].[SpendType] ([SpendTypeId])
 ALTER TABLE [dbo].[TransferTrxDef] WITH NOCHECK ADD CONSTRAINT [TransferTrxDef_FK_AutomaticTaskId] FOREIGN KEY([TransferTrxDefId])
 REFERENCES [dbo].[AutomaticTask] ([AutomaticTaskId])
 
-ALTER TABLE [dbo].[TransferTrxDef] WITH NOCHECK ADD CONSTRAINT [TransferTrxDef_FK_FromAccountId] FOREIGN KEY([FromAccountId])
-REFERENCES [dbo].[Account] ([AccountId])
-
 ALTER TABLE [dbo].[TransferTrxDef] WITH NOCHECK ADD CONSTRAINT [TransferTrxDef_FK_ToAccountId] FOREIGN KEY([ToAccountId])
 REFERENCES [dbo].[Account] ([AccountId])
-
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE [dbo].[SpDaysTrxTaskFreq](

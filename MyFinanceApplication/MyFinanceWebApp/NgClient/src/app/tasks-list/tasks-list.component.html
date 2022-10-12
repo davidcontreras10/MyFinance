@@ -1,11 +1,20 @@
 <mat-selection-list #shoes [multiple]="false" (selectionChange)="onSelection(shoes.selectedOptions.selected[0].value)">
     <mat-list-option *ngFor="let task of tasks" [value]="task">
       <div class="row">
-        <div class="col-md-6">
-            {{task.id}}
+        <div class="col-md-4">
+            {{task.accountName}}
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             {{task.name}}
+        </div>
+        <div class="col-md-4">
+            <span [ngClass]="{
+                'createdTask' :  task.latestStatus === TaskStatus.Created,
+                'succededTask' :  task.latestStatus === TaskStatus.Succeded,
+                'failedTask' :  task.latestStatus === TaskStatus.Failed
+            }">
+                {{getStatus(task.latestStatus)}}
+            </span>
         </div>
       </div>
     </mat-list-option>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IAutomaticTask, SpInAutomaticTask, SpInTrxType, TransferAutomaticTask } from './automatic-tasks.model';
+import { AutomaticTaskType, IAutomaticTask, SpInAutomaticTask, SpInTrxType, TaskStatus, TransferAutomaticTask } from './automatic-tasks.model';
 
 @Component({
   selector: 'app-automatic-tasks',
@@ -14,9 +14,9 @@ export class AutomaticTasksComponent implements OnInit {
     this.selectedTask = selectedOption;
   }
 
-  constructor(){
+  constructor() {
   }
-  
+
   ngOnInit(): void {
     this.loadedTasks = this._loadSampleTasks();
   }
@@ -39,6 +39,13 @@ export class AutomaticTasksComponent implements OnInit {
       newTask.amount = i * 10;
       newTask.currencySymbol = '$';
       newTask.name = `Para ahorro ${i}`;
+      if (i < 8) {
+        newTask.latestStatus = TaskStatus.Succeded;
+      } else if (i < 9) {
+        newTask.latestStatus = TaskStatus.Created;
+      } else {
+        newTask.latestStatus = TaskStatus.Failed;
+      }
 
       tasks.push(newTask);
     }

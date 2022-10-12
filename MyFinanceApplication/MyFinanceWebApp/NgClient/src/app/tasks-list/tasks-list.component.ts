@@ -1,6 +1,5 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
-import { IAutomaticTask } from '../automatic-tasks/automatic-tasks.model';
-
+import { IAutomaticTask, TaskStatus } from '../automatic-tasks/automatic-tasks.model';
 
 @Component({
   selector: 'app-tasks-list',
@@ -8,6 +7,8 @@ import { IAutomaticTask } from '../automatic-tasks/automatic-tasks.model';
   styleUrls: ['./tasks-list.component.css']
 })
 export class TasksListComponent {
+  TaskStatus = TaskStatus;
+
   @Input() tasks: IAutomaticTask[];
   @Output() selectedChanged = new EventEmitter();
 
@@ -17,5 +18,9 @@ export class TasksListComponent {
 
   public onSelection(selectedOption: IAutomaticTask){
     this.selectedChanged.emit(selectedOption);
+  }
+
+  public getStatus(status: TaskStatus){
+    return TaskStatus[status];
   }
 }

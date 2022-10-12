@@ -10,17 +10,30 @@ export enum SpInTrxType{
     Income = 2
 }
 
+export enum TaskStatus{
+    Unknown = 0,
+    Created = 1,
+    Succeded = 2,
+    Failed = 3
+}
+
 export interface IAutomaticTask {
     id: string,
     name: string,
     accountName: string,
     amount: number,
     currencySymbol: string,
+    latestStatus: TaskStatus,
     getTaskType() : AutomaticTaskType;
+    getTaskDesc() : string;
 }
 
 
 export class SpInAutomaticTask implements IAutomaticTask {
+    getTaskDesc(): string {
+        return `${this.currencySymbol}${this.amount} ${this.trxType === SpInTrxType.Income ? 'Income' : 'Spend'} every tenth of the month`;
+    }
+    latestStatus: TaskStatus = TaskStatus.Unknown;
     id: string = "";
     name: string = "";
     accountName: string = "";
@@ -33,6 +46,10 @@ export class SpInAutomaticTask implements IAutomaticTask {
 }
 
 export class TransferAutomaticTask implements IAutomaticTask{
+    getTaskDesc(): string {
+        return `${this.currencySymbol}${this.amount} to ${this.toAccountName} every sixteenth of the month`;
+    }
+    latestStatus: TaskStatus = TaskStatus.Unknown;
     id: string = "";
     name: string = "";
     accountName: string = "";
