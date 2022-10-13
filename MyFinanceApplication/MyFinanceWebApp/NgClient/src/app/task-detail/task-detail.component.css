@@ -1,7 +1,11 @@
-.full-width-btn{
+.full-width-btn {
     width: 100%;
 }
 
-.center-content{
+.center-content {
     text-align: center;
+}
+
+.upper-separated {
+    margin-top: 10px;
 }

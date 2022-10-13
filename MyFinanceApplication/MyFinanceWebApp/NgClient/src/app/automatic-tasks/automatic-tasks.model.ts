@@ -4,13 +4,13 @@ export enum AutomaticTaskType {
     Trasnfer = 2
 }
 
-export enum SpInTrxType{
+export enum SpInTrxType {
     Unknown = 0,
     Spend = 1,
     Income = 2
 }
 
-export enum TaskStatus{
+export enum TaskStatus {
     Unknown = 0,
     Created = 1,
     Succeded = 2,
@@ -24,10 +24,15 @@ export interface IAutomaticTask {
     amount: number,
     currencySymbol: string,
     latestStatus: TaskStatus,
-    getTaskType() : AutomaticTaskType;
-    getTaskDesc() : string;
+    getTaskType(): AutomaticTaskType;
+    getTaskDesc(): string;
 }
 
+
+export interface ExecutedTask {
+    executedDate: Date;
+    status: TaskStatus;
+}
 
 export class SpInAutomaticTask implements IAutomaticTask {
     getTaskDesc(): string {
@@ -45,7 +50,7 @@ export class SpInAutomaticTask implements IAutomaticTask {
     }
 }
 
-export class TransferAutomaticTask implements IAutomaticTask{
+export class TransferAutomaticTask implements IAutomaticTask {
     getTaskDesc(): string {
         return `${this.currencySymbol}${this.amount} to ${this.toAccountName} every sixteenth of the month`;
     }

@@ -10,6 +10,7 @@ import {MatListModule} from '@angular/material/list';
 import { TasksListComponent } from './tasks-list/tasks-list.component';
 import { TaskDetailComponent } from './task-detail/task-detail.component';
 import { ExecutedTasksComponent } from './executed-tasks/executed-tasks.component';
+import { TaskStatusComponent } from './task-status/task-status.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ExecutedTasksComponent } from './executed-tasks/executed-tasks.componen
     AutomaticTasksComponent,
     TasksListComponent,
     TaskDetailComponent,
-    ExecutedTasksComponent
+    ExecutedTasksComponent,
+    TaskStatusComponent
   ],
   imports: [
     BrowserModule,
