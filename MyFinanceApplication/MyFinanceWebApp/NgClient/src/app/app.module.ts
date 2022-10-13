@@ -11,6 +11,7 @@ import { TasksListComponent } from './tasks-list/tasks-list.component';
 import { TaskDetailComponent } from './task-detail/task-detail.component';
 import { ExecutedTasksComponent } from './executed-tasks/executed-tasks.component';
 import { TaskStatusComponent } from './task-status/task-status.component';
+import { NewScheduledTaskComponent } from './new-scheduled-task/new-scheduled-task.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { TaskStatusComponent } from './task-status/task-status.component';
     TasksListComponent,
     TaskDetailComponent,
     ExecutedTasksComponent,
-    TaskStatusComponent
+    TaskStatusComponent,
+    NewScheduledTaskComponent
   ],
   imports: [
     BrowserModule,
