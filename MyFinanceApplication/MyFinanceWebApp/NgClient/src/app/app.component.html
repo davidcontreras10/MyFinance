@@ -1,1 +1,2 @@
-<app-automatic-tasks></app-automatic-tasks>
+<app-automatic-tasks *ngIf="scheduleTaskView.activeView==ScheduleTaskRequestType.View" [scheduleTaskView]="scheduleTaskView">View</app-automatic-tasks>
+<app-new-scheduled-task *ngIf="scheduleTaskView.activeView==ScheduleTaskRequestType.New" [scheduleTaskView]="scheduleTaskView">New</app-new-scheduled-task>

@@ -1,1 +1,28 @@
-<p>new-scheduled-task works!</p>
+<div class="container">
+    <div class="col-md-6">
+        <fieldset>
+            <legend>Select transaction type:</legend>
+
+            <div>
+                <input type="radio" id="sp-in" name="trx-type" value="1" checked>
+                <label for="sp-in">Spend or Income</label>
+            </div>
+
+            <div>
+                <input type="radio" id="transfer" name="trx-type" value="2">
+                <label for="transfer">Transfer</label>
+            </div>
+        </fieldset>
+    </div>
+    <div class="col-md-6">
+        <!-- <fieldset>
+            <legend>Select account:</legend>
+            <select (change)="update($event)">
+                <option *ng-For="let account of accounts" [value]="account.id">{{account.name}}</option>
+            </select>
+        </fieldset> -->
+        <select (change)="update($event)">
+            <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+        </select>
+    </div>
+</div>

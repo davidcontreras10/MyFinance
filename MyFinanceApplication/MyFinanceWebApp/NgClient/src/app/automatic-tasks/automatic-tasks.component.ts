@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { AutomaticTaskType, IAutomaticTask, SpInAutomaticTask, SpInTrxType, TaskStatus, TransferAutomaticTask } from './automatic-tasks.model';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AutomaticTaskType, IAutomaticTask, ScheduleTaskRequestType, ScheduleTaskView, SpInAutomaticTask, SpInTrxType, TaskStatus, TransferAutomaticTask } from './automatic-tasks.model';
 
 @Component({
   selector: 'app-automatic-tasks',
   templateUrl: './automatic-tasks.component.html',
   styleUrls: ['./automatic-tasks.component.css']
 })
-export class AutomaticTasksComponent implements OnInit {
+export class AutomaticTasksComponent implements OnInit,OnChanges {
+  @Input() scheduleTaskView!: ScheduleTaskView;
   public selectedTask!: IAutomaticTask;
   public loadedTasks!: IAutomaticTask[];
 
@@ -16,9 +17,18 @@ export class AutomaticTasksComponent implements OnInit {
 
   constructor() {
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('on changes: ', changes);
+  }
 
   ngOnInit(): void {
     this.loadedTasks = this._loadSampleTasks();
+  }
+
+  public goToNew(): void {
+    if (this.scheduleTaskView) {
+      this.scheduleTaskView.activeView = ScheduleTaskRequestType.New;
+    }
   }
 
   private _loadSampleTasks(): IAutomaticTask[] {

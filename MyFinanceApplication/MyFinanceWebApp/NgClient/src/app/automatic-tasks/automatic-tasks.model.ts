@@ -28,6 +28,20 @@ export interface IAutomaticTask {
     getTaskDesc(): string;
 }
 
+export enum ScheduleTaskRequestType {
+    Unknown = 0,
+    View = 1,
+    New = 2
+  }
+  
+export interface BasicOption{
+    id: number,
+    name: string
+}
+
+export interface ScheduleTaskView{
+    activeView: ScheduleTaskRequestType;
+}
 
 export interface ExecutedTask {
     executedDate: Date;

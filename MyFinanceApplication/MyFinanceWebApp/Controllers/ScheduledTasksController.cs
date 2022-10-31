@@ -18,11 +18,29 @@ namespace MyFinanceWebApp.Controllers
         // GET: ScheduledTasks
         public ActionResult Index()
         {
-            return View(new ScheduledTasksViewModel
+            var model = TempData.ContainsKey("model")
+                ? TempData["model"] as ScheduledTasksViewModel
+                : new ScheduledTasksViewModel
+                {
+                    HeaderModel = CreateMainHeaderModel(),
+                    HtmlHeaderHelper = _htmlHeaderHelper,
+                    RequestType = ScheduleTaskRequestType.View
+                };
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        // GET: ScheduledTasks
+        public ActionResult New(int? accountId = null)
+        {
+            TempData["model"] = new ScheduledTasksViewModel
             {
                 HeaderModel = CreateMainHeaderModel(),
-                HtmlHeaderHelper = _htmlHeaderHelper
-            });
+                HtmlHeaderHelper = _htmlHeaderHelper,
+                RequestType = ScheduleTaskRequestType.New
+            };
+
+            return RedirectToAction("Index");
         }
 
         private MainHeaderModel CreateMainHeaderModel()
