@@ -12,6 +12,8 @@ import { TaskDetailComponent } from './task-detail/task-detail.component';
 import { ExecutedTasksComponent } from './executed-tasks/executed-tasks.component';
 import { TaskStatusComponent } from './task-status/task-status.component';
 import { NewScheduledTaskComponent } from './new-scheduled-task/new-scheduled-task.component';
+import { FormsModule }   from '@angular/forms';
+import { GlobalVariables } from './global-variables';
 
 @NgModule({
   declarations: [
@@ -28,9 +30,12 @@ import { NewScheduledTaskComponent } from './new-scheduled-task/new-scheduled-ta
     AppRoutingModule,
     NoopAnimationsModule,
     MatTableModule,
-    MatListModule
+    MatListModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [
+    GlobalVariables
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

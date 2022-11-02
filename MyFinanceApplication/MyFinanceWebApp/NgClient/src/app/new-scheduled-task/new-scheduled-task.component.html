@@ -1,28 +1,131 @@
-<div class="container">
-    <div class="col-md-6">
-        <fieldset>
-            <legend>Select transaction type:</legend>
+<form #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Transaction type:</label>
+                    <div class="radio">
+                        <label for="spend">
+                            <input required ngModel type="radio" id="spend" name="trxType" value="1">
+                            Spend 
+                        </label>
+                    </div>
 
-            <div>
-                <input type="radio" id="sp-in" name="trx-type" value="1" checked>
-                <label for="sp-in">Spend or Income</label>
+                    <div class="radio">
+                        <label for="income">
+                            <input required ngModel type="radio" id="income" name="trxType" value="2">
+                            Income
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label for="transfer">
+                            <input required ngModel type="radio" id="transfer" name="trxType" value="3">
+                            Transfer
+                        </label>
+                    </div>
+                </div>
             </div>
-
-            <div>
-                <input type="radio" id="transfer" name="trx-type" value="2">
-                <label for="transfer">Transfer</label>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="accountSelected">Select Account:</label>
+                    <select required ngModel name="accountSelected" id="accountSelected" class="form-control">
+                        <option value=""></option>
+                        <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                    </select>
+                </div>
             </div>
-        </fieldset>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="description">Task description:</label>
+                    <input ngModel required [minlength]="3" [maxlength]="100" class="form-control" name="description" id="description" type="text" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="spendType">Select Type:</label>
+                    <select required ngModel name="spendType" id="spendType" class="form-control">
+                        <option value=""></option>
+                        <option *ngFor="let spType of spendingTypes" [value]="spType.id">{{spType.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="f.value.trxType && f.value.accountSelected">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input ngModel class="form-control" type="number" name="amount" id="amount"/> 
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="accountSelected">Currency:</label>
+                        <select required ngModel name="currency" id="currency" class="form-control">
+                            <option value="0"></option>
+                            <option *ngFor="let currency of currencies" [value]="currency.id">{{currency.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="f.value.trxType > 2" class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="destinationAccount">Destination Account:</label>
+                        <select required ngModel name="destinationAccount" id="destinationAccount" class="form-control">
+                            <option value=""></option>
+                            <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Frequency type:</label>
+                        <div class="radio">
+                            <label for="monthly">
+                                <input required ngModel type="radio" id="monthly" name="frqType" value="1">
+                                Monthly
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label for="weekly">
+                                <input required ngModel type="radio" id="weekly" name="frqType" value="2">
+                                Weekly
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="f.value.frqType == 1" class="col-md-6">
+                    <div class="form-group">
+                        <label for="dayOfMonth">Day of Month:</label>
+                        <input required ngModel class="form-control" name="dayOfMonth" id="dayOfMonth" type="number" [placeholder]="monthDayPlaceholder" [min]="minMonthDay" [max]="maxMonthDay" required/>
+                    </div>
+                </div>
+                <div *ngIf="f.value.frqType == 2" class="col-md-6">
+                    <div class="form-group">
+                        <label for="dayOfWeek">Day of Week:</label>
+                        <select required ngModel name="dayOfWeek" id="dayOfWeek" class="form-control">
+                            <option value=""></option>
+                            <option *ngFor="let day of daysOfWeek" [value]="day.id">{{day.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div style="float: right;">
+                    <button type="button" class="btn btn-danger">Cancel</button>
+                    <button style="margin-left: 10px;" type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+        <!-- <p>
+            {{f.value | json}}
+        </p> -->
     </div>
-    <div class="col-md-6">
-        <!-- <fieldset>
-            <legend>Select account:</legend>
-            <select (change)="update($event)">
-                <option *ng-For="let account of accounts" [value]="account.id">{{account.name}}</option>
-            </select>
-        </fieldset> -->
-        <select (change)="update($event)">
-            <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
-        </select>
-    </div>
-</div>
+</form>

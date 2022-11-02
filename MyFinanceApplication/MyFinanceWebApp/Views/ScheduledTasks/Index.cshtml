@@ -25,7 +25,7 @@
 <div>
     @{Html.RenderPartial("MainHeader", Model);}
 </div>
-<app-root req-url="@((int)Model.RequestType)"></app-root>
+<app-root base-url="@Request.Url.AbsoluteUri" req-url="@((int)Model.RequestType)"></app-root>
 <script src="~/Scripts/NgClient/runtime.js" type="module"></script>
 <script src="~/Scripts/NgClient/polyfills.js" type="module"></script>
 <script src="~/Scripts/NgClient/main.js" type="module"></script>
