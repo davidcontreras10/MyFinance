@@ -270,6 +270,7 @@
     <Compile Include="Models\MainHeaderModel.cs" />
     <Compile Include="Models\ModelClasses.cs" />
     <Compile Include="Models\ScheduledTasksViewModel.cs" />
+    <Compile Include="Models\UserSelectAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountService.cs" />
     <Compile Include="Services\BaseService.cs" />

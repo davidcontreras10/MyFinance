@@ -1,3 +1,5 @@
+import {HttpClientModule} from '@angular/common/http'
+import {HttpClient} from '@angular/common/http'
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -14,6 +16,7 @@ import { TaskStatusComponent } from './task-status/task-status.component';
 import { NewScheduledTaskComponent } from './new-scheduled-task/new-scheduled-task.component';
 import { FormsModule }   from '@angular/forms';
 import { GlobalVariables } from './global-variables';
+import { MyFinanceService } from './services/my-finance.service';
 
 @NgModule({
   declarations: [
@@ -31,10 +34,13 @@ import { GlobalVariables } from './global-variables';
     NoopAnimationsModule,
     MatTableModule,
     MatListModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [
-    GlobalVariables
+    HttpClient,
+    GlobalVariables,
+    MyFinanceService
   ],
   bootstrap: [AppComponent]
 })

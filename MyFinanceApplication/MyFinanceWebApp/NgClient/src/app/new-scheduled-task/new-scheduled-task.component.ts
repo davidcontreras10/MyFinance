@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BasicOption, ScheduleTaskRequestType, ScheduleTaskView } from '../automatic-tasks/automatic-tasks.model';
-import { GlobalVariables } from '../global-variables';
+import { BasicOption, ScheduleTaskRequestType, ScheduleTaskView, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
+import { MyFinanceService } from '../services/my-finance.service';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-new-scheduled-task',
@@ -10,20 +11,21 @@ import { GlobalVariables } from '../global-variables';
 export class NewScheduledTaskComponent implements OnInit {
 
   @Input() scheduleTaskView!: ScheduleTaskView;
-  public accounts: BasicOption[] = [];
+  public userAccounts!: UserSelectAccount[];
+  public destinationAccounts: BasicOption[] = [];
   public currencies: BasicOption[] = [];
   public spendingTypes: BasicOption[] = [];
   public daysOfWeek: BasicOption[] = [];
   public minMonthDay: number = 1;
   public maxMonthDay: number = 27;
   public monthDayPlaceholder = `Value between ${this.minMonthDay} and ${this.maxMonthDay}`;
+  @ViewChild('f') form: any;
 
-  constructor(private globalVariables: GlobalVariables) {
-    console.log('baseUrl: ', globalVariables.baseUrl);
+  constructor(private myFinanceService: MyFinanceService) {
   }
 
   ngOnInit(): void {
-    this._resetFields();
+    this._initalLoad();
   }
 
   public goToView(): void {
@@ -33,18 +35,97 @@ export class NewScheduledTaskComponent implements OnInit {
     }
   }
 
-  public submit(f: any){
+  public submit(f: any) {
     console.log('Submit: ', f.value);
   }
 
-  private _resetFields() {
-    this._loadTestAccounts();
-    this._loadTestCurrencies();
-    this._loadTestSpendingTypes();
-    this._loadDaysOfWeeks();
+  public onSelectedAccountChanged(event: any) {
+    this._resetTypeAndAccountFields();
+    this._loadTypeAndAccountFields();
+    this.onCurrencyChanged();
   }
 
-  private _loadDaysOfWeeks(){
+  public onCurrencyChanged() {
+    this.destinationAccounts = [];
+    const currencyId = this._readCurrencyId();
+    const trxTypeId = this._readTrxType();
+    const accountPeriodId = this._readAccountPeriodId();
+    if (currencyId > 0 && accountPeriodId > 0 && trxTypeId === 3) {
+      this.myFinanceService.getDestinationAccounts(accountPeriodId, currencyId)
+        .subscribe((data) => {
+          this.destinationAccounts = data;
+        });
+    }
+    else {
+      console.log(`perioId: ${accountPeriodId} -- currencyId: ${currencyId} -- trxType: ${trxTypeId}`);
+    }
+  }
+
+
+  private _initalLoad() {
+    this._resetTypeAndAccountFields();
+    this._loadDaysOfWeeks();
+    this._loadUserAccounts();
+  }
+
+  private _loadDestinationAccounts() {
+
+  }
+
+  private _resetFields() {
+    this._resetTypeAndAccountFields();
+    this._loadTypeAndAccountFields();
+  }
+
+  private _loadTypeAndAccountFields() {
+    const trxType = this._readTrxType();
+    if (trxType > 0) {
+      this._loadAddBasicTrxData();
+    }
+  }
+
+  private _loadAddBasicTrxData() {
+    const accountPeriodId = this._readAccountPeriodId();
+    if (accountPeriodId > 0) {
+      this.myFinanceService.getAddSpendData(accountPeriodId)
+        .subscribe((addSimpleTrxModel) => {
+          this.currencies = addSimpleTrxModel.supportedCurrencies;
+          this.spendingTypes = addSimpleTrxModel.spendTypeViewModels;
+          this.destinationAccounts = [];
+        })
+    }
+  }
+
+  private _readCurrencyId(): number {
+    const formCurrencyId = this.form?.value?.currency;
+    return formCurrencyId && !isNaN(formCurrencyId) ? Number(formCurrencyId) : NaN;
+  }
+
+  private _readTrxType(): number {
+    const formTrxType = this.form?.value?.trxType;
+    return formTrxType && !isNaN(formTrxType) ? Number(formTrxType) : NaN;
+  }
+
+  private _readAccountPeriodId(): number {
+    const formAccPerId = this.form?.value?.accountSelected?.accountPeriodId;
+    return formAccPerId && !isNaN(formAccPerId) ? Number(formAccPerId) : NaN;
+  }
+
+  private _resetTypeAndAccountFields() {
+    this.currencies = [];
+    this.spendingTypes = [];
+    this.destinationAccounts = [];
+  }
+
+  private _loadUserAccounts() {
+    this.userAccounts = [];
+    this.myFinanceService.getUserAccounts()
+      .subscribe((accounts) => {
+        this.userAccounts = accounts;
+      });
+  }
+
+  private _loadDaysOfWeeks() {
     this.daysOfWeek = [];
     this.daysOfWeek.push({
       id: 0,
@@ -75,38 +156,5 @@ export class NewScheduledTaskComponent implements OnInit {
       name: 'Saturday'
     });
   }
-
-  private _loadTestSpendingTypes(){
-    this.spendingTypes = [];
-    for(let i = 1; i <= 6; i++){
-      this.spendingTypes.push({
-        id: i,
-        name: `Type ${i}`
-      });
-    }
-  }
-
-  private _loadTestCurrencies(){
-    this.currencies = [];
-    this.currencies.push({
-      id: 1,
-      name: "Colones"
-    })
-    this.currencies.push({
-      id: 2,
-      name: "Dolares"
-    })
-  }
-
-  private _loadTestAccounts() {
-    const loadedAccounts = [];
-    for (let i = 1; i <= 10; i++) {
-      loadedAccounts.push({
-        id: i,
-        name: `Account ${i}`
-      })
-    }
-
-    this.accounts = loadedAccounts;
-  }
 }
+

@@ -28,18 +28,24 @@ export interface IAutomaticTask {
     getTaskDesc(): string;
 }
 
+export interface UserSelectAccount{
+    accountId: number,
+    accountName: string,
+    accountPeriodId: number
+}
+
 export enum ScheduleTaskRequestType {
     Unknown = 0,
     View = 1,
     New = 2
-  }
-  
-export interface BasicOption{
+}
+
+export interface BasicOption {
     id: number,
     name: string
 }
 
-export interface ScheduleTaskView{
+export interface ScheduleTaskView {
     activeView: ScheduleTaskRequestType;
 }
 

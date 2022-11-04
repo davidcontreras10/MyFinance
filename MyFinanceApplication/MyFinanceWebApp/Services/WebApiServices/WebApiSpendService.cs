@@ -179,7 +179,24 @@ namespace MyFinanceWebApp.Services.WebApiServices
 			return addSpendViewModelList;
 		}
 
-        public IEnumerable<ItemModified> AddSpendCurrency(string token, ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModelAsync(
+			IEnumerable<int> accountPeriodIds,
+			string token
+		)
+		{
+			if (accountPeriodIds == null || !accountPeriodIds.Any())
+				return new List<AddSpendViewModel>();
+			var parameters = new Dictionary<string, object>
+			{
+				{"accountPeriodIds", accountPeriodIds}
+			};
+			var url = CreateMethodUrl("add", parameters);
+			var request = new WebApiRequest(url, HttpMethod.Get, token);
+			var addSpendViewModelList = await GetResponseAsAsync<IEnumerable<AddSpendViewModel>>(request);
+			return addSpendViewModelList;
+		}
+
+		public IEnumerable<ItemModified> AddSpendCurrency(string token, ClientAddSpendModel clientAddSpendModel)
         {
             if (clientAddSpendModel == null)
                 throw new ArgumentNullException(nameof(clientAddSpendModel));

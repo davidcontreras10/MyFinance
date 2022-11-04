@@ -12,6 +12,11 @@ namespace MyFinanceWebApp.Services
         IEnumerable<SpendItemModified> ConfirmPendingSpend(int spendId, string token);
         IEnumerable<EditSpendViewModel> GetEditSpendViewModel(IEnumerable<int> accountPeriodIds, string token, int spendId);
         IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string token);
+
+        Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModelAsync(
+	        IEnumerable<int> accountPeriodIds,
+	        string token
+        );
         IEnumerable<ItemModified> AddSpendCurrency(string token, ClientAddSpendModel clientAddSpendModel);
         IEnumerable<ItemModified> AddIncome(string token, ClientAddSpendModel clientAddSpendModel);
         IEnumerable<ItemModified> DeleteSpend(string token, int spendId);

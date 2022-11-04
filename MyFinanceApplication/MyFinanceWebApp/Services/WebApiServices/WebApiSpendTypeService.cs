@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
@@ -42,6 +43,19 @@ namespace MyFinanceWebApp.Services.WebApiServices
             var request = new WebApiRequest(url, HttpMethod.Get, token);
             var response = GetResponseAs<IEnumerable<SpendTypeViewModel>>(request);
             return response;
+        }
+
+        public async Task<IEnumerable<SpendTypeViewModel>> GetAllSpendTypesAsync(string token)
+        {
+	        var parameters = new Dictionary<string, object>
+	        {
+		        {"includeAll", true}
+	        };
+
+	        var url = CreateRootUrl(parameters);
+	        var request = new WebApiRequest(url, HttpMethod.Get, token);
+	        var response = await GetResponseAsAsync<IEnumerable<SpendTypeViewModel>>(request);
+	        return response;
         }
 
         public IEnumerable<SpendTypeViewModel> GetUserSpendTypes(string token)

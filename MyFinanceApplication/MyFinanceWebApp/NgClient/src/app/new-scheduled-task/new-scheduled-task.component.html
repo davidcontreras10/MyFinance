@@ -7,7 +7,7 @@
                     <div class="radio">
                         <label for="spend">
                             <input required ngModel type="radio" id="spend" name="trxType" value="1">
-                            Spend 
+                            Spend
                         </label>
                     </div>
 
@@ -26,20 +26,22 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="form-group">
+                <div *ngIf="f.value.trxType" class="form-group">
                     <label for="accountSelected">Select Account:</label>
-                    <select required ngModel name="accountSelected" id="accountSelected" class="form-control">
+                    <select required ngModel name="accountSelected" (ngModelChange)="onSelectedAccountChanged($event)"
+                        id="accountSelected" class="form-control">
                         <option value=""></option>
-                        <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                        <option *ngFor="let a of userAccounts" [ngValue]="a">{{a.accountName}}</option>
                     </select>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div *ngIf="f.value.accountSelected" class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="description">Task description:</label>
-                    <input ngModel required [minlength]="3" [maxlength]="100" class="form-control" name="description" id="description" type="text" />
+                    <input ngModel required [minlength]="3" [maxlength]="100" class="form-control" name="description"
+                        id="description" type="text" />
                 </div>
             </div>
             <div class="col-md-6">
@@ -57,26 +59,28 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="amount">Amount:</label>
-                        <input ngModel class="form-control" type="number" name="amount" id="amount"/> 
+                        <input ngModel class="form-control" type="number" name="amount" id="amount" />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="accountSelected">Currency:</label>
-                        <select required ngModel name="currency" id="currency" class="form-control">
-                            <option value="0"></option>
+                        <select required ngModel name="currency" id="currency" (ngModelChange)="onCurrencyChanged()"
+                            class="form-control">
+                            <option value=""></option>
                             <option *ngFor="let currency of currencies" [value]="currency.id">{{currency.name}}</option>
                         </select>
                     </div>
                 </div>
             </div>
-            <div *ngIf="f.value.trxType > 2" class="row">
+            <div *ngIf="f.value.trxType > 2 && f.value.currency" class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="destinationAccount">Destination Account:</label>
                         <select required ngModel name="destinationAccount" id="destinationAccount" class="form-control">
                             <option value=""></option>
-                            <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                            <option *ngFor="let account of destinationAccounts" [value]="account.id">{{account.name}}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -102,7 +106,8 @@
                 <div *ngIf="f.value.frqType == 1" class="col-md-6">
                     <div class="form-group">
                         <label for="dayOfMonth">Day of Month:</label>
-                        <input required ngModel class="form-control" name="dayOfMonth" id="dayOfMonth" type="number" [placeholder]="monthDayPlaceholder" [min]="minMonthDay" [max]="maxMonthDay" required/>
+                        <input required ngModel class="form-control" name="dayOfMonth" id="dayOfMonth" type="number"
+                            [placeholder]="monthDayPlaceholder" [min]="minMonthDay" [max]="maxMonthDay" required />
                     </div>
                 </div>
                 <div *ngIf="f.value.frqType == 2" class="col-md-6">
@@ -124,8 +129,5 @@
                 </div>
             </div>
         </div>
-        <!-- <p>
-            {{f.value | json}}
-        </p> -->
     </div>
 </form>
