@@ -3,6 +3,8 @@ import { AutomaticTaskType, BasicOption, ScheduleTaskRequestType, ScheduleTaskVi
 import { MyFinanceService } from '../services/my-finance.service';
 import { ViewChild } from '@angular/core';
 import { BasicNewScheduledTask, TransferNewScheduledTask } from '../services/models';
+import { ThemePalette } from '@angular/material/core';
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-new-scheduled-task',
@@ -21,6 +23,12 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   public maxMonthDay: number = 27;
   public monthDayPlaceholder = `Value between ${this.minMonthDay} and ${this.maxMonthDay}`;
   @ViewChild('f') form: any;
+
+  color?: ThemePalette = 'primary';
+  mode: ProgressSpinnerMode = 'indeterminate';
+  value?: number;
+  displayProgressSpinner = false;
+  spinnerWithoutBackdrop = false;
 
   constructor(private myFinanceService: MyFinanceService) {
   }
@@ -47,7 +55,7 @@ export class NewScheduledTaskComponent implements AfterViewInit {
       if (trxType === 1 || trxType === 2) {
         this._submitBasicTrx();
       }
-      if(trxType === 3){
+      if (trxType === 3) {
         this._submitTransferTrx();
       }
     }
@@ -242,9 +250,11 @@ export class NewScheduledTaskComponent implements AfterViewInit {
 
   private _loadUserAccounts() {
     this.userAccounts = [];
+    this.displayProgressSpinner = true;
     this.myFinanceService.getUserAccounts()
       .subscribe((accounts) => {
         this.userAccounts = accounts;
+        this.displayProgressSpinner = false;
       });
   }
 
