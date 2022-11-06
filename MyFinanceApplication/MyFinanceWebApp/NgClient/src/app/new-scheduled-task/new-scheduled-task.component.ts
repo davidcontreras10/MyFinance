@@ -242,11 +242,9 @@ export class NewScheduledTaskComponent implements AfterViewInit {
 
   private _loadUserAccounts() {
     this.userAccounts = [];
-    this.form.form.disable();
     this.myFinanceService.getUserAccounts()
       .subscribe((accounts) => {
         this.userAccounts = accounts;
-        this.form.form.enable();
       });
   }
 
