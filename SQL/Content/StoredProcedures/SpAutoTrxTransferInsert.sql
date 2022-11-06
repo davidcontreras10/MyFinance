@@ -23,7 +23,7 @@ GO
 --	parameters.
 /*
 
-	exec SpAutoTrxTransferInsert @pUserId=N'017844B8-A92A-44B0-9FAF-E4E7230959B1'
+	exec SpAutoTrxTransferInsert @pUserId=N'017844b8-a92a-44b0-9faf-e4e7230959b1',@pAmount=55,@pSpendTypeId=3,@pCurrencyId=1,@pDescription=N'des_transf',@pAccountId=5039,@pToAccount=9042,@pPeriodTypeId=2,@pDays=N'0'
 */
 --==============================================================================================================================================
 CREATE PROCEDURE [dbo].[SpAutoTrxTransferInsert]
@@ -31,8 +31,7 @@ CREATE PROCEDURE [dbo].[SpAutoTrxTransferInsert]
 @pAmount FLOAT,
 @pSpendTypeId INT,
 @pCurrencyId INT,
-@pTaskDescription [nvarchar](400),
-@pFreqTypeId INT,
+@pDescription [nvarchar](400),
 @pAccountId INT,
 @pToAccount INT,
 @pPeriodTypeId INT,
@@ -75,7 +74,7 @@ DECLARE
 BEGIN TRY
 	
 	INSERT INTO dbo.AutomaticTask(AutomaticTaskId, Amount, SpendTypeId, CurrencyId, TaskDescription, AccountId, UserId, PeriodTypeId, Days) VALUES
-								 (@trxId, @pAmount, @pSpendTypeId, @pSpendTypeId, @pCurrencyId, @pAccountId, @pUserId, @pPeriodTypeId, @pDays);
+								 (@trxId, @pAmount, @pSpendTypeId, @pCurrencyId, @pDescription, @pAccountId, @pUserId, @pPeriodTypeId, @pDays);
 	INSERT INTO dbo.TransferTrxDef(TransferTrxDefId, ToAccountId)
 	VALUES					  (@trxId, @pAccountId);
 

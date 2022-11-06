@@ -8,6 +8,7 @@ using MyFinanceWebApp.CustomHandlers;
 using MyFinanceWebApp.Helpers;
 using MyFinanceWebApp.Models;
 using MyFinanceWebApp.Services;
+using MyFinanceWebApp.Services.WebApiServices;
 
 namespace MyFinanceWebApp.Controllers
 {
@@ -18,13 +19,15 @@ namespace MyFinanceWebApp.Controllers
         private readonly IAccountService _accountService;
         private readonly ISpendService _spendService;
         private readonly ITransferService _transferService;
+        private readonly IScheduledTasksService _scheduledTasksService;
 
         public ScheduledTasksController(
 	        IHtmlHeaderHelper htmlHeaderHelper,
 	        IAccountService accountService,
 	        ISpendTypeService spendTypeService,
 	        ISpendService spendService,
-	        ITransferService transferService
+	        ITransferService transferService,
+	        IScheduledTasksService scheduledTasksService
         )
         {
 	        _htmlHeaderHelper = htmlHeaderHelper;
@@ -32,6 +35,7 @@ namespace MyFinanceWebApp.Controllers
 	        _spendTypeService = spendTypeService;
 	        _spendService = spendService;
 	        _transferService = transferService;
+	        _scheduledTasksService = scheduledTasksService;
         }
 
 
@@ -81,6 +85,8 @@ namespace MyFinanceWebApp.Controllers
             return JsonCamelCaseResult(accounts);
         }
 
+        [JsonErrorHandling]
+        [HttpGet]
         public async Task<ActionResult> GetAddSpendViewModelAsync(int accountPeriodId)
         {
 	        var authToken = GetUserToken();
@@ -92,6 +98,8 @@ namespace MyFinanceWebApp.Controllers
 	        return JsonCamelCaseResult(addSpendViewModel);
         }
 
+        [JsonErrorHandling]
+        [HttpGet]
         public async Task<ActionResult> GetPossibleDestinationAccountAsync(int accountPeriodId, int currencyId)
         {
 	        var authToken = GetUserToken();
@@ -100,12 +108,32 @@ namespace MyFinanceWebApp.Controllers
 	        return JsonCamelCaseResult(accounts);
         }
 
+        [JsonErrorHandling]
+        [HttpGet]
         public async Task<ActionResult> GetSpendingTypesAsync()
         {
 	        var authToken = GetUserToken();
 	        var spendTypes = await _spendTypeService.GetAllSpendTypesAsync(authToken);
 	        return JsonCamelCaseResult(spendTypes);
 
+        }
+
+        [JsonErrorHandling]
+        [HttpPost]
+        public async Task<ActionResult> CreateBasicAsync(ClientScheduledTask.Basic model)
+        {
+	        var authToken = GetUserToken();
+	        await _scheduledTasksService.CreateBasicAsync(model, authToken);
+	        return new EmptyResult();
+        }
+
+        [JsonErrorHandling]
+        [HttpPost]
+        public async Task<ActionResult> CreateTransferAsync(ClientScheduledTask.Transfer model)
+        {
+	        var authToken = GetUserToken();
+	        await _scheduledTasksService.CreateTransferAsync(model, authToken);
+	        return new EmptyResult();
         }
 
         private MainHeaderModel CreateMainHeaderModel()

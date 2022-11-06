@@ -248,6 +248,7 @@
     <Compile Include="Controllers\AccountGroupController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\LoanController.cs" />
+    <Compile Include="Controllers\ScheduleTasksController.cs" />
     <Compile Include="Controllers\SpendsController.cs" />
     <Compile Include="Controllers\SpendTypeController.cs" />
     <Compile Include="Controllers\TestController.cs" />

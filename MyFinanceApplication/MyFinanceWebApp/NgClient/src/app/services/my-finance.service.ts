@@ -4,6 +4,7 @@ import { GlobalVariables } from '../global-variables';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { BasicOption, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
+import { BasicNewScheduledTask, TransferNewScheduledTask } from './models';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class MyFinanceService {
 
   private baseUrl!: string;
 
-  constructor(private globalVariables: GlobalVariables, private http: HttpClient) {
+  constructor(globalVariables: GlobalVariables, private http: HttpClient) {
     this.baseUrl = globalVariables.baseUrl;
   }
 
@@ -35,5 +36,15 @@ export class MyFinanceService {
     const url = `${this.baseUrl}/GetAddSpendViewModelAsync`;
     return this.http.get(url, { params: params })
       .pipe(map((response: any) => response));
+  }
+
+  createBasic(model: BasicNewScheduledTask){
+    const url = `${this.baseUrl}/CreateBasicAsync`;
+    return this.http.post(url, model);
+  }
+
+  createTransfer(model: TransferNewScheduledTask){
+    const url = `${this.baseUrl}/CreateTransferAsync`;
+    return this.http.post(url, model);
   }
 }

@@ -215,11 +215,17 @@
         public const string PAR_LOAN_RECORD_STATUS_ID = "@pLoanRecordStatusId";
         public const string PAR_LOAN_RECORD_IDS = "@pLoanRecordIds";
 
-		#endregion
+        public const string PAR_TASK_DESC = "@pTaskDescription";
+        public const string PAR_TO_ACCOUNT_ID = "@pToAccount";
+        public const string PAR_PERIOD_TYPE_ID = "@pPeriodTypeId";
+        public const string PAR_DAYS = "@pDays";
+        public const string PAR_IS_SPEND_TRX = "@pIsSpendTrx";
 
-		#region Stored Procedures
+        #endregion
 
-		public const string SP_RESOURCE_ACCESS_REPORT = "SpResourceAccessList";
+        #region Stored Procedures
+
+        public const string SP_RESOURCE_ACCESS_REPORT = "SpResourceAccessList";
 		public const string SP_SPEND_ATTRIBUTES_LIST = "SpSpendAttributesList";
         public const string SP_LOAN_IDS_LIST = "SpLoanIdList";
         public const string SP_LOAN_DETAIL_BY_IDS = "SpLoanRecordDetailList";
@@ -284,7 +290,9 @@
         public const string SP_BASIC_ACCOUNT_BY_ID = "SpBasicAccountList";
 	    public const string SP_USER_BANK_SUMMARY_ACCOUNT_LIST = "SpUserBankSummaryAccountList";
 	    public const string SP_USER_BANK_SUMMARY_ACCOUNT_PERIOD_LIST = "SpUserBankSummaryAccountPeriodList";
+	    public const string SP_AUTO_TASK_BASIC_INSERT = "SpAutoTrxBasicInsert";
+        public const string SP_AUTO_TASK_TRANSFER_INSERT = "SpAutoTrxTransferInsert";
 
-		#endregion
-	}
+        #endregion
+    }
 }

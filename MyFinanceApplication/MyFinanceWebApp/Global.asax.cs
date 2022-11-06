@@ -66,6 +66,7 @@ namespace MyFinanceWebApp
 		    builder.RegisterType<BootstrapHtmlHeaderHelper>().As<IHtmlHeaderHelper>();
 	        builder.RegisterType<WebApiSpendTypeService>().As<ISpendTypeService>();
             builder.RegisterType<WebApiLoanService>().As<ILoanService>();
+            builder.RegisterType<WebApiScheduledTasksService>().As<IScheduledTasksService>();
 
             builder.RegisterType<WebApiUserService>().As<IUserService>().InstancePerRequest();
 			builder.RegisterType<TokenAuthorizeAttribute>().PropertiesAutowired();

@@ -31,8 +31,7 @@ CREATE PROCEDURE [dbo].[SpAutoTrxBasicInsert]
 @pAmount FLOAT,
 @pSpendTypeId INT,
 @pCurrencyId INT,
-@pTaskDescription [nvarchar](400),
-@pFreqTypeId INT,
+@pDescription [nvarchar](400),
 @pAccountId INT,
 @pIsSpendTrx BIT,
 @pPeriodTypeId INT,
@@ -75,7 +74,7 @@ DECLARE
 BEGIN TRY
 	
 	INSERT INTO dbo.AutomaticTask(AutomaticTaskId, Amount, SpendTypeId, CurrencyId, TaskDescription, AccountId, UserId, PeriodTypeId, Days) VALUES
-								 (@trxId, @pAmount, @pSpendTypeId, @pSpendTypeId, @pCurrencyId, @pAccountId, @pUserId, @pPeriodTypeId, @pDays);
+								 (@trxId, @pAmount, @pSpendTypeId, @pCurrencyId, @pDescription, @pAccountId, @pUserId, @pPeriodTypeId, @pDays);
 	INSERT INTO dbo.SpInTrxDef(SpInTrxDefId, IsSpendTrx)
 	VALUES					  (@trxId, @pIsSpendTrx);
 

@@ -87,7 +87,7 @@ namespace MyFinanceBackend.Data
 
             if (criteriaId == LoanQueryCriteria.Invalid)
             {
-                throw new ArgumentException("Invalid criteria id", nameof(criteriaId));
+                throw new ArgumentException(@"Invalid criteria id", nameof(criteriaId));
             }
 
             var parameters = new List<SqlParameter>();
