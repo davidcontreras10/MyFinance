@@ -41,11 +41,10 @@ export class NewScheduledTaskComponent implements AfterViewInit {
     // this._initalLoad();
   }
 
-  public goToView(): void {
-    if (this.scheduleTaskView) {
-      this._resetFieldsInitalState();
-      this.scheduleTaskView.activeView = ScheduleTaskRequestType.View;
-    }
+
+  public cancelAction(){
+    this.form.reset();
+    this.goToView();
   }
 
   public submit(f: any) {
@@ -73,9 +72,11 @@ export class NewScheduledTaskComponent implements AfterViewInit {
     const trxTypeId = this._readTrxType();
     const accountPeriodId = this._readAccountPeriodId();
     if (currencyId > 0 && accountPeriodId > 0 && trxTypeId === 3) {
+      this.displayProgressSpinner = true;
       this.myFinanceService.getDestinationAccounts(accountPeriodId, currencyId)
         .subscribe((data) => {
           this.destinationAccounts = data;
+          this.displayProgressSpinner = false;
         });
     }
     else {
@@ -83,13 +84,24 @@ export class NewScheduledTaskComponent implements AfterViewInit {
     }
   }
 
+  private goToView(): void {
+    if (this.scheduleTaskView) {
+      // this._resetFieldsInitalState();
+      this.scheduleTaskView.activeView = ScheduleTaskRequestType.View;
+    }
+  }
+
+  
   private _submitBasicTrx() {
     const model = this._readAddBasicModel();
     if (model) {
+      this.displayProgressSpinner = true;
       this.myFinanceService.createBasic(model)
         .subscribe((response => {
           console.log('added basic successfully: ', response);
           this.form.reset();
+          this.displayProgressSpinner = false;
+          this.goToView();
         }));
     }
   }
@@ -97,10 +109,13 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   private _submitTransferTrx() {
     const model = this._readAddTransferModel();
     if (model) {
+      this.displayProgressSpinner = true;
       this.myFinanceService.createTransfer(model)
         .subscribe((response => {
           console.log('added transfer successfully: ', response);
           this.form.reset();
+          this.displayProgressSpinner = false;
+          this.goToView();
         }));
     }
   }
