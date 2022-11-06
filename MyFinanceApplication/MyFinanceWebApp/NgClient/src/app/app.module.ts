@@ -6,7 +6,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AutomaticTasksComponent } from './automatic-tasks/automatic-tasks.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table'
 import {MatListModule} from '@angular/material/list';
 import { TasksListComponent } from './tasks-list/tasks-list.component';
@@ -17,6 +17,10 @@ import { NewScheduledTaskComponent } from './new-scheduled-task/new-scheduled-ta
 import { FormsModule }   from '@angular/forms';
 import { GlobalVariables } from './global-variables';
 import { MyFinanceService } from './services/my-finance.service';
+import { ProgressSpinnerComponent, ProgressSpinnerModule } from './progress-spinner/progress-spinner.module';
+import { AppOverlayModule } from './overlay/overlay.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 @NgModule({
   declarations: [
@@ -35,13 +39,18 @@ import { MyFinanceService } from './services/my-finance.service';
     MatTableModule,
     MatListModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AppOverlayModule,
+    ProgressSpinnerModule,
+    MatProgressSpinnerModule,
+    BrowserAnimationsModule
   ],
   providers: [
     HttpClient,
     GlobalVariables,
     MyFinanceService
   ],
+  entryComponents: [AppComponent,ProgressSpinnerComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

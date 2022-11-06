@@ -1,3 +1,6 @@
+<app-progress-spinner class="example-margin" [color]="color" [mode]="mode" [value]="value" [backdropEnabled]="true"
+    [positionGloballyCenter]="true" [displayProgressSpinner]="displayProgressSpinner">
+</app-progress-spinner>
 <form #f="ngForm" (ngSubmit)="submit(f)">
     <div class="container">
         <div class="row">
@@ -59,7 +62,8 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="amount">Amount:</label>
-                        <input required [min]="0.1" ngModel class="form-control" type="number" name="amount" id="amount" />
+                        <input required [min]="0.1" ngModel class="form-control" type="number" name="amount"
+                            id="amount" />
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -125,7 +129,8 @@
             <div class="col-md-12">
                 <div style="float: right;">
                     <button type="button" class="btn btn-danger">Cancel</button>
-                    <button [disabled]="f.invalid" style="margin-left: 10px;" type="submit" class="btn btn-primary">Submit</button>
+                    <button [disabled]="f.invalid" style="margin-left: 10px;" type="submit"
+                        class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
