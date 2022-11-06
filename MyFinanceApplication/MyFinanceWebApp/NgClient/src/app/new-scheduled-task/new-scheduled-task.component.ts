@@ -42,8 +42,7 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   }
 
 
-  public cancelAction(){
-    this.form.reset();
+  public cancelAction() {
     this.goToView();
   }
 
@@ -71,38 +70,46 @@ export class NewScheduledTaskComponent implements AfterViewInit {
     const currencyId = this._readCurrencyId();
     const trxTypeId = this._readTrxType();
     const accountPeriodId = this._readAccountPeriodId();
-    if (currencyId > 0 && accountPeriodId > 0 && trxTypeId === 3) {
+    if (currencyId > 0 && accountPeriodId > 0 && trxTypeId === 3 && !this.form.submitted) {
       this.displayProgressSpinner = true;
       this.myFinanceService.getDestinationAccounts(accountPeriodId, currencyId)
-        .subscribe((data) => {
-          this.destinationAccounts = data;
-          this.displayProgressSpinner = false;
-        });
+        .subscribe(
+          {
+            next: this._destinationAccountsDataReceived.bind(this),
+            error: this._onServiceError.bind(this)
+          }
+        );
     }
     else {
       console.log(`perioId: ${accountPeriodId} -- currencyId: ${currencyId} -- trxType: ${trxTypeId}`);
     }
   }
 
+  private _destinationAccountsDataReceived(data: any) {
+    console.log('destinationAccounts: ', data);
+    this.destinationAccounts = data;
+    this.displayProgressSpinner = false;
+  }
+
   private goToView(): void {
     if (this.scheduleTaskView) {
-      // this._resetFieldsInitalState();
       this.scheduleTaskView.activeView = ScheduleTaskRequestType.View;
     }
   }
 
-  
+  private _onServiceError(error: any) {
+    console.error(error);
+  }
+
   private _submitBasicTrx() {
     const model = this._readAddBasicModel();
     if (model) {
       this.displayProgressSpinner = true;
       this.myFinanceService.createBasic(model)
-        .subscribe((response => {
-          console.log('added basic successfully: ', response);
-          this.form.reset();
-          this.displayProgressSpinner = false;
-          this.goToView();
-        }));
+        .subscribe({
+          next: this._submitTrxSuccess.bind(this),
+          error: this._onServiceError.bind(this)
+        });
     }
   }
 
@@ -111,13 +118,18 @@ export class NewScheduledTaskComponent implements AfterViewInit {
     if (model) {
       this.displayProgressSpinner = true;
       this.myFinanceService.createTransfer(model)
-        .subscribe((response => {
-          console.log('added transfer successfully: ', response);
-          this.form.reset();
-          this.displayProgressSpinner = false;
-          this.goToView();
-        }));
+        .subscribe({
+          next: this._submitTrxSuccess.bind(this),
+          error: this._onServiceError.bind(this)
+        });
     }
+  }
+
+  private _submitTrxSuccess(response: any) {
+    this._resetFieldsInitalState();
+    this.form.reset();
+    this.displayProgressSpinner = false;
+    this.goToView();
   }
 
   private _initalLoad() {
@@ -127,8 +139,8 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   }
 
   private _resetFieldsInitalState() {
+    this.userAccounts = [];
     this._resetTypeAndAccountFields();
-    this._loadTypeAndAccountFields();
   }
 
   private _loadTypeAndAccountFields() {
