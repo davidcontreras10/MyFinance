@@ -1,12 +1,15 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using MyFinanceModel.ClientViewModel;
+using MyFinanceModel.ViewModel;
 using WebApiBaseConsumer;
 
 namespace MyFinanceWebApp.Services.WebApiServices
 {
 	public interface IScheduledTasksService
 	{
+		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync(string token);
 		Task CreateBasicAsync(ClientScheduledTask.Basic model, string token);
 		Task CreateTransferAsync(ClientScheduledTask.Transfer model, string token);
 	}
@@ -14,6 +17,13 @@ namespace MyFinanceWebApp.Services.WebApiServices
 	public class WebApiScheduledTasksService : MvcWebApiBaseService, IScheduledTasksService
 	{
 		protected override string ControllerName => "scheduledTasks";
+
+		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync(string token)
+		{
+			var url = CreateMethodUrl("@current");
+			var request = new WebApiRequest(url, HttpMethod.Get, token);
+			return await GetResponseAsAsync<IReadOnlyCollection<BaseScheduledTaskVm>>(request);
+		}
 
 		public async Task CreateBasicAsync(ClientScheduledTask.Basic model, string token)
 		{

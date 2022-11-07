@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using MyFinanceModel.Utilities;
+using Newtonsoft.Json;
 
 namespace MyFinanceModel.ViewModel
 {
@@ -17,6 +19,7 @@ namespace MyFinanceModel.ViewModel
 		Weekly = 2
 	}
 
+	[JsonConverter(typeof(ScheduledTaskVmSerializer))]
 	public abstract class BaseScheduledTaskVm
 	{
 		public Guid Id { get; set; }

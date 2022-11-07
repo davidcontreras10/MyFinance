@@ -129,6 +129,9 @@
         public const string COL_FREQ_TYPE = "PeriodTypeId";
         public const string COL_AUTOMATIC_TASK_ID = "AutomaticTaskId";
 
+        public const string COL_LAST_EXECUTION_MSG = "ExecutionMsg";
+        public const string COL_LAST_EXECUTION_STATUS = "ExecutionStatus";
+
 		#endregion
 
 		#region Parameters

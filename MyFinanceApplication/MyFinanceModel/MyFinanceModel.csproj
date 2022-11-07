@@ -123,6 +123,7 @@
     <Compile Include="Token.cs" />
     <Compile Include="Utilities\GeneralUtils.cs" />
     <Compile Include="Utilities\NumUtils.cs" />
+    <Compile Include="Utilities\ScheduledTaskVmSerializer.cs" />
     <Compile Include="Utilities\XmlConvertion.cs" />
     <Compile Include="ViewModel\AccountDataViewModel.cs" />
     <Compile Include="ViewModel\AccountGroupDetailViewModel.cs" />

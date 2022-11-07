@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { GlobalVariables } from '../global-variables';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { BasicOption, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
+import { BasicOption, IAutomaticTask, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
 import { BasicNewScheduledTask, TransferNewScheduledTask } from './models';
 
 @Injectable({
@@ -15,6 +15,11 @@ export class MyFinanceService {
 
   constructor(globalVariables: GlobalVariables, private http: HttpClient) {
     this.baseUrl = globalVariables.baseUrl;
+  }
+
+  getScheduledTasks(): Observable<IAutomaticTask[]> {
+    const url = `${this.baseUrl}/GetScheduledTasksAsync`;
+    return this.http.get(url).pipe(map((data: any) => data));
   }
 
   getDestinationAccounts(accountPeriodId: number, currencyId: number) {
@@ -38,12 +43,12 @@ export class MyFinanceService {
       .pipe(map((response: any) => response));
   }
 
-  createBasic(model: BasicNewScheduledTask){
+  createBasic(model: BasicNewScheduledTask) {
     const url = `${this.baseUrl}/CreateBasicAsync`;
     return this.http.post(url, model);
   }
 
-  createTransfer(model: TransferNewScheduledTask){
+  createTransfer(model: TransferNewScheduledTask) {
     const url = `${this.baseUrl}/CreateTransferAsync`;
     return this.http.post(url, model);
   }

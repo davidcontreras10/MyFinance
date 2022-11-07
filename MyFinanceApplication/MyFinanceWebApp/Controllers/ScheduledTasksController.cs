@@ -136,6 +136,15 @@ namespace MyFinanceWebApp.Controllers
 	        return new EmptyResult();
         }
 
+        [JsonErrorHandling]
+        [HttpGet]
+        public async Task<ActionResult> GetScheduledTasksAsync()
+        {
+	        var authToken = GetUserToken();
+	        var tasks = await _scheduledTasksService.GetScheduledTasksAsync(authToken);
+	        return JsonCamelCaseResult(tasks);
+        }
+
         private MainHeaderModel CreateMainHeaderModel()
         {
             return PageHeaderBuilder.GetHeader(Url, PageHeaderBuilder.AppMenuItem.ScheduledTasks);

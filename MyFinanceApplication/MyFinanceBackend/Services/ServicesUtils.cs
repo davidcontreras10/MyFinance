@@ -101,6 +101,8 @@ namespace MyFinanceBackend.Services
 				Id = dataRow.ToGuid(DatabaseConstants.COL_AUTOMATIC_TASK_ID),
 				CurrencySymbol = dataRow.ToString(DatabaseConstants.COL_CURRENCY_SYMBOL),
 				AccountName = dataRow.ToString(DatabaseConstants.COL_ACCOUNT_NAME),
+				LastExecutedMsg = dataRow.ToString(DatabaseConstants.COL_LAST_EXECUTION_MSG),
+				LastExecutedStatus = (ExecutedTaskStatus) dataRow.ToInt(DatabaseConstants.COL_LAST_EXECUTION_STATUS)
 			};
 		}
 
