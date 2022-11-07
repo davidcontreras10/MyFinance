@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceBackend.Data;
 using MyFinanceModel.ClientViewModel;
+using MyFinanceModel.ViewModel;
 
 namespace MyFinanceBackend.Services
 {
@@ -15,6 +17,8 @@ namespace MyFinanceBackend.Services
 			string userId,
 			ClientScheduledTask.Transfer clientScheduledTask
 		);
+
+		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksByUserIdAsync(string userId);
 	}
 
 	public class ScheduledTasksService : IScheduledTasksService
@@ -40,6 +44,11 @@ namespace MyFinanceBackend.Services
 		)
 		{
 			await _automaticTaskRepository.InsertTransferTrxAsync(userId, clientScheduledTask);
+		}
+
+		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksByUserIdAsync(string userId)
+		{
+			return await _automaticTaskRepository.GetScheduledByUserId(userId);
 		}
 	}
 }

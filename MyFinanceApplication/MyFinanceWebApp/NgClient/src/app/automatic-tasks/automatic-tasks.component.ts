@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { AutomaticTaskType, IAutomaticTask, ScheduleTaskRequestType, ScheduleTaskView, SpInAutomaticTask, SpInTrxType, TaskStatus, TransferAutomaticTask } from './automatic-tasks.model';
+import { AutomaticTaskType, IAutomaticTask, ScheduleTaskRequestType, ScheduleTaskView, SpInAutomaticTask, TaskStatus, TransferAutomaticTask } from './automatic-tasks.model';
 
 @Component({
   selector: 'app-automatic-tasks',
@@ -38,7 +38,7 @@ export class AutomaticTasksComponent implements OnInit,OnChanges {
       let isEven = i % 2 === 0;
       if (i < 5) {
         newTask = new SpInAutomaticTask();
-        newTask.trxType = isEven ? SpInTrxType.Spend : SpInTrxType.Income;
+        newTask.isSpendTrx = !isEven;
       } else {
         newTask = new TransferAutomaticTask();
         newTask.toAccountName = `DestinationAcc_${i}`;
@@ -48,9 +48,9 @@ export class AutomaticTasksComponent implements OnInit,OnChanges {
       newTask.accountName = `Account ${i}`;
       newTask.amount = i * 10;
       newTask.currencySymbol = '$';
-      newTask.name = `Para ahorro ${i}`;
+      newTask.description = `Para ahorro ${i}`;
       if (i < 8) {
-        newTask.latestStatus = TaskStatus.Succeded;
+        newTask.latestStatus = TaskStatus.Succeeded;
       } else if (i < 9) {
         newTask.latestStatus = TaskStatus.Created;
       } else {

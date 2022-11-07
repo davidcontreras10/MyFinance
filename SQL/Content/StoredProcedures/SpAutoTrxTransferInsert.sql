@@ -76,7 +76,7 @@ BEGIN TRY
 	INSERT INTO dbo.AutomaticTask(AutomaticTaskId, Amount, SpendTypeId, CurrencyId, TaskDescription, AccountId, UserId, PeriodTypeId, Days) VALUES
 								 (@trxId, @pAmount, @pSpendTypeId, @pCurrencyId, @pDescription, @pAccountId, @pUserId, @pPeriodTypeId, @pDays);
 	INSERT INTO dbo.TransferTrxDef(TransferTrxDefId, ToAccountId)
-	VALUES					  (@trxId, @pAccountId);
+	VALUES					  (@trxId, @pToAccount);
 
 END TRY
 BEGIN CATCH

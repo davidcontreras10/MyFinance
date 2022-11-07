@@ -1,9 +1,14 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using DataAccess;
 using MyFinanceBackend.Constants;
 using MyFinanceBackend.Services;
 using MyFinanceModel.ClientViewModel;
+using MyFinanceModel.ViewModel;
 
 namespace MyFinanceBackend.Data
 {
@@ -18,12 +23,28 @@ namespace MyFinanceBackend.Data
 			string userId,
 			ClientScheduledTask.Transfer clientScheduledTask
 		);
+
+		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserId(string userId);
 	}
 
 	public class AutomaticTaskRepository : SqlServerBaseService, IAutomaticTaskRepository
 	{
 		public AutomaticTaskRepository(IConnectionConfig config) : base(config)
 		{
+		}
+
+		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserId(string userId)
+		{
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_BY_USER_LIST,
+				new SqlParameter(DatabaseConstants.PAR_USER_ID, userId));
+			if (dataSet?.Tables == null || dataSet.Tables.Count < 2)
+			{
+				throw new Exception("Expected two tables");
+			}
+
+			var list = ReadBasicScheduledTaskVm(dataSet.Tables[0]) ?? new List<BaseScheduledTaskVm>();
+			list.AddRange(ReadTransferScheduledTaskVm(dataSet.Tables[1]));
+			return list;
 		}
 
 		public async Task InsertBasicTrxAsync(
@@ -68,6 +89,16 @@ namespace MyFinanceBackend.Data
 			};
 
 			await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_TRANSFER_INSERT, parameters);
+		}
+
+		private static List<BaseScheduledTaskVm> ReadBasicScheduledTaskVm(DataTable dataTable)
+		{
+			return ServicesUtils.CreateGenericList<BaseScheduledTaskVm>(dataTable, ServicesUtils.CreateBasicScheduledTaskVm).ToList();
+		}
+
+		private static IEnumerable<BaseScheduledTaskVm> ReadTransferScheduledTaskVm(DataTable dataTable)
+		{
+			return ServicesUtils.CreateGenericList<BaseScheduledTaskVm>(dataTable, ServicesUtils.CreateTransferScheduledTaskVm);
 		}
 	}
 }

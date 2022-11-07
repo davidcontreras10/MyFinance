@@ -35,7 +35,7 @@ REFERENCES [dbo].[SpendType] ([SpendTypeId])
 ALTER TABLE [dbo].[AutomaticTask] WITH NOCHECK ADD CONSTRAINT [AutomaticTask_FK_AccountId] FOREIGN KEY([AccountId])
 REFERENCES [dbo].[Account] ([AccountId])
 
-ALTER TABLE [dbo].[AutomaticTask]  WITH NOCHECK ADD  CONSTRAINT [AutomaticTask_FK_CurrencyId] FOREIGN KEY([CurrencyId])
+ALTER TABLE [dbo].[AutomaticTask]  WITH NOCHECK ADD CONSTRAINT [AutomaticTask_FK_CurrencyId] FOREIGN KEY([CurrencyId])
 REFERENCES [dbo].[Currency] ([CurrencyId])
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------

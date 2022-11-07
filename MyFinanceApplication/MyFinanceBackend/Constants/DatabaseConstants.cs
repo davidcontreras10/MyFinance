@@ -38,6 +38,7 @@
         public const string COL_ACCOUNT_GLOBAL_ORDER = "GlobalOrder";
         public const string COL_IS_VALID = "IsValid";
         public const string COL_IS_SELECTED = "IsSelected";
+        public const string COL_IS_SPEND_TRX = "IsSpendTrx";
         public const string COL_IS_PENDING = "IsPending";
         public const string COL_IS_LOAN = "IsLoan";
         public const string COL_IS_TRANSFER = "IsTransfer";
@@ -92,6 +93,8 @@
         public const string COL_ACCOUNT_ID = "AccountId";
         public const string COL_ACCOUNT_IDS = "AccountIds";
         public const string COL_ACCOUNT_NAME = "AccountName";
+        public const string COL_TO_ACCOUNT_ID = "ToAccountId";
+        public const string COL_TO_ACCOUNT_NAME = "ToAccountName";
         public const string COL_CURRENT_PERIOD_ID = "CurrentPeriodId";
         public const string COL_INCLUDE_DEFAULT = "IncludeDefault";
         public const string COL_ACCOUNT_PERIOD_ID = "AccountPeriodId";
@@ -121,6 +124,10 @@
 
         public const string COL_IS_DEFAULT = "IsDefault";
         public const string COL_IS_CURRENT_SELECTION = "IsCurrentSelection";
+
+        public const string COL_DAYS = "Days";
+        public const string COL_FREQ_TYPE = "PeriodTypeId";
+        public const string COL_AUTOMATIC_TASK_ID = "AutomaticTaskId";
 
 		#endregion
 
@@ -290,8 +297,10 @@
         public const string SP_BASIC_ACCOUNT_BY_ID = "SpBasicAccountList";
 	    public const string SP_USER_BANK_SUMMARY_ACCOUNT_LIST = "SpUserBankSummaryAccountList";
 	    public const string SP_USER_BANK_SUMMARY_ACCOUNT_PERIOD_LIST = "SpUserBankSummaryAccountPeriodList";
+
 	    public const string SP_AUTO_TASK_BASIC_INSERT = "SpAutoTrxBasicInsert";
         public const string SP_AUTO_TASK_TRANSFER_INSERT = "SpAutoTrxTransferInsert";
+        public const string SP_AUTO_TASK_BY_USER_LIST = "SpAutoTrxList";
 
         #endregion
     }

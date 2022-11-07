@@ -4,22 +4,16 @@ export enum AutomaticTaskType {
     Trasnfer = 2
 }
 
-export enum SpInTrxType {
-    Unknown = 0,
-    Spend = 1,
-    Income = 2
-}
-
 export enum TaskStatus {
     Unknown = 0,
     Created = 1,
-    Succeded = 2,
+    Succeeded = 2,
     Failed = 3
 }
 
 export interface IAutomaticTask {
     id: string,
-    name: string,
+    description: string,
     accountName: string,
     amount: number,
     currencySymbol: string,
@@ -28,7 +22,7 @@ export interface IAutomaticTask {
     getTaskDesc(): string;
 }
 
-export interface UserSelectAccount{
+export interface UserSelectAccount {
     accountId: number,
     accountName: string,
     accountPeriodId: number
@@ -56,15 +50,15 @@ export interface ExecutedTask {
 
 export class SpInAutomaticTask implements IAutomaticTask {
     getTaskDesc(): string {
-        return `${this.currencySymbol}${this.amount} ${this.trxType === SpInTrxType.Income ? 'Income' : 'Spend'} every tenth of the month`;
+        return `${this.currencySymbol}${this.amount} ${!this.isSpendTrx ? 'Income' : 'Spend'} every tenth of the month`;
     }
     latestStatus: TaskStatus = TaskStatus.Unknown;
     id: string = "";
-    name: string = "";
+    description: string = "";
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
-    trxType: SpInTrxType = SpInTrxType.Unknown;
+    isSpendTrx!: boolean;
     getTaskType(): AutomaticTaskType {
         return AutomaticTaskType.SpIn;
     }
@@ -76,7 +70,7 @@ export class TransferAutomaticTask implements IAutomaticTask {
     }
     latestStatus: TaskStatus = TaskStatus.Unknown;
     id: string = "";
-    name: string = "";
+    description: string = "";
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
