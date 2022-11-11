@@ -23,4 +23,5 @@ export class TasksListComponent {
   public getStatus(status: TaskStatus) {
     return TaskStatus[status];
   }
+  
 }

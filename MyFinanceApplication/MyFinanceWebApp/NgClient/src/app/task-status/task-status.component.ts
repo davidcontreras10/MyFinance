@@ -15,7 +15,10 @@ export class TaskStatusComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public getStatus(status: TaskStatus){
+  public getStatus(status: TaskStatus) {
+    if (status === TaskStatus.Unknown) {
+      return '-';
+    }
     return TaskStatus[status];
   }
 }

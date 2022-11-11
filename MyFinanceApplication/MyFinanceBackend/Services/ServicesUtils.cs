@@ -92,7 +92,7 @@ namespace MyFinanceBackend.Services
 			return new T
 			{
 				AccountId = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_ID),
-				Description = dataRow.ToString(DatabaseConstants.COL_DESCRIPTION),
+				Description = dataRow.ToString(DatabaseConstants.COL_TASK_DESCRIPTION),
 				SpendTypeId = dataRow.ToInt(DatabaseConstants.COL_SPEND_TYPE_ID),
 				CurrencyId = dataRow.ToInt(DatabaseConstants.COL_CURRENCY_ID),
 				Amount = dataRow.ToFloat(DatabaseConstants.COL_AMOUNT),

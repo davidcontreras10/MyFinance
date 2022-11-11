@@ -24,6 +24,7 @@
         public const string COL_PRIMARY_EMAIL = "PrimaryEmail";
         public const string COL_NAME = "Name";
         public const string COL_DESCRIPTION = "Description";
+        public const string COL_TASK_DESCRIPTION = "TaskDescription";
         public const string COL_SPEND_DESCRIPTION = "SpendDescription";
         public const string COL_IS_AUTHENTICATED = "IsAuthenticated";
         public const string COL_RESET_PASSWORD = "ResultCode";

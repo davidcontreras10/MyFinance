@@ -4,7 +4,7 @@
             {{selectedTask.accountName}}
         </div>
         <div class="col-md-9">
-            {{selectedTask.getTaskDesc()}}
+            {{getDesc(selectedTask)}}
         </div>
     </div>
     <div class="row">
@@ -20,7 +20,7 @@
     </div>
     <div class="row" *ngIf="showRecords">
         <div class="col-md-12 upper-separated">
-            <app-executed-tasks></app-executed-tasks>
+            <app-executed-tasks [selectedTask]="selectedTask"></app-executed-tasks>
         </div>
     </div>
 </div>

@@ -19,7 +19,7 @@ export class MyFinanceService {
 
   getScheduledTasks(): Observable<IAutomaticTask[]> {
     const url = `${this.baseUrl}/GetScheduledTasksAsync`;
-    return this.http.get(url).pipe(map((data: any) => data));
+    return this.http.get(url).pipe(map((data: any) => this._mapScheduledTasks(data)));
   }
 
   getDestinationAccounts(accountPeriodId: number, currencyId: number) {
@@ -51,5 +51,10 @@ export class MyFinanceService {
   createTransfer(model: TransferNewScheduledTask) {
     const url = `${this.baseUrl}/CreateTransferAsync`;
     return this.http.post(url, model);
+  }
+
+  _mapScheduledTasks(tasks: IAutomaticTask[]): IAutomaticTask[] {
+    console.log('tasks received: ', tasks);
+    return tasks;
   }
 }

@@ -11,15 +11,23 @@ export enum TaskStatus {
     Failed = 3
 }
 
+export enum FrequencyType{
+    Unknown = 0,
+    Monthly = 1,
+    Weekly = 2
+}
+
 export interface IAutomaticTask {
     id: string,
     description: string,
+    accountId: number,
     accountName: string,
     amount: number,
     currencySymbol: string,
-    latestStatus: TaskStatus,
-    getTaskType(): AutomaticTaskType;
-    getTaskDesc(): string;
+    lastExecutedStatus: TaskStatus,
+    frequencyType: FrequencyType,
+    taskType: AutomaticTaskType,
+    days: number[]
 }
 
 export interface UserSelectAccount {
@@ -49,33 +57,37 @@ export interface ExecutedTask {
 }
 
 export class SpInAutomaticTask implements IAutomaticTask {
-    getTaskDesc(): string {
-        return `${this.currencySymbol}${this.amount} ${!this.isSpendTrx ? 'Income' : 'Spend'} every tenth of the month`;
-    }
-    latestStatus: TaskStatus = TaskStatus.Unknown;
+    // getTaskDesc(): string {
+        //     return `${this.currencySymbol}${this.amount} ${!this.isSpendTrx ? 'Income' : 'Spend'} every tenth of the month`;
+    // }
+
+    accountId!: number;
+    lastExecutedStatus: TaskStatus = TaskStatus.Unknown;
     id: string = "";
     description: string = "";
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
     isSpendTrx!: boolean;
-    getTaskType(): AutomaticTaskType {
-        return AutomaticTaskType.SpIn;
-    }
+    frequencyType!: FrequencyType;
+    taskType!: AutomaticTaskType;
+    days!: number[];
 }
 
 export class TransferAutomaticTask implements IAutomaticTask {
-    getTaskDesc(): string {
-        return `${this.currencySymbol}${this.amount} to ${this.toAccountName} every sixteenth of the month`;
-    }
-    latestStatus: TaskStatus = TaskStatus.Unknown;
+    // getTaskDesc(): string {
+        //     return `${this.currencySymbol}${this.amount} to ${this.toAccountName} every sixteenth of the month`;
+    // }
+
+    accountId!: number;
+    lastExecutedStatus: TaskStatus = TaskStatus.Unknown;
     id: string = "";
     description: string = "";
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
     toAccountName: string = "";
-    getTaskType(): AutomaticTaskType {
-        return AutomaticTaskType.Trasnfer;
-    }
+    frequencyType!: FrequencyType;
+    taskType!: AutomaticTaskType;
+    days!: number[];
 }
