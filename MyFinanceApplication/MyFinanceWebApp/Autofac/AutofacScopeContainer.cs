@@ -23,7 +23,7 @@ namespace MyFinanceWebApp.Autofac
         /// <exception cref="System.ArgumentNullException">container</exception>
         protected AutofacScopeContainer(AutofacDependencyResolver container)
         {
-            _container = container ?? throw new ArgumentNullException("container");
+            _container = container ?? throw new ArgumentNullException(nameof(container));
         }
 
         /// <summary>

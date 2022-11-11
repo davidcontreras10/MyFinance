@@ -20,6 +20,7 @@ namespace MyFinanceWebApp.Controllers
         private readonly ISpendService _spendService;
         private readonly ITransferService _transferService;
         private readonly IScheduledTasksService _scheduledTasksService;
+        private readonly IExecutedTasksService _executedTasksService;
 
         public ScheduledTasksController(
 	        IHtmlHeaderHelper htmlHeaderHelper,
@@ -27,7 +28,8 @@ namespace MyFinanceWebApp.Controllers
 	        ISpendTypeService spendTypeService,
 	        ISpendService spendService,
 	        ITransferService transferService,
-	        IScheduledTasksService scheduledTasksService
+	        IScheduledTasksService scheduledTasksService,
+	        IExecutedTasksService executedTasksService
         )
         {
 	        _htmlHeaderHelper = htmlHeaderHelper;
@@ -36,6 +38,7 @@ namespace MyFinanceWebApp.Controllers
 	        _spendService = spendService;
 	        _transferService = transferService;
 	        _scheduledTasksService = scheduledTasksService;
+	        _executedTasksService = executedTasksService;
         }
 
 
@@ -143,6 +146,15 @@ namespace MyFinanceWebApp.Controllers
 	        var authToken = GetUserToken();
 	        var tasks = await _scheduledTasksService.GetScheduledTasksAsync(authToken);
 	        return JsonCamelCaseResult(tasks);
+        }
+
+        [JsonErrorHandling]
+        [HttpGet]
+        public async Task<ActionResult> GetExecutedTaskAsync(string taskId)
+        {
+	        var authToken = GetUserToken();
+	        var executedTasks = await _executedTasksService.GetExecutedTaskAsync(taskId, authToken);
+	        return JsonCamelCaseResult(executedTasks);
         }
 
         private MainHeaderModel CreateMainHeaderModel()

@@ -132,6 +132,7 @@
     <Compile Include="ViewModel\AddLoanSpendViewModel.cs" />
     <Compile Include="ViewModel\BaseScheduledTaskVm.cs" />
     <Compile Include="ViewModel\ExecutedTask.cs" />
+    <Compile Include="ViewModel\ExecutedTaskViewModel.cs" />
     <Compile Include="ViewModel\LoanModel.cs" />
     <Compile Include="ViewModel\UserAccountsViewModel.cs" />
     <Compile Include="ViewModel\SimpleViewModel.cs" />

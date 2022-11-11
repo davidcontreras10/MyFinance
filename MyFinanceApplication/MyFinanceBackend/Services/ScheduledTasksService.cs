@@ -19,6 +19,7 @@ namespace MyFinanceBackend.Services
 		);
 
 		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksByUserIdAsync(string userId);
+		Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId);
 	}
 
 	public class ScheduledTasksService : IScheduledTasksService
@@ -49,6 +50,11 @@ namespace MyFinanceBackend.Services
 		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksByUserIdAsync(string userId)
 		{
 			return await _automaticTaskRepository.GetScheduledByUserId(userId);
+		}
+
+		public async Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId)
+		{
+			return await _automaticTaskRepository.GetExecutedTasksByTaskIdAsync(taskId);
 		}
 	}
 }

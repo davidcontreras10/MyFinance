@@ -106,6 +106,21 @@ namespace MyFinanceBackend.Services
 			};
 		}
 
+		public static ExecutedTaskViewModel CreateExecutedTaskViewModel(DataRow dataRow)
+		{
+			if (dataRow == null)
+			{
+				throw new ArgumentNullException(nameof(dataRow));
+			}
+
+			return new ExecutedTaskViewModel
+			{
+				ExecutedDate = dataRow.ToDateTime(DatabaseConstants.COL_EXECUTED_DATE),
+				Status = (ExecutedTaskStatus) dataRow.ToInt(DatabaseConstants.COL_EXECUTION_STATUS),
+				Message = dataRow.ToString(DatabaseConstants.COL_EXECUTION_MSG)
+			};
+		}
+
 		public static AccountPeriodBasicId CreateAccountPeriodBasicId(DataRow dataRow)
 		{
 			if (dataRow == null)

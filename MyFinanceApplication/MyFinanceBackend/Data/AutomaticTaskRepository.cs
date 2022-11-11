@@ -25,12 +25,25 @@ namespace MyFinanceBackend.Data
 		);
 
 		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserId(string userId);
+		Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId);
 	}
 
 	public class AutomaticTaskRepository : SqlServerBaseService, IAutomaticTaskRepository
 	{
 		public AutomaticTaskRepository(IConnectionConfig config) : base(config)
 		{
+		}
+
+		public async Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId)
+		{
+			var taskIdPar = new SqlParameter(DatabaseConstants.PAR_AUTOMATIC_TASK_ID, taskId);
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_EXECUTED_TASKS_LIST, taskIdPar);
+			if (dataSet == null || dataSet.Tables.Count < 1)
+			{
+				return Array.Empty<ExecutedTaskViewModel>();
+			}
+
+			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateExecutedTaskViewModel).ToList();
 		}
 
 		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserId(string userId)

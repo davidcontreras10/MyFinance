@@ -51,7 +51,7 @@ namespace MyFinanceWebApp
 			GlobalFilters.Filters.Add(new HandleTokenErrorAttribute());
         }
 
-	    private void RegisterTypes(ContainerBuilder builder)
+	    private static void RegisterTypes(ContainerBuilder builder)
 	    {
 		    if (builder == null)
 		    {
@@ -67,6 +67,7 @@ namespace MyFinanceWebApp
 	        builder.RegisterType<WebApiSpendTypeService>().As<ISpendTypeService>();
             builder.RegisterType<WebApiLoanService>().As<ILoanService>();
             builder.RegisterType<WebApiScheduledTasksService>().As<IScheduledTasksService>();
+            builder.RegisterType<WebApiExecutedTasksService>().As<IExecutedTasksService>();
 
             builder.RegisterType<WebApiUserService>().As<IUserService>().InstancePerRequest();
 			builder.RegisterType<TokenAuthorizeAttribute>().PropertiesAutowired();

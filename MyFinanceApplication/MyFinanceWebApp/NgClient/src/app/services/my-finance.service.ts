@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { GlobalVariables } from '../global-variables';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { BasicOption, IAutomaticTask, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
+import { BasicOption, ExecutedTask, IAutomaticTask, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
 import { BasicNewScheduledTask, TransferNewScheduledTask } from './models';
 
 @Injectable({
@@ -53,7 +53,14 @@ export class MyFinanceService {
     return this.http.post(url, model);
   }
 
-  _mapScheduledTasks(tasks: IAutomaticTask[]): IAutomaticTask[] {
+  getExecutedTasks(taskId: string): Observable<ExecutedTask[]> {
+    const url = `${this.baseUrl}/GetExecutedTaskAsync`;
+    const params = new HttpParams().set('taskId', taskId);
+    return this.http.get(url, { params: params })
+      .pipe(map((responses: any) => responses));;
+  }
+
+  private _mapScheduledTasks(tasks: IAutomaticTask[]): IAutomaticTask[] {
     console.log('tasks received: ', tasks);
     return tasks;
   }

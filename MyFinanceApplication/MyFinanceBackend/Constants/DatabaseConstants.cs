@@ -131,13 +131,16 @@
         public const string COL_AUTOMATIC_TASK_ID = "AutomaticTaskId";
 
         public const string COL_LAST_EXECUTION_MSG = "ExecutionMsg";
+        public const string COL_EXECUTION_MSG = "ExecutionMsg";
         public const string COL_LAST_EXECUTION_STATUS = "ExecutionStatus";
+        public const string COL_EXECUTED_DATE = "ExecuteDatetime";
+        public const string COL_EXECUTION_STATUS = "ExecutionStatus";
 
-		#endregion
+        #endregion
 
-		#region Parameters
+        #region Parameters
 
-		public const string PAR_APPLICATION_RESOURCE_ID = "@pApplicationResourceId";
+        public const string PAR_APPLICATION_RESOURCE_ID = "@pApplicationResourceId";
 		public const string PAR_APPLICATION_MODULE_ID = "@pApplicationModuleId";
 		public const string PAR_RESOURCE_ACTION_ID = "@pResourceActionId";
 		public const string PAR_RESOURCE_ACCESS_LEVEL_ID = "@pResourceAccessLevelId";
@@ -232,6 +235,8 @@
         public const string PAR_DAYS = "@pDays";
         public const string PAR_IS_SPEND_TRX = "@pIsSpendTrx";
 
+        public const string PAR_AUTOMATIC_TASK_ID = "@pAutomaticTaskId";
+
         #endregion
 
         #region Stored Procedures
@@ -305,6 +310,8 @@
 	    public const string SP_AUTO_TASK_BASIC_INSERT = "SpAutoTrxBasicInsert";
         public const string SP_AUTO_TASK_TRANSFER_INSERT = "SpAutoTrxTransferInsert";
         public const string SP_AUTO_TASK_BY_USER_LIST = "SpAutoTrxList";
+
+        public const string SP_EXECUTED_TASKS_LIST = "SpExecutedTaskList";
 
         #endregion
     }

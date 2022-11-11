@@ -285,6 +285,7 @@
     <Compile Include="Services\WebApiServices\WebApiAccountGroupService.cs" />
     <Compile Include="Services\WebApiServices\WebApiAccountService.cs" />
     <Compile Include="Services\WebApiServices\MvcWebApiBaseService.cs" />
+    <Compile Include="Services\WebApiServices\WebApiExecutedTasksService.cs" />
     <Compile Include="Services\WebApiServices\WebApiLoanService.cs" />
     <Compile Include="Services\WebApiServices\WebApiScheduledTasksService.cs" />
     <Compile Include="Services\WebApiServices\WebApiSpendService.cs" />

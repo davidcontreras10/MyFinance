@@ -52,7 +52,8 @@ SET NOCOUNT ON
 --==============================================================================================================================================
 BEGIN TRY
 
-	SELECT * FROM dbo.AutomaticTask WHERE AutomaticTaskId = @pAutomaticTaskId;
+	SELECT TOP 5 * FROM dbo.ExecutedTask et WHERE et.AutomaticTaskId = @pAutomaticTaskId
+		ORDER BY et.ExecuteDatetime DESC
 
 END TRY
 BEGIN CATCH

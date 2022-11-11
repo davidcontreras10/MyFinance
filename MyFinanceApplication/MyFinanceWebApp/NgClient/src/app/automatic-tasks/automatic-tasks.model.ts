@@ -54,6 +54,7 @@ export interface ScheduleTaskView {
 export interface ExecutedTask {
     executedDate: Date;
     status: TaskStatus;
+    message: string;
 }
 
 export class SpInAutomaticTask implements IAutomaticTask {
