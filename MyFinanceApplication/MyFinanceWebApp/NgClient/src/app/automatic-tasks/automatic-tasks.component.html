@@ -1,5 +1,9 @@
+<app-progress-spinner class="example-margin" [color]="spinnerColor" [mode]="spinnerMode" [value]="spinnerValue" [backdropEnabled]="true"
+    [positionGloballyCenter]="true" [displayProgressSpinner]="displayProgressSpinner">
+</app-progress-spinner>
 <div class="container">
   <div class="col-md-6 partial-view">
+    <h3>Scheduled tasks list:</h3>
     <app-tasks-list [tasks]="loadedTasks" (selectedChanged)="onSelectedTaskChanged($event)"></app-tasks-list>
   </div>
   <div class="col-md-6">

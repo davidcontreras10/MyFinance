@@ -24,9 +24,9 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   public monthDayPlaceholder = `Value between ${this.minMonthDay} and ${this.maxMonthDay}`;
   @ViewChild('f') form: any;
 
-  color?: ThemePalette = 'primary';
-  mode: ProgressSpinnerMode = 'indeterminate';
-  value?: number;
+  spinnerColor?: ThemePalette = 'primary';
+  spinnerMode: ProgressSpinnerMode = 'indeterminate';
+  spinnerValue?: number;
   displayProgressSpinner = false;
   spinnerWithoutBackdrop = false;
 

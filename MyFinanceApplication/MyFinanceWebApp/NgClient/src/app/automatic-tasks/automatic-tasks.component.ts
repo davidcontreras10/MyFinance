@@ -1,4 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ThemePalette } from '@angular/material/core';
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { MyFinanceService } from '../services/my-finance.service';
 import { AutomaticTaskType, IAutomaticTask, ScheduleTaskRequestType, ScheduleTaskView, SpInAutomaticTask, TaskStatus, TransferAutomaticTask } from './automatic-tasks.model';
 
@@ -11,6 +13,13 @@ export class AutomaticTasksComponent implements OnInit, OnChanges {
   @Input() scheduleTaskView!: ScheduleTaskView;
   public selectedTask!: IAutomaticTask;
   public loadedTasks!: IAutomaticTask[];
+
+  spinnerColor?: ThemePalette = 'primary';
+  spinnerMode: ProgressSpinnerMode = 'indeterminate';
+  spinnerValue?: number;
+  displayProgressSpinner = false;
+  spinnerWithoutBackdrop = false;
+
 
   constructor(private service: MyFinanceService) {
   }
