@@ -20,6 +20,7 @@ namespace MyFinanceBackend.Services
 
 		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksByUserIdAsync(string userId);
 		Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId);
+		Task DeleteByIdAsync(string taskId);
 	}
 
 	public class ScheduledTasksService : IScheduledTasksService
@@ -55,6 +56,11 @@ namespace MyFinanceBackend.Services
 		public async Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId)
 		{
 			return await _automaticTaskRepository.GetExecutedTasksByTaskIdAsync(taskId);
+		}
+
+		public async Task DeleteByIdAsync(string taskId)
+		{
+			await _automaticTaskRepository.DeleteByIdAsync(taskId);
 		}
 	}
 }

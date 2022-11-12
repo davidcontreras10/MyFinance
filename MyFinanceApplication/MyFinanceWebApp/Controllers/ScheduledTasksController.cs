@@ -157,6 +157,15 @@ namespace MyFinanceWebApp.Controllers
 	        return JsonCamelCaseResult(executedTasks);
         }
 
+        [JsonErrorHandling]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteScheduledTaskAsync(string taskId)
+        {
+	        var authToken = GetUserToken();
+	        await _scheduledTasksService.DeleteTaskAsync(taskId, authToken);
+	        return new EmptyResult();
+        }
+
         private MainHeaderModel CreateMainHeaderModel()
         {
             return PageHeaderBuilder.GetHeader(Url, PageHeaderBuilder.AppMenuItem.ScheduledTasks);

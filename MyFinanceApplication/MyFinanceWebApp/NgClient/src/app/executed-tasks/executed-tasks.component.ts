@@ -30,7 +30,6 @@ export class ExecutedTasksComponent implements OnChanges {
   }
 
   private _executedTasksReceived(tasks: ExecutedTask[]) {
-    console.log('exec tasks', tasks);
     this.dataSource = tasks;
   }
 

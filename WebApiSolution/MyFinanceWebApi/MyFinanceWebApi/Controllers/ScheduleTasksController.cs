@@ -42,5 +42,12 @@ namespace MyFinanceWebApi.Controllers
 		    var userId = GetUserId();
 		    return await _scheduledTasksService.GetScheduledTasksByUserIdAsync(userId);
 	    }
+
+		[HttpDelete]
+		[Route("{taskId}")]
+	    public async Task DeleteScheduledTaskAsync(string taskId)
+	    {
+		    await _scheduledTasksService.DeleteByIdAsync(taskId);
+	    }
 	}
 }

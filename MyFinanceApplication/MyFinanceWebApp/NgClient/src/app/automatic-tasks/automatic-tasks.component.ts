@@ -7,12 +7,12 @@ import { AutomaticTaskType, IAutomaticTask, ScheduleTaskRequestType, ScheduleTas
   templateUrl: './automatic-tasks.component.html',
   styleUrls: ['./automatic-tasks.component.css']
 })
-export class AutomaticTasksComponent implements OnInit,OnChanges {
+export class AutomaticTasksComponent implements OnInit, OnChanges {
   @Input() scheduleTaskView!: ScheduleTaskView;
   public selectedTask!: IAutomaticTask;
   public loadedTasks!: IAutomaticTask[];
 
-  constructor(private service: MyFinanceService){
+  constructor(private service: MyFinanceService) {
   }
 
   public onSelectedTaskChanged(selectedOption: IAutomaticTask): void {
@@ -20,15 +20,10 @@ export class AutomaticTasksComponent implements OnInit,OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('on changes: ', changes);
   }
 
   ngOnInit(): void {
-    // this.loadedTasks = this._loadSampleTasks();
-    this.service.getScheduledTasks()
-      .subscribe({
-        next: this._setLoadedTasks.bind(this)
-      })
+    this._reloadScheduledTasks();
   }
 
   public goToNew(): void {
@@ -37,8 +32,19 @@ export class AutomaticTasksComponent implements OnInit,OnChanges {
     }
   }
 
-  private _setLoadedTasks(data: IAutomaticTask[]){
+  public onTaskModelChanged() {
+    this._reloadScheduledTasks();
+  }
+
+  private _setLoadedTasks(data: IAutomaticTask[]) {
+    this.loadedTasks = [];
     this.loadedTasks = data;
   }
 
+  private _reloadScheduledTasks() {
+    this.service.getScheduledTasks()
+      .subscribe({
+        next: this._setLoadedTasks.bind(this)
+      })
+  }
 }

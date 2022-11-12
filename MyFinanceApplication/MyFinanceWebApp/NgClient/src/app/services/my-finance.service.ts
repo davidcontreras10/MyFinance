@@ -17,6 +17,12 @@ export class MyFinanceService {
     this.baseUrl = globalVariables.baseUrl;
   }
 
+  deleteScheduledTask(taskId: string) {
+    const url = `${this.baseUrl}/DeleteScheduledTaskAsync`;
+    const params = new HttpParams().set('taskId', taskId);
+    return this.http.delete(url, { params: params });
+  }
+
   getScheduledTasks(): Observable<IAutomaticTask[]> {
     const url = `${this.baseUrl}/GetScheduledTasksAsync`;
     return this.http.get(url).pipe(map((data: any) => this._mapScheduledTasks(data)));
@@ -31,7 +37,6 @@ export class MyFinanceService {
 
   getUserAccounts(): Observable<UserSelectAccount[]> {
     const url = `${this.baseUrl}/GetUserAccountsAsync`;
-    console.log('Req url', url);
     return this.http.get(url)
       .pipe(map((responses: any) => responses));
   }
@@ -61,7 +66,6 @@ export class MyFinanceService {
   }
 
   private _mapScheduledTasks(tasks: IAutomaticTask[]): IAutomaticTask[] {
-    console.log('tasks received: ', tasks);
     return tasks;
   }
 }

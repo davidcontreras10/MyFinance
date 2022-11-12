@@ -1,15 +1,15 @@
-<mat-selection-list #shoes [multiple]="false" (selectionChange)="onSelection(shoes.selectedOptions.selected[0].value)">
-    <mat-list-option *ngFor="let task of tasks" [value]="task">
-      <div class="row">
-        <div class="col-xs-4">
-            {{task.accountName}}
-        </div>
-        <div class="col-xs-4">
-            {{task.description}}
-        </div>
-        <div class="col-xs-4">
-            <app-task-status [taskStatus]="task.lastExecutedStatus"></app-task-status>
-        </div>
+<mat-selection-list #showTasks [multiple]="false" [(ngModel)]="selectedTasks" (ngModelChange)="onSelectedTasksChanged()">
+  <mat-list-option *ngFor="let task of tasks" [value]="task">
+    <div class="row">
+      <div class="col-xs-4">
+        {{task.accountName}}
       </div>
-    </mat-list-option>
-  </mat-selection-list>
+      <div class="col-xs-4">
+        {{task.description}}
+      </div>
+      <div class="col-xs-4">
+        <app-task-status [taskStatus]="task.lastExecutedStatus"></app-task-status>
+      </div>
+    </div>
+  </mat-list-option>
+</mat-selection-list>

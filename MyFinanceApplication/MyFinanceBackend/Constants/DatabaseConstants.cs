@@ -312,6 +312,7 @@
         public const string SP_AUTO_TASK_BY_USER_LIST = "SpAutoTrxList";
 
         public const string SP_EXECUTED_TASKS_LIST = "SpExecutedTaskList";
+        public const string SP_AUTO_TASK_DELETE = "SpAutoTrxDelete";
 
         #endregion
     }

@@ -33,7 +33,6 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   constructor(private myFinanceService: MyFinanceService) {
   }
   ngAfterViewInit(): void {
-    console.log('form: ', this.form);
     this._initalLoad();
   }
 
@@ -47,7 +46,6 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   }
 
   public submit(f: any) {
-    console.log('Submit: ', f);
     const trxType = this._readTrxType();
     if (f.valid && trxType > 0) {
       if (trxType === 1 || trxType === 2) {
@@ -81,12 +79,10 @@ export class NewScheduledTaskComponent implements AfterViewInit {
         );
     }
     else {
-      console.log(`perioId: ${accountPeriodId} -- currencyId: ${currencyId} -- trxType: ${trxTypeId}`);
     }
   }
 
   private _destinationAccountsDataReceived(data: any) {
-    console.log('destinationAccounts: ', data);
     this.destinationAccounts = data;
     this.displayProgressSpinner = false;
   }

@@ -26,12 +26,19 @@ namespace MyFinanceBackend.Data
 
 		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserId(string userId);
 		Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId);
+		Task DeleteByIdAsync(string taskId);
 	}
 
 	public class AutomaticTaskRepository : SqlServerBaseService, IAutomaticTaskRepository
 	{
 		public AutomaticTaskRepository(IConnectionConfig config) : base(config)
 		{
+		}
+
+		public async Task DeleteByIdAsync(string taskId)
+		{
+			var taskIdPar = new SqlParameter(DatabaseConstants.PAR_AUTOMATIC_TASK_ID, taskId);
+			await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_DELETE, taskIdPar);
 		}
 
 		public async Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId)
