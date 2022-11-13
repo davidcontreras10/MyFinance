@@ -21,6 +21,10 @@
 <body>
 <script type="text/javascript">
     var siteRoot = '@Request.ApplicationPath';
+
+    function goToNew() {
+        $('app-automatic-tasks').goToNew();
+    }
 </script>
 <div>
     @{Html.RenderPartial("MainHeader", Model);}

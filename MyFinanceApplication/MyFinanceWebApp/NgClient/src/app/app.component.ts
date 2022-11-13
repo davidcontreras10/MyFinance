@@ -1,5 +1,7 @@
 import { Component, ElementRef } from '@angular/core';
-import { ScheduleTaskRequestType, ScheduleTaskView } from './automatic-tasks/automatic-tasks.model';
+import { ThemePalette } from '@angular/material/core';
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import { ScheduleTaskRequestType, ScheduleTaskView, SpinnerController } from './automatic-tasks/automatic-tasks.model';
 import { GlobalVariables } from './global-variables';
 
 @Component({
@@ -9,15 +11,20 @@ import { GlobalVariables } from './global-variables';
 })
 export class AppComponent {
   ScheduleTaskRequestType = ScheduleTaskRequestType;
+  spinnerColor?: ThemePalette = 'primary';
+  spinnerMode: ProgressSpinnerMode = 'indeterminate';
+  spinnerValue?: number;
 
-  public scheduleTaskView!: ScheduleTaskView;
-
-  constructor(private elementRef: ElementRef, private globalVariables: GlobalVariables) {
+  constructor(private elementRef: ElementRef,
+    private globalVariables: GlobalVariables,
+    public scheduleTaskView: ScheduleTaskView,
+    public spinnerController: SpinnerController
+    ) {
     this.globalVariables.baseUrl = this.elementRef.nativeElement.getAttribute('base-url');
     const reqUrlId = parseInt(this.elementRef.nativeElement.getAttribute('req-url'));
-    this.scheduleTaskView = {
-      activeView: ScheduleTaskRequestType[ScheduleTaskRequestType[reqUrlId] as keyof typeof ScheduleTaskRequestType]
-    }
+
+    const reqView = ScheduleTaskRequestType[ScheduleTaskRequestType[reqUrlId] as keyof typeof ScheduleTaskRequestType];
+    scheduleTaskView.activeView = reqView;
   }
   title = 'myapp';
 }

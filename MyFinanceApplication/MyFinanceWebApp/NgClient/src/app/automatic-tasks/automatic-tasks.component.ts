@@ -10,7 +10,6 @@ import { AutomaticTaskType, IAutomaticTask, ScheduleTaskRequestType, ScheduleTas
   styleUrls: ['./automatic-tasks.component.css']
 })
 export class AutomaticTasksComponent implements OnInit, OnChanges {
-  @Input() scheduleTaskView!: ScheduleTaskView;
   public selectedTask!: IAutomaticTask;
   public loadedTasks!: IAutomaticTask[];
 
@@ -21,7 +20,7 @@ export class AutomaticTasksComponent implements OnInit, OnChanges {
   spinnerWithoutBackdrop = false;
 
 
-  constructor(private service: MyFinanceService) {
+  constructor(private service: MyFinanceService, public scheduleTaskView: ScheduleTaskView) {
   }
 
   public onSelectedTaskChanged(selectedOption: IAutomaticTask): void {
@@ -52,8 +51,8 @@ export class AutomaticTasksComponent implements OnInit, OnChanges {
 
   private _reloadScheduledTasks() {
     this.service.getScheduledTasks()
-      .subscribe({
-        next: this._setLoadedTasks.bind(this)
+      .subscribe(data => {
+        this._setLoadedTasks(data);
       })
   }
 }

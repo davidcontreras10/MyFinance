@@ -42,9 +42,8 @@ export class TaskDetailComponent implements OnInit, OnChanges {
     if (this.selectedTask) {
       if (confirm("Are you sure to delete scheduled task")) {
         this.service.deleteScheduledTask(this.selectedTask.id)
-          .subscribe({
-            next: this._onDeleted.bind(this),
-            error: this._onServiceError.bind(this)
+          .subscribe(data => {
+            this._onDeleted(data);
           })
       }
     }

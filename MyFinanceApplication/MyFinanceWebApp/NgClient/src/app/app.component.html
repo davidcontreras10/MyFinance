@@ -1,2 +1,5 @@
-<app-automatic-tasks *ngIf="scheduleTaskView.activeView==ScheduleTaskRequestType.View" [scheduleTaskView]="scheduleTaskView">View</app-automatic-tasks>
-<app-new-scheduled-task *ngIf="scheduleTaskView.activeView==ScheduleTaskRequestType.New" [scheduleTaskView]="scheduleTaskView">New</app-new-scheduled-task>
+<app-progress-spinner class="example-margin" [color]="spinnerColor" [mode]="spinnerMode" [value]="spinnerValue" [backdropEnabled]="true"
+    [positionGloballyCenter]="true" [displayProgressSpinner]="spinnerController.showSpinnerModal">
+</app-progress-spinner>
+<app-automatic-tasks *ngIf="scheduleTaskView.activeView==ScheduleTaskRequestType.View">View</app-automatic-tasks>
+<app-new-scheduled-task *ngIf="scheduleTaskView.activeView==ScheduleTaskRequestType.New">New</app-new-scheduled-task>

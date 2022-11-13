@@ -1,10 +1,8 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { AutomaticTaskType, BasicOption, ScheduleTaskRequestType, ScheduleTaskView, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
+import { BasicOption, ScheduleTaskRequestType, ScheduleTaskView, SpinnerController, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
 import { MyFinanceService } from '../services/my-finance.service';
 import { ViewChild } from '@angular/core';
 import { BasicNewScheduledTask, TransferNewScheduledTask } from '../services/models';
-import { ThemePalette } from '@angular/material/core';
-import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-new-scheduled-task',
@@ -13,7 +11,6 @@ import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 })
 export class NewScheduledTaskComponent implements AfterViewInit {
 
-  @Input() scheduleTaskView!: ScheduleTaskView;
   public userAccounts!: UserSelectAccount[];
   public destinationAccounts: BasicOption[] = [];
   public currencies: BasicOption[] = [];
@@ -24,20 +21,15 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   public monthDayPlaceholder = `Value between ${this.minMonthDay} and ${this.maxMonthDay}`;
   @ViewChild('f') form: any;
 
-  spinnerColor?: ThemePalette = 'primary';
-  spinnerMode: ProgressSpinnerMode = 'indeterminate';
-  spinnerValue?: number;
-  displayProgressSpinner = false;
-  spinnerWithoutBackdrop = false;
-
-  constructor(private myFinanceService: MyFinanceService) {
+  constructor(private myFinanceService: MyFinanceService, 
+    public spinnerController: SpinnerController, 
+    private scheduledTaskView: ScheduleTaskView) {
   }
   ngAfterViewInit(): void {
     this._initalLoad();
   }
 
   ngOnInit(): void {
-    // this._initalLoad();
   }
 
 
@@ -69,27 +61,21 @@ export class NewScheduledTaskComponent implements AfterViewInit {
     const trxTypeId = this._readTrxType();
     const accountPeriodId = this._readAccountPeriodId();
     if (currencyId > 0 && accountPeriodId > 0 && trxTypeId === 3 && !this.form.submitted) {
-      this.displayProgressSpinner = true;
       this.myFinanceService.getDestinationAccounts(accountPeriodId, currencyId)
-        .subscribe(
-          {
-            next: this._destinationAccountsDataReceived.bind(this),
-            error: this._onServiceError.bind(this)
-          }
-        );
-    }
-    else {
+        .subscribe(accounts => {
+          this._destinationAccountsDataReceived(accounts)
+        });
     }
   }
 
-  private _destinationAccountsDataReceived(data: any) {
+  private _destinationAccountsDataReceived(data: BasicOption[]) {
     this.destinationAccounts = data;
-    this.displayProgressSpinner = false;
+    this.spinnerController.disableSpinner();
   }
 
   private goToView(): void {
-    if (this.scheduleTaskView) {
-      this.scheduleTaskView.activeView = ScheduleTaskRequestType.View;
+    if (this.spinnerController) {
+      this.scheduledTaskView.activeView = ScheduleTaskRequestType.View;
     }
   }
 
@@ -100,7 +86,7 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   private _submitBasicTrx() {
     const model = this._readAddBasicModel();
     if (model) {
-      this.displayProgressSpinner = true;
+      this.spinnerController.enableSpinner();
       this.myFinanceService.createBasic(model)
         .subscribe({
           next: this._submitTrxSuccess.bind(this),
@@ -112,7 +98,7 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   private _submitTransferTrx() {
     const model = this._readAddTransferModel();
     if (model) {
-      this.displayProgressSpinner = true;
+      this.spinnerController.enableSpinner();
       this.myFinanceService.createTransfer(model)
         .subscribe({
           next: this._submitTrxSuccess.bind(this),
@@ -124,7 +110,7 @@ export class NewScheduledTaskComponent implements AfterViewInit {
   private _submitTrxSuccess(response: any) {
     this._resetFieldsInitalState();
     this.form.reset();
-    this.displayProgressSpinner = false;
+    this.spinnerController.disableSpinner();
     this.goToView();
   }
 
@@ -273,11 +259,9 @@ export class NewScheduledTaskComponent implements AfterViewInit {
 
   private _loadUserAccounts() {
     this.userAccounts = [];
-    this.displayProgressSpinner = true;
     this.myFinanceService.getUserAccounts()
       .subscribe((accounts) => {
         this.userAccounts = accounts;
-        this.displayProgressSpinner = false;
       });
   }
 

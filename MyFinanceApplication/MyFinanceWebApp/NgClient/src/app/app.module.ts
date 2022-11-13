@@ -20,6 +20,7 @@ import { MyFinanceService } from './services/my-finance.service';
 import { ProgressSpinnerComponent, ProgressSpinnerModule } from './progress-spinner/progress-spinner.module';
 import { AppOverlayModule } from './overlay/overlay.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ScheduleTaskView, SpinnerController } from './automatic-tasks/automatic-tasks.model';
 
 
 @NgModule({
@@ -48,7 +49,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   providers: [
     HttpClient,
     GlobalVariables,
-    MyFinanceService
+    MyFinanceService,
+    ScheduleTaskView,
+    SpinnerController
   ],
   entryComponents: [AppComponent,ProgressSpinnerComponent],
   bootstrap: [AppComponent]

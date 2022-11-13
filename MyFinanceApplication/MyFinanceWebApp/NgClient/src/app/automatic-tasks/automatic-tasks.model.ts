@@ -1,3 +1,5 @@
+import { Injectable } from "@angular/core";
+
 export enum AutomaticTaskType {
     Unknown = 0,
     SpIn = 1,
@@ -47,8 +49,26 @@ export interface BasicOption {
     name: string
 }
 
-export interface ScheduleTaskView {
-    activeView: ScheduleTaskRequestType;
+@Injectable({
+    providedIn: 'root',
+  })
+export class SpinnerController{
+    showSpinnerModal: boolean = false;
+
+    public enableSpinner(){
+        this.showSpinnerModal = true;
+    }
+
+    public disableSpinner(){
+        this.showSpinnerModal = false;
+    }
+}
+
+@Injectable({
+    providedIn: 'root',
+  })
+export class ScheduleTaskView {
+    activeView: ScheduleTaskRequestType = ScheduleTaskRequestType.Unknown;
 }
 
 export interface ExecutedTask {
