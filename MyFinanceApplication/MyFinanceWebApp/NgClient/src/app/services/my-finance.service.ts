@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { GlobalVariables } from '../global-variables';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { BasicOption, ExecutedTask, IAutomaticTask, ScheduleTaskView, SpinnerController, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
+import { BasicOption, ExecutedTask, ExecutedTaskResult, IAutomaticTask, ScheduleTaskView, SpinnerController, UserSelectAccount } from '../automatic-tasks/automatic-tasks.model';
 import { BasicNewScheduledTask, TransferNewScheduledTask } from './models';
 
 @Injectable({
@@ -15,6 +15,24 @@ export class MyFinanceService {
 
   constructor(globalVariables: GlobalVariables, private http: HttpClient, private spinnerController: SpinnerController) {
     this.baseUrl = globalVariables.baseUrl;
+  }
+
+  executeTask(taskId: string): Observable<ExecutedTaskResult> {
+    const url = `${this.baseUrl}/ExecuteTaskAsync`;
+    const model = {
+      dateTime: new Date(),
+      taskId: taskId
+    };
+
+    this.spinnerController.enableSpinner();
+    return this.http.post<ExecutedTaskResult>(url, model)
+      .pipe(
+        map(x => {
+          this.spinnerController.disableSpinner();
+          return x;
+        }),
+        catchError(this.handleError<ExecutedTaskResult>('Execute task', undefined))
+      )
   }
 
   deleteScheduledTask(taskId: string) {
@@ -89,10 +107,6 @@ export class MyFinanceService {
     const params = new HttpParams().set('taskId', taskId);
     return this.http.get(url, { params: params })
       .pipe(map((responses: any) => responses));;
-  }
-
-  private _mapScheduledTasks(tasks: IAutomaticTask[]): IAutomaticTask[] {
-    return tasks;
   }
 
   /**

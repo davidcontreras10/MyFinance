@@ -12,7 +12,7 @@ using MyFinanceModel.ViewModel;
 
 namespace MyFinanceBackend.Data
 {
-	public interface IAutomaticTaskRepository
+	public interface IAutomaticTaskRepository : ITransactional
 	{
 		Task InsertBasicTrxAsync(
 			string userId,
@@ -24,15 +24,31 @@ namespace MyFinanceBackend.Data
 			ClientScheduledTask.Transfer clientScheduledTask
 		);
 
-		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserId(string userId);
+		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserIdAsync(string userId);
 		Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId);
 		Task DeleteByIdAsync(string taskId);
+		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByTaskIdAsync(string taskId);
+		Task RecordClientExecutedTaskAsync(ClientExecutedTask clientExecutedTask);
 	}
 
 	public class AutomaticTaskRepository : SqlServerBaseService, IAutomaticTaskRepository
 	{
 		public AutomaticTaskRepository(IConnectionConfig config) : base(config)
 		{
+		}
+
+		public async Task RecordClientExecutedTaskAsync(ClientExecutedTask clientExecutedTask)
+		{
+			var parameters = new[]
+			{
+				new SqlParameter(DatabaseConstants.PAR_USER_ID, clientExecutedTask.ExecutedByUserId),
+				new SqlParameter(DatabaseConstants.PAR_AUTOMATIC_TASK_ID, clientExecutedTask.AutomaticTaskId),
+				new SqlParameter(DatabaseConstants.PAR_EXECUTED_DATETIME, clientExecutedTask.ExecuteDatetime),
+				new SqlParameter(DatabaseConstants.PAR_EXECUTED_STATUS, (int) clientExecutedTask.ExecutionStatus),
+				new SqlParameter(DatabaseConstants.PAR_EXECUTED_MSG, clientExecutedTask.ExecutionMsg)
+			};
+
+			await ExecuteStoredProcedureAsync(DatabaseConstants.SP_EXECUTED_TASK_INSERT, parameters);
 		}
 
 		public async Task DeleteByIdAsync(string taskId)
@@ -53,18 +69,16 @@ namespace MyFinanceBackend.Data
 			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateExecutedTaskViewModel).ToList();
 		}
 
-		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserId(string userId)
+		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByTaskIdAsync(string taskId)
 		{
-			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_BY_USER_LIST,
-				new SqlParameter(DatabaseConstants.PAR_USER_ID, userId));
-			if (dataSet?.Tables == null || dataSet.Tables.Count < 2)
-			{
-				throw new Exception("Expected two tables");
-			}
+			var taskIdPar = new SqlParameter(DatabaseConstants.PAR_AUTOMATIC_TASK_ID, taskId);
+			return await GetScheduledByParameterAsync(taskIdPar);
+		}
 
-			var list = ReadBasicScheduledTaskVm(dataSet.Tables[0]) ?? new List<BaseScheduledTaskVm>();
-			list.AddRange(ReadTransferScheduledTaskVm(dataSet.Tables[1]));
-			return list;
+		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByUserIdAsync(string userId)
+		{
+			var userIdParam = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
+			return await GetScheduledByParameterAsync(userIdParam);
 		}
 
 		public async Task InsertBasicTrxAsync(
@@ -111,6 +125,22 @@ namespace MyFinanceBackend.Data
 			await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_TRANSFER_INSERT, parameters);
 		}
 
+		private async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByParameterAsync(
+			SqlParameter queryParameter
+		)
+		{
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_BY_PARAM_LIST,
+				queryParameter);
+			if (dataSet?.Tables == null || dataSet.Tables.Count < 2)
+			{
+				throw new Exception("Expected two tables");
+			}
+
+			var list = ReadBasicScheduledTaskVm(dataSet.Tables[0]) ?? new List<BaseScheduledTaskVm>();
+			list.AddRange(ReadTransferScheduledTaskVm(dataSet.Tables[1]));
+			return list;
+		}
+
 		private static List<BaseScheduledTaskVm> ReadBasicScheduledTaskVm(DataTable dataTable)
 		{
 			return ServicesUtils.CreateGenericList<BaseScheduledTaskVm>(dataTable, ServicesUtils.CreateBasicScheduledTaskVm).ToList();
@@ -119,6 +149,21 @@ namespace MyFinanceBackend.Data
 		private static IEnumerable<BaseScheduledTaskVm> ReadTransferScheduledTaskVm(DataTable dataTable)
 		{
 			return ServicesUtils.CreateGenericList<BaseScheduledTaskVm>(dataTable, ServicesUtils.CreateTransferScheduledTaskVm);
+		}
+
+		void ITransactional.BeginTransaction()
+		{
+			base.BeginTransaction();
+		}
+
+		void ITransactional.RollbackTransaction()
+		{
+			base.RollbackTransaction();
+		}
+
+		void ITransactional.Commit()
+		{
+			base.Commit();
 		}
 	}
 }

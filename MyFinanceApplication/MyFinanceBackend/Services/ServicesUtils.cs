@@ -573,7 +573,8 @@ namespace MyFinanceBackend.Services
 				Budget = accountPeriod.Budget,
 				InitialDate = accountPeriod.InitialDate,
 				EndDate = accountPeriod.EndDate,
-				AccountName = dataRow.ToString(DatabaseConstants.COL_ACCOUNT_NAME)
+				AccountName = dataRow.ToString(DatabaseConstants.COL_ACCOUNT_NAME),
+				UserId = dataRow.ToString(DatabaseConstants.COL_USER_ID)
 			};
 
 			return accountPeriodBasicInfo;

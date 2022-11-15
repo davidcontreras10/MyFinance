@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using MyFinanceBackend.Services;
+using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 
@@ -48,6 +50,20 @@ namespace MyFinanceWebApi.Controllers
 	    public async Task DeleteScheduledTaskAsync(string taskId)
 	    {
 		    await _scheduledTasksService.DeleteByIdAsync(taskId);
+	    }
+
+	    [HttpPost]
+	    [Route("{taskId}/execution")]
+	    public async Task<TaskExecutedResult> ExecuteAutomaticTaskAsync(
+		    string taskId,
+			ClientExecuteTask clientExecuteTask
+
+		)
+	    {
+		    clientExecuteTask.DateTime = clientExecuteTask.DateTime ?? DateTime.Now;
+		    return await _scheduledTasksService.ExecuteScheduledTaskAsync(taskId, clientExecuteTask.DateTime.Value,
+			    clientExecuteTask.RequestType,
+			    GetUserId());
 	    }
 	}
 }

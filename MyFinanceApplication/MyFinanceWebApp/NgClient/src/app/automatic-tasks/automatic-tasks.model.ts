@@ -19,6 +19,11 @@ export enum FrequencyType{
     Weekly = 2
 }
 
+export interface ExecutedTaskResult{
+    status: TaskStatus,
+    errorMsg: string
+}
+
 export interface IAutomaticTask {
     id: string,
     description: string,

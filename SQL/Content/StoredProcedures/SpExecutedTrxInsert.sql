@@ -1,4 +1,3 @@
-
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -10,11 +9,11 @@ IF	EXISTS
 (
 	SELECT	* 
 	FROM	dbo.SYSOBJECTS 
-	WHERE	Id = OBJECT_ID(N'[dbo].[SpAccountPeriodByAccountIdDateTimeList]')
+	WHERE	Id = OBJECT_ID(N'[dbo].[SpExecutedTrxInsert]')
 	AND		OBJECTPROPERTY(Id, N'ISPROCEDURE') = 1
 )
 BEGIN
-	DROP PROCEDURE [dbo].[SpAccountPeriodByAccountIdDateTimeList]
+	DROP PROCEDURE [dbo].[SpExecutedTrxInsert]
 END
 GO
 --==============================================================================================================================================
@@ -23,15 +22,16 @@ GO
 --	The DECLARE, SELECT, and EXEC statements in the following example should match the stored procedure input
 --	parameters.
 /*
-	
-	EXEC SpAccountPeriodByAccountIdDateTimeList
-	@pSpendId = 12,
-	@pUserId = '71722361-99FF-493F-AF02-2BD0ED7CE676'
+
+	exec SpExecutedTrxInsert @pUserId=N'017844b8-a92a-44b0-9faf-e4e7230959b1',@pAmount=55,@pSpendTypeId=3,@pCurrencyId=1,@pDescription=N'des_transf',@pAccountId=5039,@pToAccount=9042,@pPeriodTypeId=2,@pDays=N'0'
 */
 --==============================================================================================================================================
-CREATE PROCEDURE [dbo].[SpAccountPeriodByAccountIdDateTimeList]
-@pDateTime DATETIME,
-@pAccountId INT
+CREATE PROCEDURE [dbo].[SpExecutedTrxInsert]
+@pUserId UNIQUEIDENTIFIER,
+@pAutomaticTaskId UNIQUEIDENTIFIER,
+@pExecutedDatetime DATETIME,
+@pExecutedStatus INT,
+@pExecutionMsg VARCHAR(500) = null
 AS
 SET NOCOUNT ON
 
@@ -39,47 +39,33 @@ SET NOCOUNT ON
 --	DECLARE RETURN TABLES
 --==============================================================================================================================================
 
-DECLARE @AccountPeriodRtn TABLE
-(
-	AccountPeriodId INT,
-	AccountId INT,
-	AccountName VARCHAR(500),
-	InitialDate DATETIME,
-	EndDate DATETIME,
-	UserId UNIQUEIDENTIFIER
-);
-
 --==============================================================================================================================================
---	DECLARE TABLE VARIABLES
+--	DECLARE SP TABLES
 --==============================================================================================================================================
 
+
 --==============================================================================================================================================
---	DECLARE TABLE VARIABLES
+--	DECLARE VARIBLES
 --==============================================================================================================================================
+
+DECLARE 
+@trxId uniqueidentifier = NEWID();
 
 --====================================================================================================================
 --	BEGIN LOGIC
 --==============================================================================================================================================
 BEGIN TRY
-
-	INSERT INTO @AccountPeriodRtn(AccountId, AccountName, AccountPeriodId, InitialDate, EndDate, UserId)
-	SELECT accp.AccountId, acc.Name, accp.AccountPeriodId, accp.InitialDate, accp.EndDate, acc.UserId
-	FROM dbo.AccountPeriod accp
-	JOIN dbo.Account acc ON acc.AccountId = accp.AccountId
-	WHERE @pDateTime >= accp.InitialDate AND @pDateTime < accp.EndDate
-	AND accp.AccountId = @pAccountId;
-
-	SELECT * FROM @AccountPeriodRtn;
+	
+	INSERT INTO dbo.ExecutedTask (AutomaticTaskId, ExecuteDatetime, ExecutedByUserId, ExecutionMsg, ExecutionStatus)
+	VALUES (@pAutomaticTaskId, @pExecutedDatetime, @pUserId, @pExecutionMsg, @pExecutedStatus)
 
 END TRY
 BEGIN CATCH
-
---rethrows exception
+	--rethrows exception
     declare @ErrorMessage nvarchar(max), @ErrorSeverity int, @ErrorState int;
     select @ErrorMessage = ERROR_MESSAGE() + ' Line ' + cast(ERROR_LINE() as nvarchar(5)), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
     
     raiserror (@ErrorMessage, @ErrorSeverity, @ErrorState);
-
 END CATCH	
 --==============================================================================================================================================
 --	TRAP Errors
@@ -87,32 +73,6 @@ END CATCH
 --==============================================================================================================================================
 ERRORFinish:
 
---IF	EXISTS	
---(
---	SELECT	Error_Id
---	FROM	dbo.Local_SSI_ErrorLogHeader	WITH(NOLOCK)
---	WHERE	Error_Id = @op_ErrorGUID
---	AND		Primary_Object_Name	= @ObjectName
---)
---BEGIN
---	SELECT	@ReturnCode	= MIN(Error_Severity_Level)
---	FROM	dbo.Local_SSI_ErrorLogDetail	WITH(NOLOCK)
---	WHERE	Error_Id		= @op_ErrorGUID
---	AND		[Object_Name]	= @ObjectName
---	RETURN	@ReturnCode
---END
---ELSE
---BEGIN
---	IF	@Primary	=	1
---	BEGIN
---		SET @op_ErrorGUID = NULL
---	END
---    RETURN @ERROR_NONE
---END
-
---==============================================================================================================================================
---	RETURN CODE
---==============================================================================================================================================
 SET NOCOUNT OFF
 RETURN
 GO

@@ -2,6 +2,7 @@ import { Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AutomaticTaskType, FrequencyType, IAutomaticTask, SpInAutomaticTask, TransferAutomaticTask } from '../automatic-tasks/automatic-tasks.model';
+import { MessageBus } from '../services/message-bus';
 import { MyFinanceService } from '../services/my-finance.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class TaskDetailComponent implements OnInit, OnChanges {
   private viewRecordsId: string = "";
   private weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-  constructor(private service: MyFinanceService) { }
+  constructor(private service: MyFinanceService, private messageBus: MessageBus) { }
 
   ngOnInit(): void {
   }
@@ -35,6 +36,16 @@ export class TaskDetailComponent implements OnInit, OnChanges {
     } else {
       this.showRecords = false;
       this.viewRecordsId = "";
+    }
+  }
+
+  public onExecuteTask() {
+    if (this.selectedTask && confirm("Are you sure to run the transaction now?")) {
+      this.service.executeTask(this.selectedTask.id)
+        .subscribe(res => {
+          this.tasksModelChanged.emit();
+          this.messageBus.executedTasksChangedMessage.next(this.selectedTask.id);
+        })
     }
   }
 

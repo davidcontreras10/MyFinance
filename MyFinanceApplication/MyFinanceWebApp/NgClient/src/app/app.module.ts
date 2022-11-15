@@ -21,6 +21,7 @@ import { ProgressSpinnerComponent, ProgressSpinnerModule } from './progress-spin
 import { AppOverlayModule } from './overlay/overlay.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScheduleTaskView, SpinnerController } from './automatic-tasks/automatic-tasks.model';
+import { MessageBus } from './services/message-bus';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { ScheduleTaskView, SpinnerController } from './automatic-tasks/automatic
     GlobalVariables,
     MyFinanceService,
     ScheduleTaskView,
-    SpinnerController
+    SpinnerController,
+    MessageBus
   ],
   entryComponents: [AppComponent,ProgressSpinnerComponent],
   bootstrap: [AppComponent]

@@ -236,6 +236,9 @@
         public const string PAR_IS_SPEND_TRX = "@pIsSpendTrx";
 
         public const string PAR_AUTOMATIC_TASK_ID = "@pAutomaticTaskId";
+        public const string PAR_EXECUTED_DATETIME = "@pExecutedDatetime";
+        public const string PAR_EXECUTED_STATUS = "@pExecutedStatus";
+        public const string PAR_EXECUTED_MSG = "@pExecutionMsg";
 
         #endregion
 
@@ -309,10 +312,11 @@
 
 	    public const string SP_AUTO_TASK_BASIC_INSERT = "SpAutoTrxBasicInsert";
         public const string SP_AUTO_TASK_TRANSFER_INSERT = "SpAutoTrxTransferInsert";
-        public const string SP_AUTO_TASK_BY_USER_LIST = "SpAutoTrxList";
+        public const string SP_AUTO_TASK_BY_PARAM_LIST = "SpAutoTrxList";
 
         public const string SP_EXECUTED_TASKS_LIST = "SpExecutedTaskList";
         public const string SP_AUTO_TASK_DELETE = "SpAutoTrxDelete";
+        public const string SP_EXECUTED_TASK_INSERT = "SpExecutedTrxInsert";
 
         #endregion
     }

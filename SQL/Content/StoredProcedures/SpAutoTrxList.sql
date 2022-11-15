@@ -25,11 +25,13 @@ GO
 	
 	BEGIN
 		EXEC SpAutoTrxList @pUserId=N'017844b8-a92a-44b0-9faf-e4e7230959b1'
+		EXEC SpAutoTrxList @pAutomaticTaskId=N'6F841D21-0201-486D-9F9F-F7FE06A2BF31'
 	END
 */
 --==============================================================================================================================================
 CREATE PROCEDURE [dbo].[SpAutoTrxList]
-@pUserId UNIQUEIDENTIFIER
+@pUserId UNIQUEIDENTIFIER = NULL,
+@pAutomaticTaskId UNIQUEIDENTIFIER = NULL
 AS
 SET NOCOUNT ON
 
@@ -52,6 +54,11 @@ SET NOCOUNT ON
 --==============================================================================================================================================
 BEGIN TRY
 
+	IF (@pAutomaticTaskId IS NULL AND @pUserId IS NULL) OR (@pAutomaticTaskId IS NOT NULL AND @pUserId IS NOT NULL)
+	BEGIN
+		raiserror ('Must pass eiher @pAutomaticTaskId or @pUserId', 20, -1) with log;
+	END
+
 	SELECT 
 		spInTasks.*, 
 		acc.Name AS AccountName, 
@@ -65,7 +72,8 @@ BEGIN TRY
 	JOIN dbo.Currency curr ON curr.CurrencyId = spInTasks.CurrencyId
 	JOIN dbo.Account acc ON acc.AccountId = spInTasks.AccountId
 	LEFT JOIN dbo.ExecutedTask et ON et.AutomaticTaskId = spInTasks.AutomaticTaskId OR et.AutomaticTaskId IS NULL
-	WHERE spInTasks.UserId = @pUserId AND (et.AutomaticTaskId IS NULL OR EXISTS (SELECT 1 
+	WHERE (spInTasks.UserId = @pUserId OR spInTasks.AutomaticTaskId = @pAutomaticTaskId)
+		AND (et.AutomaticTaskId IS NULL OR EXISTS (SELECT 1 
 		FROM dbo.ExecutedTask et2 
 		WHERE et2.AutomaticTaskId = et.AutomaticTaskId 
 		GROUP BY et2.AutomaticTaskId
@@ -87,7 +95,8 @@ BEGIN TRY
 	JOIN dbo.Account acc ON acc.AccountId = transferTasks.AccountId
 	JOIN dbo.Account toAcc ON toAcc.AccountId = transferTasks.ToAccountId
 	LEFT JOIN dbo.ExecutedTask et ON et.AutomaticTaskId = transferTasks.AutomaticTaskId OR et.AutomaticTaskId IS NULL
-	WHERE transferTasks.UserId = @pUserId AND (et.AutomaticTaskId IS NULL OR EXISTS (SELECT 1 
+	WHERE (transferTasks.UserId = @pUserId OR transferTasks.AutomaticTaskId = @pAutomaticTaskId)
+		AND (et.AutomaticTaskId IS NULL OR EXISTS (SELECT 1 
 		FROM dbo.ExecutedTask et2 
 		WHERE et2.AutomaticTaskId = et.AutomaticTaskId 
 		GROUP BY et2.AutomaticTaskId

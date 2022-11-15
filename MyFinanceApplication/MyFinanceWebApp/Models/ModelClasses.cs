@@ -50,6 +50,15 @@ namespace MyFinanceWebApp.Models
 		public string TokenType { get; set; }
 	}
 
+    public class ExecuteTaskRequest
+    {
+        [Required]
+	    public DateTime DateTime { get; set; }
+	    
+        [Required]
+	    public string TaskId { get; set; }
+    }
+
 	public class MvcNumber
 	{
 		public string Value { get; set; }

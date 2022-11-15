@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceWebApp.CustomHandlers;
@@ -70,7 +71,7 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpGet]
+        [System.Web.Mvc.HttpGet]
         public async Task<ActionResult> GetUserAccountsAsync()
         {
 	        var authToken = GetUserToken();
@@ -89,7 +90,7 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpGet]
+        [System.Web.Mvc.HttpGet]
         public async Task<ActionResult> GetAddSpendViewModelAsync(int accountPeriodId)
         {
 	        var authToken = GetUserToken();
@@ -102,7 +103,7 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpGet]
+        [System.Web.Mvc.HttpGet]
         public async Task<ActionResult> GetPossibleDestinationAccountAsync(int accountPeriodId, int currencyId)
         {
 	        var authToken = GetUserToken();
@@ -112,7 +113,7 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpGet]
+        [System.Web.Mvc.HttpGet]
         public async Task<ActionResult> GetSpendingTypesAsync()
         {
 	        var authToken = GetUserToken();
@@ -122,7 +123,7 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         public async Task<ActionResult> CreateBasicAsync(ClientScheduledTask.Basic model)
         {
 	        var authToken = GetUserToken();
@@ -131,7 +132,7 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         public async Task<ActionResult> CreateTransferAsync(ClientScheduledTask.Transfer model)
         {
 	        var authToken = GetUserToken();
@@ -140,7 +141,7 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpGet]
+        [System.Web.Mvc.HttpGet]
         public async Task<ActionResult> GetScheduledTasksAsync()
         {
 	        var authToken = GetUserToken();
@@ -149,7 +150,7 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpGet]
+        [System.Web.Mvc.HttpGet]
         public async Task<ActionResult> GetExecutedTaskAsync(string taskId)
         {
 	        var authToken = GetUserToken();
@@ -158,12 +159,21 @@ namespace MyFinanceWebApp.Controllers
         }
 
         [JsonErrorHandling]
-        [HttpDelete]
+        [System.Web.Mvc.HttpDelete]
         public async Task<ActionResult> DeleteScheduledTaskAsync(string taskId)
         {
 	        var authToken = GetUserToken();
 	        await _scheduledTasksService.DeleteTaskAsync(taskId, authToken);
 	        return new EmptyResult();
+        }
+
+        [JsonErrorHandling]
+        [System.Web.Mvc.HttpPost]
+        public async Task<ActionResult> ExecuteTaskAsync([FromBody] ExecuteTaskRequest request)
+        {
+	        var authToken = GetUserToken();
+	        var taskResult = await _scheduledTasksService.ExecuteTaskAsync(authToken, request.TaskId, request.DateTime);
+	        return JsonCamelCaseResult(taskResult);
         }
 
         private MainHeaderModel CreateMainHeaderModel()

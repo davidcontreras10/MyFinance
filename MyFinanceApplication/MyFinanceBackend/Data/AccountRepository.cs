@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using MyFinanceModel.ClientViewModel;
 
 namespace MyFinanceBackend.Data
@@ -258,6 +259,24 @@ namespace MyFinanceBackend.Data
 			};
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_BASIC_ACCOUNT_PERIOD_ID_DATE, parameters);
+			if (dataSet == null || dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0)
+			{
+				return null;
+			}
+
+			var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountPeriodBasicInfo).First();
+			return result;
+		}
+
+		public async Task<AccountPeriodBasicInfo> GetAccountPeriodInfoByAccountIdDateTimeAsync(int accountId, DateTime dateTime)
+		{
+			var parameters = new[]
+			{
+				new SqlParameter(DatabaseConstants.PAR_ACCOUNT_ID,accountId),
+				new SqlParameter(DatabaseConstants.PAR_DATE_TIME,dateTime)
+			};
+
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_BASIC_ACCOUNT_PERIOD_ID_DATE, parameters);
 			if (dataSet == null || dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0)
 			{
 				return null;

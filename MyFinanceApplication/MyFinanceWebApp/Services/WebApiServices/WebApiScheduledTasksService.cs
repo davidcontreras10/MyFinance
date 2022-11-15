@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using WebApiBaseConsumer;
@@ -13,6 +15,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 		Task CreateBasicAsync(ClientScheduledTask.Basic model, string token);
 		Task CreateTransferAsync(ClientScheduledTask.Transfer model, string token);
 		Task DeleteTaskAsync(string taskId, string token);
+		Task<TaskExecutedResult> ExecuteTaskAsync(string token, string taskId, DateTime dateTime);
 	}
 
 	public class WebApiScheduledTasksService : MvcWebApiBaseService, IScheduledTasksService
@@ -24,6 +27,23 @@ namespace MyFinanceWebApp.Services.WebApiServices
 			var url = CreateMethodUrl(taskId);
 			var request = new WebApiRequest(url, HttpMethod.Delete, token);
 			await GetResponseAsync(request);
+		}
+
+		public async Task<TaskExecutedResult> ExecuteTaskAsync(string token, string taskId, DateTime dateTime)
+		{
+			var clientExecuteTask = new ClientExecuteTask
+			{
+				DateTime = dateTime,
+				RequestType = ExecuteTaskRequestType.Manual
+			};
+
+			var url = CreateMethodUrl($"{taskId}/execution");
+			var request = new WebApiRequest(url, HttpMethod.Post, token)
+			{
+				Model = clientExecuteTask
+			};
+
+			return await GetResponseAsAsync<TaskExecutedResult>(request);
 		}
 
 		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync(string token)
