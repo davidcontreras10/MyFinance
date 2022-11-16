@@ -1,11 +1,7 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using ApiFunctions.Models;
+using ApiFunctions.Services;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 [assembly: FunctionsStartup(typeof(ApiFunctions.Startup))]
 namespace ApiFunctions
@@ -15,6 +11,14 @@ namespace ApiFunctions
 		public override void Configure(IFunctionsHostBuilder builder)
 		{
 			builder.Services.AddHttpClient();
+			builder.Services.AddLogging();
+			Register(builder.Services);
+		}
+
+		private static void Register(IServiceCollection services)
+		{
+			services.AddScoped<IScheduledTasksService, ScheduledTasksService>();
+			services.AddSingleton<IEnvSettings, EnvSettings>();
 		}
 	}
 }

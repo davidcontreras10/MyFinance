@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,8 @@ namespace ApiFunctions
 		private const string TestCron = "0 */2 * * * *";
 		private const string DailyCron = "0 0 3 * * *";
 		private const string WeeklyCron = "0 0 3 * * 1";
-		// ReSharper restore UnusedMember.Local
+        // ReSharper restore UnusedMember.Local
+
 
 		[FunctionName("Function1")]
         public void Run([TimerTrigger(TestCron)]TimerInfo myTimer, ILogger log)
