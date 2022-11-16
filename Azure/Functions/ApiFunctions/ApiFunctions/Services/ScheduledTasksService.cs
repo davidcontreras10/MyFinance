@@ -15,13 +15,13 @@ namespace ApiFunctions.Services
 	{
 		private readonly IHttpClientFactory _httpClientFactory;
 		private readonly IEnvSettings _envSettings;
-		private readonly ILogger _logger;
+		private readonly ILogger<IScheduledTasksService> _logger;
 
-		public ScheduledTasksService(IHttpClientFactory httpClientFactory, IEnvSettings envSettings)
+		public ScheduledTasksService(IHttpClientFactory httpClientFactory, IEnvSettings envSettings, ILogger<IScheduledTasksService> logger)
 		{
 			_httpClientFactory = httpClientFactory;
 			_envSettings = envSettings;
-			//_logger = logger;
+			_logger = logger;
 		}
 
 		public async Task<AuthTokenResponse> ExecuteAllTasksAsync()
@@ -54,12 +54,12 @@ namespace ApiFunctions.Services
 				var response = await client.SendAsync(request);
 				if (response.IsSuccessStatusCode)
 				{
-					//_logger.LogInformation("Success token  retreival");
+					_logger.LogInformation("Success token  retreival");
 					return await response.Content.ReadAsAsync<AuthTokenResponse>();
 				}
 
 				var stringRes = await response.Content.ReadAsStringAsync();
-				//_logger.LogError(stringRes);
+				_logger.LogError(stringRes);
 			}
 			catch (System.Exception ex)
 			{

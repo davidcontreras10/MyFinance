@@ -54,12 +54,12 @@ namespace MyFinanceWebApi.Authorization
         {
             var autofac = context.GetAutofacLifetimeScope();
             var userService = autofac.Resolve(typeof(IUsersService));
-            if (!(userService is IUsersService))
+            if (!(userService is IUsersService service))
             {
                 throw new Exception("User service not found");
             }
 
-            return (IUsersService)userService;
+            return service;
         }
     }
 }
