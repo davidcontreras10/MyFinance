@@ -16,7 +16,7 @@ namespace ApiFunctions
 		[FunctionName("Function1")]
         public void Run([TimerTrigger(TestCron)]TimerInfo myTimer, ILogger log)
         {
-            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+            log.LogInformation($"C# Custom Timer trigger function executed at: {DateTime.Now}");
         }
     }
 }
