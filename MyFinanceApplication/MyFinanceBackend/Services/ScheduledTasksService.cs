@@ -32,6 +32,8 @@ namespace MyFinanceBackend.Services
 			ExecuteTaskRequestType requestType,
 			string userId
 		);
+
+		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync();
 	}
 
 	public class ScheduledTasksService : IScheduledTasksService
@@ -116,6 +118,11 @@ namespace MyFinanceBackend.Services
 		)
 		{
 			await _automaticTaskRepository.InsertTransferTrxAsync(userId, clientScheduledTask);
+		}
+
+		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync()
+		{
+			return await _automaticTaskRepository.GetScheduledTasksAsync();
 		}
 
 		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksByUserIdAsync(string userId)

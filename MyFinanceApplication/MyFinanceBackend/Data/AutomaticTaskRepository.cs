@@ -29,6 +29,7 @@ namespace MyFinanceBackend.Data
 		Task DeleteByIdAsync(string taskId);
 		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByTaskIdAsync(string taskId);
 		Task RecordClientExecutedTaskAsync(ClientExecutedTask clientExecutedTask);
+		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync();
 	}
 
 	public class AutomaticTaskRepository : SqlServerBaseService, IAutomaticTaskRepository
@@ -55,6 +56,11 @@ namespace MyFinanceBackend.Data
 		{
 			var taskIdPar = new SqlParameter(DatabaseConstants.PAR_AUTOMATIC_TASK_ID, taskId);
 			await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_DELETE, taskIdPar);
+		}
+
+		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync()
+		{
+			return await GetScheduledByParameterAsync();
 		}
 
 		public async Task<IReadOnlyCollection<ExecutedTaskViewModel>> GetExecutedTasksByTaskIdAsync(string taskId)
@@ -126,11 +132,13 @@ namespace MyFinanceBackend.Data
 		}
 
 		private async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledByParameterAsync(
-			SqlParameter queryParameter
+			SqlParameter queryParameter = null
 		)
 		{
-			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_BY_PARAM_LIST,
-				queryParameter);
+			var dataSet = queryParameter != null
+				? await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_BY_PARAM_LIST,
+					queryParameter)
+				: await ExecuteStoredProcedureAsync(DatabaseConstants.SP_AUTO_TASK_BY_PARAM_LIST);
 			if (dataSet?.Tables == null || dataSet.Tables.Count < 2)
 			{
 				throw new Exception("Expected two tables");

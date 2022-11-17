@@ -6,6 +6,7 @@ using MyFinanceBackend.Services;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
+using MyFinanceWebApi.CustomHandlers;
 
 namespace MyFinanceWebApi.Controllers
 {
@@ -36,8 +37,16 @@ namespace MyFinanceWebApi.Controllers
 		    var userId = GetUserId();
 		    await _scheduledTasksService.CreateTransferTrxAsync(userId, model);
 	    }
+		
+		[AdminRequired]
+	    [Route("")]
+	    [HttpGet]
+	    public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetAllScheduledTaskAsync()
+	    {
+		    return await _scheduledTasksService.GetScheduledTasksAsync();
+	    }
 
-	    [Route("@current")]
+		[Route("@current")]
 	    [HttpGet]
 	    public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTaskAsync()
 	    {
