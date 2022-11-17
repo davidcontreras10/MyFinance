@@ -32,7 +32,6 @@ namespace ApiFunctions.Services
 				Username = _envSettings.AzureAppUser
 			};
 			return await GetTokenAsync(apiCredentials);
-			//_logger.LogInformation("Token response:", token);
 		}
 
 		private async Task<AuthTokenResponse> GetTokenAsync(ApiCredentials apiCredentials)
@@ -54,7 +53,6 @@ namespace ApiFunctions.Services
 				var response = await client.SendAsync(request);
 				if (response.IsSuccessStatusCode)
 				{
-					_logger.LogInformation("Success token  retreival");
 					return await response.Content.ReadAsAsync<AuthTokenResponse>();
 				}
 
@@ -63,8 +61,9 @@ namespace ApiFunctions.Services
 			}
 			catch (System.Exception ex)
 			{
-				//_logger.LogError(ex.ToString());
+				_logger.LogError(ex.ToString());
 			}
+
 			return null;
 		}
 	}

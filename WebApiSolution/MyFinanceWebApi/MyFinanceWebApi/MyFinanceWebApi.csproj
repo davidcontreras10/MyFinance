@@ -258,6 +258,7 @@
     <Compile Include="CustomHandlers\AddAuthorizationHeaderParameterOperationFilter.cs" />
     <Compile Include="CustomHandlers\AddObjectHeaderParamOperationFilter.cs" />
     <Compile Include="CustomHandlers\AddRestrictObjectHeaderParamOperationFilter.cs" />
+    <Compile Include="CustomHandlers\AdminRequiredAttribute.cs" />
     <Compile Include="CustomHandlers\AuthTokenOperation.cs" />
     <Compile Include="CustomHandlers\AvoidModelStateValidation.cs" />
     <Compile Include="CustomHandlers\ErrorHandlerExceptionHandler.cs" />

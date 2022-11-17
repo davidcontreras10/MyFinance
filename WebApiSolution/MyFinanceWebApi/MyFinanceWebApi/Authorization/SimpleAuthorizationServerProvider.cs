@@ -40,9 +40,10 @@ namespace MyFinanceWebApi.Authorization
 			        return;
 		        }
 
+		        var role = loginResult.User.Username == "AzureAdmin" ? "Admin" : string.Empty;
 		        var identity = new ClaimsIdentity(context.Options.AuthenticationType);
 		        identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
-		        identity.AddClaim(new Claim(ClaimTypes.Role, loginResult.User.Name));
+		        identity.AddClaim(new Claim(ClaimTypes.Role, role));
 		        identity.AddClaim(new Claim(ClaimTypes.UserData, loginResult.User.UserId.ToString()));
 		        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, loginResult.User.UserId.ToString()));
 
@@ -54,12 +55,12 @@ namespace MyFinanceWebApi.Authorization
         {
             var autofac = context.GetAutofacLifetimeScope();
             var userService = autofac.Resolve(typeof(IUsersService));
-            if (!(userService is IUsersService service))
+            if (!(userService is IUsersService))
             {
                 throw new Exception("User service not found");
             }
 
-            return service;
+            return (IUsersService)userService;
         }
     }
 }

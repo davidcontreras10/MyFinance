@@ -9,12 +9,12 @@ namespace MyFinanceBackend.Services.AuthServices
     public class UserAuthorizeService : IUserAuthorizeService
     {
         private readonly IAuthorizationDataRepository _authorizationDataRepository;
-        private readonly IUserRespository _userRespository;
+        private readonly IUserRespository _userRepository;
 
-        public UserAuthorizeService(IAuthorizationDataRepository authorizationDataRepository, IUserRespository userRespository)
+        public UserAuthorizeService(IAuthorizationDataRepository authorizationDataRepository, IUserRespository userRepository)
         {
             _authorizationDataRepository = authorizationDataRepository;
-            _userRespository = userRespository;
+            _userRepository = userRepository;
         }
 
         public bool IsAuthorized(string authenticatedUserId, IEnumerable<string> targetUserIds,
@@ -32,7 +32,7 @@ namespace MyFinanceBackend.Services.AuthServices
                         action);
                 foreach (var assignedAccess in userAccessData)
                 {
-                    var result = EvaluateResourceAccesLevel(assignedAccess.ResourceAccesLevel, authenticatedUserId,
+                    var result = EvaluateResourceAccessLevel(assignedAccess.ResourceAccesLevel, authenticatedUserId,
                         targetUserIds);
                     if (result)
                         return true;
@@ -42,16 +42,16 @@ namespace MyFinanceBackend.Services.AuthServices
             return false;
         }
 
-        private bool EvaluateResourceAccesLevel(ResourceAccesLevels resourceAccesLevel, string authenticatedUserId,
+        private bool EvaluateResourceAccessLevel(ResourceAccesLevels resourceAccesLevel, string authenticatedUserId,
             IEnumerable<string> targetUserIds)
         {
             switch (resourceAccesLevel)
             {
-                case ResourceAccesLevels.Any: return AnyResourceAccesLevelEvaluation();
+                case ResourceAccesLevels.Any: return AnyResourceAccessLevelEvaluation();
                 case ResourceAccesLevels.Owned:
                     return OwnedResourceAccesLevelEvaluation(authenticatedUserId, targetUserIds);
                 case ResourceAccesLevels.Self:
-                    return SelfResourceAccesLevelEvaluation(authenticatedUserId, targetUserIds);
+                    return SelfResourceAccessLevelEvaluation(authenticatedUserId, targetUserIds);
                 case ResourceAccesLevels.AddRegular:
                     return NoEvaluationRequired();
                 default: throw new ArgumentException("Invalid argument");
@@ -63,19 +63,19 @@ namespace MyFinanceBackend.Services.AuthServices
             return true;
         }
 
-        private bool AnyResourceAccesLevelEvaluation()
+        private bool AnyResourceAccessLevelEvaluation()
         {
             return true;
         }
 
-        private bool SelfResourceAccesLevelEvaluation(string authenticatedUserId, IEnumerable<string> targetUserIds)
+        private bool SelfResourceAccessLevelEvaluation(string authenticatedUserId, IEnumerable<string> targetUserIds)
         {
             return targetUserIds.All(id => new Guid(id) == new Guid(authenticatedUserId));
         }
 
         private bool OwnedResourceAccesLevelEvaluation(string authenticatedUserId, IEnumerable<string> targetUserIds)
         {
-            var owendUsers = _userRespository.GetOwendUsersByUserId(authenticatedUserId);
+            var owendUsers = _userRepository.GetOwendUsersByUserId(authenticatedUserId);
             return owendUsers.All(u => targetUserIds.Any(tu => new Guid(tu) == u.UserId));
         }
     }

@@ -48,15 +48,21 @@ SET NOCOUNT ON
 --	DECLARE TABLE VARIABLES
 --==============================================================================================================================================
 
+DECLARE @fullQuery BIT = 0;
 
 --====================================================================================================================
 --	BEGIN LOGIC
 --==============================================================================================================================================
 BEGIN TRY
+	IF @pAutomaticTaskId IS NOT NULL AND @pUserId IS NOT NULL
 
-	IF (@pAutomaticTaskId IS NULL AND @pUserId IS NULL) OR (@pAutomaticTaskId IS NOT NULL AND @pUserId IS NOT NULL)
 	BEGIN
 		raiserror ('Must pass eiher @pAutomaticTaskId or @pUserId', 20, -1) with log;
+	END
+
+	IF @pAutomaticTaskId IS NULL AND @pUserId IS NULL
+	BEGIN
+		SET @fullQuery = 1;
 	END
 
 	SELECT 
@@ -72,7 +78,7 @@ BEGIN TRY
 	JOIN dbo.Currency curr ON curr.CurrencyId = spInTasks.CurrencyId
 	JOIN dbo.Account acc ON acc.AccountId = spInTasks.AccountId
 	LEFT JOIN dbo.ExecutedTask et ON et.AutomaticTaskId = spInTasks.AutomaticTaskId OR et.AutomaticTaskId IS NULL
-	WHERE (spInTasks.UserId = @pUserId OR spInTasks.AutomaticTaskId = @pAutomaticTaskId)
+	WHERE (spInTasks.UserId = @pUserId OR spInTasks.AutomaticTaskId = @pAutomaticTaskId OR @fullQuery = 1)
 		AND (et.AutomaticTaskId IS NULL OR EXISTS (SELECT 1 
 		FROM dbo.ExecutedTask et2 
 		WHERE et2.AutomaticTaskId = et.AutomaticTaskId 
@@ -95,7 +101,7 @@ BEGIN TRY
 	JOIN dbo.Account acc ON acc.AccountId = transferTasks.AccountId
 	JOIN dbo.Account toAcc ON toAcc.AccountId = transferTasks.ToAccountId
 	LEFT JOIN dbo.ExecutedTask et ON et.AutomaticTaskId = transferTasks.AutomaticTaskId OR et.AutomaticTaskId IS NULL
-	WHERE (transferTasks.UserId = @pUserId OR transferTasks.AutomaticTaskId = @pAutomaticTaskId)
+	WHERE (transferTasks.UserId = @pUserId OR transferTasks.AutomaticTaskId = @pAutomaticTaskId OR @fullQuery = 1)
 		AND (et.AutomaticTaskId IS NULL OR EXISTS (SELECT 1 
 		FROM dbo.ExecutedTask et2 
 		WHERE et2.AutomaticTaskId = et.AutomaticTaskId 
