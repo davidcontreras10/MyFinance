@@ -16,7 +16,13 @@ namespace MyFinanceModel.ViewModel
 	    public float BaseBudget { get; set; }
     }
 
-    public class AddAccountViewModel
+    public class AccountDetailsPeriodViewModel : AccountDetailsViewModel
+    {
+	    public int AccountPeriodId { get; set; }
+    }
+
+
+	public class AddAccountViewModel
     {
         public FrontStyleData AccountStyle { get; set; }
         public float BaseBudget { get; set; }

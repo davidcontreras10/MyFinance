@@ -1,6 +1,8 @@
-﻿using MyFinanceBackend.Services;
+﻿using System;
+using MyFinanceBackend.Services;
 using MyFinanceModel.ViewModel;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -87,7 +89,15 @@ namespace MyFinanceWebApi.Controllers
 		    return accounts;
 	    }
 
-		[Route("{accountGroupId}")]
+	    [Route("list")]
+	    [HttpGet]
+	    public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsViewModel()
+	    {
+		    var userId = GetUserId();
+		    return await _accountService.GetAccountDetailsPeriodViewModelAsync(userId, DateTime.UtcNow);
+	    }
+
+	    [Route("{accountGroupId}")]
         [HttpGet]
         public AccountMainViewModel GetAccountDetailsViewModel(int? accountGroupId = null)
         {

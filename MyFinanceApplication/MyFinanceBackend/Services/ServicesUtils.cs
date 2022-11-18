@@ -452,6 +452,26 @@ namespace MyFinanceBackend.Services
 			};
 		}
 
+		public static AccountDetailsPeriodViewModel CreateAccountDetailsPeriodViewModel(DataRow dataRow)
+		{
+			if (dataRow == null)
+			{
+				throw new ArgumentNullException(nameof(dataRow));
+			}
+
+			return new AccountDetailsPeriodViewModel
+			{
+				AccountId =
+					dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_ID, DataRowConvert.ParseBehaviorOption.ThrowException),
+				AccountName = dataRow.ToString(DatabaseConstants.COL_ACCOUNT_NAME),
+				AccountPosition = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_POSITION),
+				BaseBudget = dataRow.ToFloat(DatabaseConstants.COL_BASE_BUDGET),
+				AccountGroupId = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_GROUP_ID),
+				AccountPeriodId = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_PERIOD_ID),
+				GlobalOrder = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_POSITION)
+			};
+		}
+
 		public static SpendTypeAccountDataResultSet CreateSpendTypeAccountDataResultSet(DataRow dataRow)
 		{
 			if (dataRow == null)

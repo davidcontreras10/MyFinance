@@ -9,7 +9,9 @@ namespace MyFinanceBackend.Data
 {
     public interface IAccountRepository
     {
-	    Task<AccountPeriodBasicInfo> GetAccountPeriodInfoByAccountIdDateTimeAsync(int accountId, DateTime dateTime);
+	    Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsPeriodViewModelAsync(string userId, DateTime dateTime);
+
+		Task<AccountPeriodBasicInfo> GetAccountPeriodInfoByAccountIdDateTimeAsync(int accountId, DateTime dateTime);
 
 		IEnumerable<AccountPeriodBasicId> GetBankSummaryAccountsPeriodByUserId(string userId);
 		IEnumerable<AccountBasicInfo> GetBankSummaryAccountsByUserId(string userId);

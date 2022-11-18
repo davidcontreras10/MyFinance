@@ -331,6 +331,24 @@ namespace MyFinanceBackend.Data
 			};
 		}
 
+		public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsPeriodViewModelAsync(string userId, DateTime dateTime)
+		{
+			var parameters = new[]
+			{
+				new SqlParameter(DatabaseConstants.PAR_USER_ID, userId),
+				new SqlParameter(DatabaseConstants.PAR_DATE, dateTime)
+			};
+
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_ACCOUNT_W_PERIOD_LIST, parameters);
+			if (dataSet == null || dataSet.Tables.Count == 0)
+			{
+				throw new Exception("Invalid dataSet exception");
+			}
+
+			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountDetailsPeriodViewModel)
+				.ToList();
+		}
+
 		#endregion
 
 		#region Private Methods

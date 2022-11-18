@@ -9,39 +9,13 @@ IF	EXISTS
 (
 	SELECT	* 
 	FROM	dbo.SYSOBJECTS 
-	WHERE	Id = OBJECT_ID(N'[dbo].[SpAccountList]')
+	WHERE	Id = OBJECT_ID(N'[dbo].[SpAccountWithPeriodList]')
 	AND		OBJECTPROPERTY(Id, N'ISPROCEDURE') = 1
 )
 BEGIN
-	DROP PROCEDURE [dbo].[SpAccountList]
+	DROP PROCEDURE [dbo].[SpAccountWithPeriodList]
 END
 GO
---==============================================================================================================================================
---	Name:		 				dbo.SpAccountList
---	Type:						Stored Procedure
---	Editor Tab Spacing:	4	
---==============================================================================================================================================
---	DESCRIPTION: 
---	The first result set will be used to return the parent menu option. 
---  The second result set will return the list of menu options with parent id equals to the one provided to the stored procedure.
---	The third result set will return the list of parameters for all menu options.
---==============================================================================================================================================
---	BUSINESS RULES:
---	Enter the business rules in this section...
---	1.	Declare Variables 
---	2.	Declare Tables 
---	3.	Initialize Variables 
---	4.	Validate Input Parameters
---	5.	Retrieve Menu Items data
---	6.	Retrieve Menu Item Parameters data
---	7.	Trap Errors
---==============================================================================================================================================
---	EDIT HISTORY:
-------------------------------------------------------------------------------------------------------------------------------------------------
---	Revision	Date			Who						What
---	========	====			===						====
---	1.0			2013-04-19		David Contreras			Initial Development
-
 --==============================================================================================================================================
 --	EXEC Statement:
 ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -49,14 +23,14 @@ GO
 --	parameters.
 /*
 	
-	EXEC SpAccountList
+	EXEC SpAccountWithPeriodList
 	@pUserId=N'017844b8-a92a-44b0-9faf-e4e7230959b1'
 
 */
 --==============================================================================================================================================
-CREATE PROCEDURE [dbo].[SpAccountList]
+CREATE PROCEDURE [dbo].[SpAccountWithPeriodList]
 @pUserId UNIQUEIDENTIFIER,
-@pAccountGroupId INT = NULL
+@pDate DATETIME = NULL
 AS
 SET NOCOUNT ON
 
@@ -85,15 +59,10 @@ DECLARE @RtnAccountDetailTable TABLE(
 	FinancialEntityId INT,
 	AccountTypeId INT,
 	SpendTypeId INT DEFAULT 0,
-	AccountGroupId INT
+	AccountGroupId INT,
+	AccountPeriodId INT
 );
 
-DECLARE @RtnAccountGroupTable TABLE(
-	AccountGroupId INT,
-	AccountGroupName VARCHAR(500),
-	AccountGroupPosition INT,
-	IsSelected BIT
-);
 
 --==============================================================================================================================================
 --	STORED PROCEDURE TABLES
@@ -106,32 +75,15 @@ DECLARE @RtnAccountGroupTable TABLE(
 --==============================================================================================================================================
 BEGIN TRY
 
-	IF (@pAccountGroupId < 0 OR NOT EXISTS (SELECT * FROM dbo.AccountGroup WHERE AccountGroupId = @pAccountGroupId)) AND
-		@pAccountGroupId IS NOT NULL
-	BEGIN
-		SELECT TOP 1 @pAccountGroupId = AccountGroupId 
-			FROM dbo.AccountGroup WHERE UserId = @pUserId
-			ORDER BY AccountGroupPosition ASC
-	END
-
 	INSERT INTO @RtnAccountDetailTable (AccountId, AccountName, AccountPosition, AccountHeaderColor, 
-	PeriodDefinitionId, CurrencyId, FinancialEntityId, AccountTypeId, SpendTypeId, AccountGroupId)
+	PeriodDefinitionId, CurrencyId, FinancialEntityId, AccountTypeId, SpendTypeId, AccountGroupId, AccountPeriodId)
 	SELECT acc.AccountId, acc.Name, acc.Position, acc.HeaderColor, acc.PeriodDefinitionId, 
-		acc.CurrencyId, acc.FinancialEntityId, acc.AccountTypeId, acc.DefaultSpendTypeId, acc.AccountGroupId FROM 
-	dbo.Account acc WHERE acc.UserId = @pUserId 
-	AND (@pAccountGroupId IS NULL OR @pAccountGroupId = 0 OR acc.AccountGroupId = @pAccountGroupId);
+		acc.CurrencyId, acc.FinancialEntityId, acc.AccountTypeId, acc.DefaultSpendTypeId, acc.AccountGroupId, accp.AccountPeriodId FROM 
+	dbo.Account acc
+	JOIN dbo.AccountPeriod accp ON accp.AccountId = acc.AccountId
+	WHERE acc.UserId = @pUserId AND @pDate >= accp.InitialDate AND @pDate < accp.EndDate;
 	
-	INSERT INTO @RtnAccountGroupTable (AccountGroupId, AccountGroupName, AccountGroupPosition)
-	SELECT AccountGroupId, AccountGroupName, AccountGroupPosition 
-	FROM dbo.AccountGroup WHERE UserId = @pUserId;
-
-	IF @pAccountGroupId > 0
-	BEGIN 
-		UPDATE @RtnAccountGroupTable SET IsSelected = 1 WHERE AccountGroupId = @pAccountGroupId;
-	END
-
 	SELECT * FROM @RtnAccountDetailTable;
-	SELECT * FROM @RtnAccountGroupTable ORDER BY AccountGroupPosition ASC;
 END TRY
 BEGIN CATCH
 

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using MyFinanceModel.ClientViewModel;
+using MyFinanceModel.ViewModel;
 using MyFinanceWebApp.CustomHandlers;
 using MyFinanceWebApp.Helpers;
 using MyFinanceWebApp.Models;
@@ -75,18 +76,18 @@ namespace MyFinanceWebApp.Controllers
         public async Task<ActionResult> GetUserAccountsAsync()
         {
 	        var authToken = GetUserToken();
-            var mainViewModelData = await _accountService.GetAccountsByUserIdAsync(authToken);
-            var accounts = new List<UserSelectAccount>();
-            foreach (var mv in mainViewModelData.AccountGroupMainViewViewModels)
+            var basicAccounts = await _accountService.BasicUserAccountsAsync(authToken);
+            var accounts = basicAccounts
+	            .OrderBy(x=>x.AccountGroupId)
+	            .ThenBy(x=>x.AccountPosition)
+	            .Select(ba => new UserSelectAccount
             {
-	            accounts.AddRange(mv.Accounts.Select(account => new UserSelectAccount
-	            {
-		            AccountName = account.AccountName, AccountId = account.AccountId,
-		            AccountPeriodId = account.CurrentPeriodId
-	            }));
-            }
+	            AccountId = ba.AccountId,
+	            AccountName = ba.AccountName,
+	            AccountPeriodId = ba.AccountPeriodId
+            });
 
-            return JsonCamelCaseResult(accounts);
+            return JsonCamelCaseResult(accounts.ToList().AsReadOnly());
         }
 
         [JsonErrorHandling]

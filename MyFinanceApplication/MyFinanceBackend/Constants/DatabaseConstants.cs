@@ -302,6 +302,7 @@
         public const string SP_ACCOUNTS_DETAILS_LIST = "SpAccountsDetailList";
         public const string SP_POSSIBLE_ACCOUNT_INCLUDE_LIST = "SpPossibleAccountIncludeList";
         public const string SP_ACCOUNT_LIST = "SpAccountList";
+        public const string SP_ACCOUNT_W_PERIOD_LIST = "SpAccountWithPeriodList";
         public const string SP_ACCOUNTS_CREATE_VIEW_MODEL = "SpAccountsCreateViewModel";
         public const string SP_ACCOUNT_ORDER_LIST = "SpAccountOrderList";
         public const string SP_BASIC_ACCOUNT_PERIOD_LIST = "SpBasicAccountPeriodList";
