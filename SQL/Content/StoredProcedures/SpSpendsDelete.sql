@@ -77,7 +77,7 @@ BEGIN TRY
 		JOIN dbo.LoanRecord lr ON lr.SpendId = spd.DependencySpendId
 		WHERE spd.SpendId = @pSpendId))
 	BEGIN
-		RAISERROR ('Not allowed to delete loan record spend', 20, -1) WITH LOG;
+		RAISERROR ('Not allowed to delete loan record spend', 20, -1);
 	END
 
 	IF EXISTS (SELECT * FROM dbo.TransferRecord tr

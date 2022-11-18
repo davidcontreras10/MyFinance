@@ -57,7 +57,7 @@ BEGIN TRY
 	IF @pAutomaticTaskId IS NOT NULL AND @pUserId IS NOT NULL
 
 	BEGIN
-		raiserror ('Must pass eiher @pAutomaticTaskId or @pUserId', 20, -1) with log;
+		raiserror ('Must pass eiher @pAutomaticTaskId or @pUserId', 20, -1);
 	END
 
 	IF @pAutomaticTaskId IS NULL AND @pUserId IS NULL
