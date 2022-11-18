@@ -26,6 +26,7 @@ namespace ApiFunctions
 		{
 			log.LogInformation($"C# ScheduledTasks executing at: {DateTime.Now}");
 			await _scheduledTasksService.ExecuteAllTasksAsync();
+			log.LogInformation($"C# ScheduledTasks executed at: {DateTime.Now}");
 		}
 	}
 }

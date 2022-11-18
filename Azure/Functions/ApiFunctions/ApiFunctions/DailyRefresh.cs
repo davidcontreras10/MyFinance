@@ -11,12 +11,12 @@ namespace ApiFunctions
 	    
 	    // ReSharper disable UnusedMember.Local
 	    private const string TestCron = "0 */2 * * * *";
-	    private const string DailyCron = "0 0 6 * * *";
+	    private const string DailyCron = "0 1 6 * * *";
 	    private const string WeeklyCron = "0 0 6 * * 1";
 	    // ReSharper restore UnusedMember.Local
 
 		[FunctionName(nameof(DailyRefresh))]
-        public static async Task Run([TimerTrigger(TestCron)]TimerInfo myTimer, ILogger log)
+        public static async Task Run([TimerTrigger(DailyCron)]TimerInfo myTimer, ILogger log)
         {
 	        var str = Environment.GetEnvironmentVariable("DefaultMYFNDB");
 	        if (string.IsNullOrWhiteSpace(str))
