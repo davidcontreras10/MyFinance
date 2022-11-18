@@ -10,7 +10,7 @@ namespace ApiFunctions
 	{
 		// ReSharper disable UnusedMember.Local
 		private const string TestCron = "0 */2 * * * *";
-		private const string DailyCron = "0 0 3 * * *";
+		private const string DailyCron = "0 10 6 * * *";
 		private const string WeeklyCron = "0 0 3 * * 1";
 		// ReSharper restore UnusedMember.Local
 
@@ -22,7 +22,7 @@ namespace ApiFunctions
 		}
 
 		[FunctionName(nameof(ScheduledTasks))]
-		public async Task Run([TimerTrigger(TestCron)] TimerInfo myTimer, ILogger log)
+		public async Task Run([TimerTrigger(DailyCron)] TimerInfo myTimer, ILogger log)
 		{
 			log.LogInformation($"C# ScheduledTasks executing at: {DateTime.Now}");
 			await _scheduledTasksService.ExecuteAllTasksAsync();

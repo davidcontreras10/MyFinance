@@ -11,8 +11,8 @@ namespace ApiFunctions
 	    
 	    // ReSharper disable UnusedMember.Local
 	    private const string TestCron = "0 */2 * * * *";
-	    private const string DailyCron = "0 0 3 * * *";
-	    private const string WeeklyCron = "0 0 3 * * 1";
+	    private const string DailyCron = "0 0 6 * * *";
+	    private const string WeeklyCron = "0 0 6 * * 1";
 	    // ReSharper restore UnusedMember.Local
 
 		[FunctionName(nameof(DailyRefresh))]
