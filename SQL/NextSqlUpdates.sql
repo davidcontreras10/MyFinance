@@ -17,7 +17,7 @@ CREATE TABLE [dbo].[AutomaticTask](
 	[AccountId] [INT] NOT NULL,
 	[UserId] UNIQUEIDENTIFIER NOT NULL,
 	[PeriodTypeId] [INT] NOT NULL,
-	[Days] [NVARCHAR] NOT NULL
+	[Days] NVARCHAR(MAX) NOT NULL
  CONSTRAINT [PK_AutomaticTask] PRIMARY KEY CLUSTERED 
 (
 	[AutomaticTaskId] 

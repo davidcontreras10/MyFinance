@@ -24,9 +24,8 @@ namespace ApiFunctions
 		[FunctionName(nameof(ScheduledTasks))]
 		public async Task Run([TimerTrigger(TestCron)] TimerInfo myTimer, ILogger log)
 		{
-			log.LogInformation($"C# ScheduledTasks executed at: {DateTime.Now}");
-			var token = await _scheduledTasksService.ExecuteAllTasksAsync();
-			log.LogInformation($"token response: {token.AccessToken}");
+			log.LogInformation($"C# ScheduledTasks executing at: {DateTime.Now}");
+			await _scheduledTasksService.ExecuteAllTasksAsync();
 		}
 	}
 }

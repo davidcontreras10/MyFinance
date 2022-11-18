@@ -34,6 +34,7 @@ namespace MyFinanceBackend.Services
 		);
 
 		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync();
+		Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetTodayScheduledTaskAsync();
 	}
 
 	public class ScheduledTasksService : IScheduledTasksService
@@ -69,7 +70,7 @@ namespace MyFinanceBackend.Services
 			var scheduledTasks = await _automaticTaskRepository.GetScheduledByTaskIdAsync(taskId);
 			if (scheduledTasks == null || !scheduledTasks.Any())
 			{
-				return TaskExecutedResult.Error($"TaskId: {taskId} does not exist");
+				return TaskExecutedResult.Error($"TaskId: {taskId} does not exist", taskId);
 			}
 
 			try
@@ -88,7 +89,7 @@ namespace MyFinanceBackend.Services
 							await ExecuteTransferScheduledTaskAsync(transferScheduledTaskVm, dateTime, requestType);
 						break;
 					default:
-						taskExecutedResult = TaskExecutedResult.Error("Task not supported");
+						taskExecutedResult = TaskExecutedResult.Error("Task not supported", taskId);
 						break;
 				}
 
@@ -120,6 +121,13 @@ namespace MyFinanceBackend.Services
 			await _automaticTaskRepository.InsertTransferTrxAsync(userId, clientScheduledTask);
 		}
 
+		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetTodayScheduledTaskAsync()
+		{
+			var scheduledTasks = await _automaticTaskRepository.GetScheduledTasksAsync();
+			var today = DateTime.UtcNow;
+			return scheduledTasks.Where(t => IsTaskForToday(t, today)).ToList();
+		}
+
 		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetScheduledTasksAsync()
 		{
 			return await _automaticTaskRepository.GetScheduledTasksAsync();
@@ -138,6 +146,36 @@ namespace MyFinanceBackend.Services
 		public async Task DeleteByIdAsync(string taskId)
 		{
 			await _automaticTaskRepository.DeleteByIdAsync(taskId);
+		}
+
+		private bool IsTaskForToday(BaseScheduledTaskVm baseScheduledTaskVm, DateTime today)
+		{
+			if (!baseScheduledTaskVm.Days.Any())
+			{
+				return false;
+			}
+
+			switch (baseScheduledTaskVm.FrequencyType)
+			{
+				case ScheduledTaskFrequencyType.Invalid:
+					return false;
+				case ScheduledTaskFrequencyType.Monthly:
+					return baseScheduledTaskVm.Days.Contains(GetDayOfMonth(today));
+				case ScheduledTaskFrequencyType.Weekly:
+					return baseScheduledTaskVm.Days.Contains(GetDayOfWeek(today));
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		private int GetDayOfWeek(DateTime dateTime)
+		{
+			return (int) dateTime.DayOfWeek;
+		}
+		
+		private int GetDayOfMonth(DateTime dateTime)
+		{
+			return dateTime.Day;
 		}
 
 		private async Task RecordExecutedTaskAsync(
@@ -182,12 +220,12 @@ namespace MyFinanceBackend.Services
 
 			if (transferScheduledTask.AccountId == 0)
 			{
-				return TaskExecutedResult.Error("Invalid accountId");
+				return TaskExecutedResult.Error("Invalid accountId", transferScheduledTask.Id.ToString());
 			}
 
 			if (transferScheduledTask.ToAccountId == 0)
 			{
-				return TaskExecutedResult.Error("Invalid to accountId");
+				return TaskExecutedResult.Error("Invalid to accountId", transferScheduledTask.Id.ToString());
 			}
 
 			var currentAccountPeriod =
@@ -210,7 +248,7 @@ namespace MyFinanceBackend.Services
 			};
 
 			_transferService.SubmitTransfer(transferRequest);
-			return TaskExecutedResult.Success();
+			return TaskExecutedResult.Success(transferScheduledTask.Id.ToString());
 		}
 
 		private async Task<TaskExecutedResult> ExecuteBasicScheduledTaskAsync(
@@ -226,7 +264,7 @@ namespace MyFinanceBackend.Services
 
 			if (basicScheduledTaskVm.AccountId == 0)
 			{
-				return TaskExecutedResult.Error("Invalid accountId");
+				return TaskExecutedResult.Error("Invalid accountId", basicScheduledTaskVm.Id.ToString());
 			}
 
 			var currentAccountPeriod =
@@ -234,7 +272,7 @@ namespace MyFinanceBackend.Services
 					dateTime);
 			if (currentAccountPeriod == null || currentAccountPeriod.AccountPeriodId == 0)
 			{
-				return TaskExecutedResult.Error("No current period");
+				return TaskExecutedResult.Error("No current period", basicScheduledTaskVm.Id.ToString());
 			}
 
 			var basicTrxCreate = new ClientBasicTrxByPeriod
@@ -252,7 +290,7 @@ namespace MyFinanceBackend.Services
 			};
 
 			_spendsService.AddBasicTransaction(basicTrxCreate, basicTrxCreate.AmountTypeId);
-			return TaskExecutedResult.Success();
+			return TaskExecutedResult.Success(basicScheduledTaskVm.Id.ToString());
 		}
 
 		private static string GetExecuteTaskDescription(

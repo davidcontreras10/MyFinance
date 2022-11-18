@@ -92,6 +92,7 @@ namespace MyFinanceBackend.Data
 			ClientScheduledTask.Basic clientScheduledTask
 		)
 		{
+
 			var sqlDays = ServicesUtils.CreateStringCharSeparated(clientScheduledTask.Days);
 			var parameters = new[]
 			{

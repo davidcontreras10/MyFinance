@@ -37,7 +37,15 @@ namespace MyFinanceWebApi.Controllers
 		    var userId = GetUserId();
 		    await _scheduledTasksService.CreateTransferTrxAsync(userId, model);
 	    }
-		
+
+	    [AdminRequired]
+	    [Route("today")]
+	    [HttpGet]
+	    public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetTodayScheduledTaskAsync()
+	    {
+		    return await _scheduledTasksService.GetTodayScheduledTaskAsync();
+	    }
+
 		[AdminRequired]
 	    [Route("")]
 	    [HttpGet]

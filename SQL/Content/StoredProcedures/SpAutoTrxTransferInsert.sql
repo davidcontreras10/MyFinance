@@ -35,7 +35,7 @@ CREATE PROCEDURE [dbo].[SpAutoTrxTransferInsert]
 @pAccountId INT,
 @pToAccount INT,
 @pPeriodTypeId INT,
-@pDays NVARCHAR
+@pDays NVARCHAR(MAX)
 AS
 SET NOCOUNT ON
 

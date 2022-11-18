@@ -292,7 +292,7 @@ REFERENCES [dbo].[Account] ([AccountId])
 CREATE TABLE [dbo].[SpDaysTrxTaskFreq](
 	[SpDaysTrxTaskFreqId] [UNIQUEIDENTIFIER] NOT NULL,
 	[PeriodTypeId] [INT] NOT NULL,
-	[Days] [NVARCHAR] NOT NULL
+	[Days] NVARCHAR(MAX) NOT NULL
  CONSTRAINT [PK_SpDaysTrxTaskFreq] PRIMARY KEY CLUSTERED 
 (
 	[SpDaysTrxTaskFreqId] 
