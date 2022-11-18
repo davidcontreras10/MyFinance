@@ -8,7 +8,9 @@ namespace MyFinanceWebApp.Services
 {
     public interface IAccountService
     {
-	    Task<IEnumerable<BankAccountSummary>> GetBankAccountSummaryAsync(string token);
+	    Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> BasicUserAccountsAsync(string token);
+
+		Task<IEnumerable<BankAccountSummary>> GetBankAccountSummaryAsync(string token);
 		Task<IEnumerable<SupportedAccountIncludeViewModel>> GetSupportedAccountIncludeViewModelAsync(
 		    IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string token);
 		Task<IEnumerable<AccountFinanceViewModel>> GetSimpleAccountFinanceViewModelAsync(

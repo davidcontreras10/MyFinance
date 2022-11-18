@@ -14,6 +14,13 @@ namespace MyFinanceWebApp.Services.WebApiServices
 	{
 		protected override string ControllerName => "account";
 
+		public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> BasicUserAccountsAsync(string token)
+		{
+			var url = CreateMethodUrl("list");
+			var request = new WebApiRequest(url, HttpMethod.Get, token);
+			return await GetResponseAsAsync<IReadOnlyCollection<AccountDetailsPeriodViewModel>>(request);
+		}
+
 		public async Task<IEnumerable<BankAccountSummary>> GetBankAccountSummaryAsync(string token)
 		{
 			var url = CreateMethodUrl("finance/summary");

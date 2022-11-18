@@ -24,6 +24,7 @@
         public const string COL_PRIMARY_EMAIL = "PrimaryEmail";
         public const string COL_NAME = "Name";
         public const string COL_DESCRIPTION = "Description";
+        public const string COL_TASK_DESCRIPTION = "TaskDescription";
         public const string COL_SPEND_DESCRIPTION = "SpendDescription";
         public const string COL_IS_AUTHENTICATED = "IsAuthenticated";
         public const string COL_RESET_PASSWORD = "ResultCode";
@@ -38,6 +39,7 @@
         public const string COL_ACCOUNT_GLOBAL_ORDER = "GlobalOrder";
         public const string COL_IS_VALID = "IsValid";
         public const string COL_IS_SELECTED = "IsSelected";
+        public const string COL_IS_SPEND_TRX = "IsSpendTrx";
         public const string COL_IS_PENDING = "IsPending";
         public const string COL_IS_LOAN = "IsLoan";
         public const string COL_IS_TRANSFER = "IsTransfer";
@@ -92,6 +94,8 @@
         public const string COL_ACCOUNT_ID = "AccountId";
         public const string COL_ACCOUNT_IDS = "AccountIds";
         public const string COL_ACCOUNT_NAME = "AccountName";
+        public const string COL_TO_ACCOUNT_ID = "ToAccountId";
+        public const string COL_TO_ACCOUNT_NAME = "ToAccountName";
         public const string COL_CURRENT_PERIOD_ID = "CurrentPeriodId";
         public const string COL_INCLUDE_DEFAULT = "IncludeDefault";
         public const string COL_ACCOUNT_PERIOD_ID = "AccountPeriodId";
@@ -122,11 +126,21 @@
         public const string COL_IS_DEFAULT = "IsDefault";
         public const string COL_IS_CURRENT_SELECTION = "IsCurrentSelection";
 
-		#endregion
+        public const string COL_DAYS = "Days";
+        public const string COL_FREQ_TYPE = "PeriodTypeId";
+        public const string COL_AUTOMATIC_TASK_ID = "AutomaticTaskId";
 
-		#region Parameters
+        public const string COL_LAST_EXECUTION_MSG = "ExecutionMsg";
+        public const string COL_EXECUTION_MSG = "ExecutionMsg";
+        public const string COL_LAST_EXECUTION_STATUS = "ExecutionStatus";
+        public const string COL_EXECUTED_DATE = "ExecuteDatetime";
+        public const string COL_EXECUTION_STATUS = "ExecutionStatus";
 
-		public const string PAR_APPLICATION_RESOURCE_ID = "@pApplicationResourceId";
+        #endregion
+
+        #region Parameters
+
+        public const string PAR_APPLICATION_RESOURCE_ID = "@pApplicationResourceId";
 		public const string PAR_APPLICATION_MODULE_ID = "@pApplicationModuleId";
 		public const string PAR_RESOURCE_ACTION_ID = "@pResourceActionId";
 		public const string PAR_RESOURCE_ACCESS_LEVEL_ID = "@pResourceAccessLevelId";
@@ -215,11 +229,22 @@
         public const string PAR_LOAN_RECORD_STATUS_ID = "@pLoanRecordStatusId";
         public const string PAR_LOAN_RECORD_IDS = "@pLoanRecordIds";
 
-		#endregion
+        public const string PAR_TASK_DESC = "@pTaskDescription";
+        public const string PAR_TO_ACCOUNT_ID = "@pToAccount";
+        public const string PAR_PERIOD_TYPE_ID = "@pPeriodTypeId";
+        public const string PAR_DAYS = "@pDays";
+        public const string PAR_IS_SPEND_TRX = "@pIsSpendTrx";
 
-		#region Stored Procedures
+        public const string PAR_AUTOMATIC_TASK_ID = "@pAutomaticTaskId";
+        public const string PAR_EXECUTED_DATETIME = "@pExecutedDatetime";
+        public const string PAR_EXECUTED_STATUS = "@pExecutedStatus";
+        public const string PAR_EXECUTED_MSG = "@pExecutionMsg";
 
-		public const string SP_RESOURCE_ACCESS_REPORT = "SpResourceAccessList";
+        #endregion
+
+        #region Stored Procedures
+
+        public const string SP_RESOURCE_ACCESS_REPORT = "SpResourceAccessList";
 		public const string SP_SPEND_ATTRIBUTES_LIST = "SpSpendAttributesList";
         public const string SP_LOAN_IDS_LIST = "SpLoanIdList";
         public const string SP_LOAN_DETAIL_BY_IDS = "SpLoanRecordDetailList";
@@ -277,6 +302,7 @@
         public const string SP_ACCOUNTS_DETAILS_LIST = "SpAccountsDetailList";
         public const string SP_POSSIBLE_ACCOUNT_INCLUDE_LIST = "SpPossibleAccountIncludeList";
         public const string SP_ACCOUNT_LIST = "SpAccountList";
+        public const string SP_ACCOUNT_W_PERIOD_LIST = "SpAccountWithPeriodList";
         public const string SP_ACCOUNTS_CREATE_VIEW_MODEL = "SpAccountsCreateViewModel";
         public const string SP_ACCOUNT_ORDER_LIST = "SpAccountOrderList";
         public const string SP_BASIC_ACCOUNT_PERIOD_LIST = "SpBasicAccountPeriodList";
@@ -285,6 +311,14 @@
 	    public const string SP_USER_BANK_SUMMARY_ACCOUNT_LIST = "SpUserBankSummaryAccountList";
 	    public const string SP_USER_BANK_SUMMARY_ACCOUNT_PERIOD_LIST = "SpUserBankSummaryAccountPeriodList";
 
-		#endregion
-	}
+	    public const string SP_AUTO_TASK_BASIC_INSERT = "SpAutoTrxBasicInsert";
+        public const string SP_AUTO_TASK_TRANSFER_INSERT = "SpAutoTrxTransferInsert";
+        public const string SP_AUTO_TASK_BY_PARAM_LIST = "SpAutoTrxList";
+
+        public const string SP_EXECUTED_TASKS_LIST = "SpExecutedTaskList";
+        public const string SP_AUTO_TASK_DELETE = "SpAutoTrxDelete";
+        public const string SP_EXECUTED_TASK_INSERT = "SpExecutedTrxInsert";
+
+        #endregion
+    }
 }

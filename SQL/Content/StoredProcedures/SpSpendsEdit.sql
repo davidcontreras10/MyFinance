@@ -116,7 +116,7 @@ BEGIN TRY
 
 	IF EXISTS (SELECT * FROM dbo.TransferRecord tr WHERE tr.SpendId = @pSpendId)
 	BEGIN
-		raiserror ('Cannnot modified transfer record', 20, -1) WITH LOG;
+		raiserror ('Cannnot modified transfer record', 20, -1);
 	END
 
 	INSERT INTO @ModifyField (Field)

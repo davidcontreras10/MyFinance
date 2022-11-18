@@ -1,5 +1,7 @@
+using System;
 using MyFinanceModel.ViewModel;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 
@@ -7,7 +9,11 @@ namespace MyFinanceBackend.Services
 {
     public interface IAccountService
     {
-	    UserAccountsViewModel GetAccountsByUserId(string userId);
+	    Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsPeriodViewModelAsync(
+		    string userId,
+		    DateTime dateTime
+	    );
+		UserAccountsViewModel GetAccountsByUserId(string userId);
 		IEnumerable<AccountDetailsInfoViewModel> GetAccountDetailsViewModel(IEnumerable<int> accountIds, string userId);
         IEnumerable<AccountIncludeViewModel> GetAccountIncludeViewModel(string userId, int currencyId);
         AccountMainViewModel GetAccountDetailsViewModel(string userId, int? accountGroupId);

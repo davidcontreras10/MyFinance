@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -62,6 +63,33 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
             var list = response.Content.ReadAsAsync<IEnumerable<AccountViewModel>>().Result;
             return list;
+        }
+
+        public async Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountPeriodId, int currencyId, string token,
+	        BalanceTypes balanceType)
+        {
+	        if (string.IsNullOrEmpty(token) || accountPeriodId == 0)
+	        {
+		        throw new Exception("Invalid parameters");
+	        }
+
+	        var parameters = new Dictionary<string, object>
+	        {
+		        {"accountPeriodId", accountPeriodId},
+		        {"currencyId", currencyId},
+		        {"balanceType", balanceType}
+	        };
+
+	        var url = CreateMethodUrl(WebServicesConstants.GET_TRANSFER_POSSIBLE_DESTINATION_ACCOUNTS, parameters);
+	        var request = new WebApiRequest(url, HttpMethod.Get, token);
+	        var response = await GetResponseAsync(request);
+	        if (!response.IsSuccessStatusCode)
+	        {
+		        throw new Exception(response.StatusCode.ToString());
+	        }
+
+	        var list = response.Content.ReadAsAsync<IEnumerable<AccountViewModel>>().Result;
+	        return list;
         }
 
         public TransferAccountDataViewModel GetBasicAccountInfo(int accountPeriodId, string token)

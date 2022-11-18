@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataAccess;
 using MyFinanceBackend.Data;
 using MyFinanceBackend.Models;
 using MyFinanceBackend.ServicesExceptions;
@@ -11,12 +10,11 @@ using MyFinanceModel.ViewModel;
 
 namespace MyFinanceBackend.Services
 {
-	public class SpendsService : SqlServerBaseService, ISpendsService
+	public class SpendsService : ISpendsService
 	{
 		#region Constructor
 
-		public SpendsService(IConnectionConfig connectionConfig, ISpendsRepository spendsRepository, IResourceAccessRepository resourceAccessRepository)
-			: base(connectionConfig)
+		public SpendsService(ISpendsRepository spendsRepository, IResourceAccessRepository resourceAccessRepository)
 		{
 			_spendsRepository = spendsRepository;
 			_resourceAccessRepository = resourceAccessRepository;

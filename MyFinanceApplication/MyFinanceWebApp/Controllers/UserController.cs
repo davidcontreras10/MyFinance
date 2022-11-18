@@ -211,7 +211,7 @@ namespace MyFinanceWebApp.Controllers
         public ActionResult Login(string returnUrl)
         {
             TempData["returnUrl"] = returnUrl;
-            return View("Login");
+            return View("Login", new LoginModel());
         }
 
         [HttpPost]

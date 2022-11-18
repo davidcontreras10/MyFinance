@@ -112,7 +112,7 @@ BEGIN TRY
 	IF EXISTS (SELECT * FROM @AccountIncludeDataRt rt 
 		WHERE rt.AccountId = 0 OR rt.AccountId IS NULL OR rt.CurrencyConverterMethodId = 0 OR rt.CurrencyConverterMethodId IS NULL)
 	BEGIN
-		raiserror ('@AccountIncludeDataRt contains invalid values', 20, -1) with log; 
+		raiserror ('@AccountIncludeDataRt contains invalid values', 20, -1); 
 	END
 
 	SELECT * FROM @AccountIncludeDataRt;

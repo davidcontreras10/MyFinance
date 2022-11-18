@@ -42,4 +42,11 @@ namespace MyFinanceWebApp.Models
         public bool Success { get; set; }
         public bool ReadyToUpdate { get; set; } = true;
     }
+
+    public class BasicSelectableItem : IDropDownSelectable
+    {
+	    public int Id { get; set; }
+	    public string Name { get; set; }
+	    public bool IsSelected { get; set; }
+    }
 }

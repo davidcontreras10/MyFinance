@@ -200,7 +200,7 @@ BEGIN TRY
 
 	IF NOT EXISTS (SELECT * FROM @AccountPeriodsTemp) 
 	BEGIN
-		raiserror ('Not able to get edit data', 20, -1) WITH LOG;
+		raiserror ('Not able to get edit data', 20, -1);
 	END
 
 	UPDATE @AccountPeriodsTemp SET AccountId = accp.AccountId

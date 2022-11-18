@@ -28,7 +28,7 @@ namespace MyFinanceBackend.Services
 
         private static string GetDefaultEmailAddressCredential()
         {
-            return "doge15690"; 
+            return "mmrijlljcdcicfgn"; 
         }
 
         private async Task<bool> SendEmailAsync(string from, string to, string credential, string subject, string body, bool isHtml)

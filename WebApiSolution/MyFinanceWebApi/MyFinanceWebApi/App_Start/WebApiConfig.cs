@@ -97,9 +97,11 @@ namespace MyFinanceWebApi
             builder.RegisterType<AuthorizationDataRepository>().As<IAuthorizationDataRepository>();
             builder.RegisterType<AccountRepository>().As<IAccountRepository>();
             builder.RegisterType<TransferRepository>().As<ITransferRepository>();
+            builder.RegisterType<AutomaticTaskRepository>().As<IAutomaticTaskRepository>();
 
 	        builder.RegisterType<LoanRepository>().As<ILoanRepository>();
 			builder.RegisterType<ResourceAccessRepository>().As<IResourceAccessRepository>();
+			builder.RegisterType<ScheduledTasksService>().As<IScheduledTasksService>();
 
 	        builder.RegisterType<AccountFinanceService>().As<IAccountFinanceService>();
 	        builder.RegisterType<LoanService>().As<ILoanService>();
@@ -114,11 +116,8 @@ namespace MyFinanceWebApi
 
         private static void SerilogSetup(ContainerBuilder builder)
         {
-            builder.Register<ILogger>((c, p) =>
-            {
-                return new LoggerConfiguration().ReadFrom.AppSettings()
-                  .CreateLogger();
-            }).SingleInstance();
+            builder.Register<ILogger>((c, p) => new LoggerConfiguration().ReadFrom.AppSettings()
+	            .CreateLogger()).SingleInstance();
         }
     }
 }

@@ -247,7 +247,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountGroupController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ExecutedTasksController.cs" />
     <Compile Include="Controllers\LoanController.cs" />
+    <Compile Include="Controllers\ScheduleTasksController.cs" />
     <Compile Include="Controllers\SpendsController.cs" />
     <Compile Include="Controllers\SpendTypeController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -256,6 +258,7 @@
     <Compile Include="CustomHandlers\AddAuthorizationHeaderParameterOperationFilter.cs" />
     <Compile Include="CustomHandlers\AddObjectHeaderParamOperationFilter.cs" />
     <Compile Include="CustomHandlers\AddRestrictObjectHeaderParamOperationFilter.cs" />
+    <Compile Include="CustomHandlers\AdminRequiredAttribute.cs" />
     <Compile Include="CustomHandlers\AuthTokenOperation.cs" />
     <Compile Include="CustomHandlers\AvoidModelStateValidation.cs" />
     <Compile Include="CustomHandlers\ErrorHandlerExceptionHandler.cs" />

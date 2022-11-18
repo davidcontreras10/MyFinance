@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using MyFinanceModel.ClientViewModel;
 
 namespace MyFinanceBackend.Data
@@ -267,6 +268,24 @@ namespace MyFinanceBackend.Data
 			return result;
 		}
 
+		public async Task<AccountPeriodBasicInfo> GetAccountPeriodInfoByAccountIdDateTimeAsync(int accountId, DateTime dateTime)
+		{
+			var parameters = new[]
+			{
+				new SqlParameter(DatabaseConstants.PAR_ACCOUNT_ID,accountId),
+				new SqlParameter(DatabaseConstants.PAR_DATE_TIME,dateTime)
+			};
+
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_BASIC_ACCOUNT_PERIOD_ID_DATE, parameters);
+			if (dataSet == null || dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0)
+			{
+				return null;
+			}
+
+			var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountPeriodBasicInfo).First();
+			return result;
+		}
+
 		public IEnumerable<AccountBasicPeriodInfo> GetAccountBasicInfoByAccountId(IEnumerable<int> accountIds)
 		{
 			if (accountIds == null || !accountIds.Any())
@@ -310,6 +329,24 @@ namespace MyFinanceBackend.Data
 				AccountDetailsViewModels = accountDetailsViewModel,
 				AccountGroupViewModels = accountGroupViewModels
 			};
+		}
+
+		public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsPeriodViewModelAsync(string userId, DateTime dateTime)
+		{
+			var parameters = new[]
+			{
+				new SqlParameter(DatabaseConstants.PAR_USER_ID, userId),
+				new SqlParameter(DatabaseConstants.PAR_DATE, dateTime)
+			};
+
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_ACCOUNT_W_PERIOD_LIST, parameters);
+			if (dataSet == null || dataSet.Tables.Count == 0)
+			{
+				throw new Exception("Invalid dataSet exception");
+			}
+
+			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountDetailsPeriodViewModel)
+				.ToList();
 		}
 
 		#endregion

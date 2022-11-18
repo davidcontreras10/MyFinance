@@ -135,7 +135,7 @@ BEGIN TRY
 	END
 	ELSE
 	BEGIN
-		RAISERROR ('Invalid search criteria Id', 20, -1) WITH LOG;
+		RAISERROR ('Invalid search criteria Id', 20, -1);
 	END
 
 	SELECT * FROM @LoanIdsTbl;

@@ -100,7 +100,7 @@ BEGIN TRY
 	BEGIN
 		IF @pAccountPeriodId IS NULL
 		BEGIN
-			raiserror ('@pAccountPeriodId cannot be null when @pAccountId is null', 20, -1) with log;
+			raiserror ('@pAccountPeriodId cannot be null when @pAccountId is null', 20, -1);
 		END
 		SELECT @inputAccountId = accp.AccountId FROM dbo.AccountPeriod accp WHERE accp.AccountPeriodId = @pAccountPeriodId;
 	END
@@ -138,7 +138,7 @@ BEGIN TRY
 			WHERE cc.CurrencyIdOne = @pCurrencyId AND cc.CurrencyIdTwo = @pCurrencyId;
 			IF @currencyConverterMethodId IS NULL
 			BEGIN
-				raiserror ('@currencyConverterMethodId not found 1', 20, -1) with log
+				raiserror ('@currencyConverterMethodId not found 1', 20, -1)
 			END
 		END
 		ELSE
@@ -159,7 +159,7 @@ BEGIN TRY
 				ccm.FinancialEntityId = @currentFinancialEntityId;
 				IF @currencyConverterMethodId IS NULL
 				BEGIN
-					raiserror ('@currencyConverterMethodId not found 2', 20, -1) with log;
+					raiserror ('@currencyConverterMethodId not found 2', 20, -1);
 				END
 			END
 		END

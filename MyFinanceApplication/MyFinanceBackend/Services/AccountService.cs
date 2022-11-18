@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MyFinanceModel.ViewModel;
 using System;
+using System.Threading.Tasks;
 using MyFinanceBackend.Data;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -25,6 +26,14 @@ namespace MyFinanceBackend.Services
 		#endregion
 
 		#region Public methods
+
+		public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsPeriodViewModelAsync(
+			string userId,
+			DateTime dateTime
+		)
+		{
+			return await _accountRepository.GetAccountDetailsPeriodViewModelAsync(userId, dateTime);
+		}
 
 		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
 			IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string userId)

@@ -18,32 +18,6 @@ BEGIN
 END
 GO
 --==============================================================================================================================================
---	Name:		 				Dashboard.spLocal_DS_UI_Dashboard_DashboardsList
---	Type:						Stored Procedure
---	Editor Tab Spacing:	4	
---==============================================================================================================================================
---	DESCRIPTION: 
---	The first result set will be used to return the parent menu option. 
---  The second result set will return the list of menu options with parent id equals to the one provided to the stored procedure.
---	The third result set will return the list of parameters for all menu options.
---==============================================================================================================================================
---	BUSINESS RULES:
---	Enter the business rules in this section...
---	1.	Declare Variables 
---	2.	Declare Tables 
---	3.	Initialize Variables 
---	4.	Validate Input Parameters
---	5.	Retrieve Menu Items data
---	6.	Retrieve Menu Item Parameters data
---	7.	Trap Errors
---==============================================================================================================================================
---	EDIT HISTORY:
-------------------------------------------------------------------------------------------------------------------------------------------------
---	Revision	Date			Who						What
---	========	====			===						====
---	1.0			2013-04-19		David Contreras			Initial Development
-
---==============================================================================================================================================
 --	EXEC Statement:
 ------------------------------------------------------------------------------------------------------------------------------------------------
 --	The DECLARE, SELECT, and EXEC statements in the following example should match the stored procedure input
@@ -71,7 +45,8 @@ DECLARE @AccountPeriodRtn TABLE
 	AccountId INT,
 	AccountName VARCHAR(500),
 	InitialDate DATETIME,
-	EndDate DATETIME
+	EndDate DATETIME,
+	UserId UNIQUEIDENTIFIER
 );
 
 --==============================================================================================================================================
@@ -87,8 +62,8 @@ DECLARE @AccountPeriodRtn TABLE
 --==============================================================================================================================================
 BEGIN TRY
 
-	INSERT INTO @AccountPeriodRtn(AccountId, AccountName, AccountPeriodId, InitialDate, EndDate)
-	SELECT accp.AccountId, acc.Name, accp.AccountPeriodId, accp.InitialDate, accp.EndDate 
+	INSERT INTO @AccountPeriodRtn(AccountId, AccountName, AccountPeriodId, InitialDate, EndDate, UserId)
+	SELECT accp.AccountId, acc.Name, accp.AccountPeriodId, accp.InitialDate, accp.EndDate, acc.UserId
 	FROM dbo.AccountPeriod accp
 	JOIN dbo.Account acc ON acc.AccountId = accp.AccountId
 	WHERE @pDateTime >= accp.InitialDate AND @pDateTime < accp.EndDate

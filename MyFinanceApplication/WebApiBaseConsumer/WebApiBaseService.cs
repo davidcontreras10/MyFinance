@@ -121,8 +121,16 @@ namespace WebApiBaseConsumer
 		protected async Task<T> GetResponseAsAsync<T>(WebApiRequest webApiRequest)
 		{
 			var response = await GetResponseAsync(webApiRequest);
-			var contentResponse = await response.Content.ReadAsAsync<T>();
-			return contentResponse;
+			try
+			{
+				var contentResponse = await response.Content.ReadAsAsync<T>();
+				return contentResponse;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
 		}
 
 		protected HttpResponseMessage GetResponse(WebApiRequest webApiRequest)
@@ -245,6 +253,8 @@ namespace WebApiBaseConsumer
 
 			if (response.StatusCode == HttpStatusCode.Unauthorized)
 			{
+				var content = await response.Content.ReadAsStringAsync();
+				Console.WriteLine(content);
 				throw new BackendTokenException();
 			}
 
