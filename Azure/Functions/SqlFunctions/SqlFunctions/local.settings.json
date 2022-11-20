@@ -1,0 +1,11 @@
+{
+	"IsEncrypted": false,
+	"Values": {
+		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
+		"FUNCTIONS_WORKER_RUNTIME": "dotnet",
+		"webApiBaseApi": "http://localhost:51142/api/",
+		"DefaultMYFNDB": "Server=.\\SQLExpress;Database=MYFNDB;User Id=FinanceAzureAppUser; Password=FNAzure_01;MultipleActiveResultSets=true",
+		"azureAppUser": "dcontre10",
+		"azureAppPw": "david" 
+	}
+}
