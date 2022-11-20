@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using MyFinanceModel;
 using MyFinanceModel.WebMethodsModel;
+using WebApiBaseConsumer;
 
 namespace MyFinanceBackend.Services
 {
@@ -20,14 +22,16 @@ namespace MyFinanceBackend.Services
 
         private readonly string _serviceUrl;
         private const string CURRENCY_SERVICE_NAME = "Convert";
-        private const string CONVERT_MEHTOD_BY_LIST_NAME = "ExchangeRateResultByMethodIds";
-        private const string CONVERT_MEHTOD_NAME = "ExchangeRateResultByMethodId";
+        private const string CONVERT_METHOD_BY_LIST_NAME = "ExchangeRateResultByMethodIds";
+        private const string CONVERT_METHOD_NAME = "ExchangeRateResultByMethodId";
+
+        protected override string ControllerName => CURRENCY_SERVICE_NAME;
 
         #endregion
 
         #region Constructors
 
-        public CurrencyService()
+        public CurrencyService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
         {
             _serviceUrl = ConfigurationManager.AppSettings["CurrencyServiceUrl"];
             if (string.IsNullOrEmpty(_serviceUrl))
@@ -58,35 +62,33 @@ namespace MyFinanceBackend.Services
         {
             var requestDateTime = dateTime.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
             var parameters = new Dictionary<string, object> { { "methodId", methodId }, { "dateTime", requestDateTime } };
-            var methodUrl = CreateMethodUrl(CONVERT_MEHTOD_NAME, parameters);
-            var result = GetResponseType<ExchangeRateResult>(methodUrl, false, null);
-            return result;
+            var methodUrl = CreateMethodUrl(CONVERT_METHOD_NAME, parameters);
+            var request = new WebApiRequest(methodUrl, HttpMethod.Get);
+            return GetResponseAs<ExchangeRateResult>(request);
         }
 
         private IEnumerable<ExchangeRateResult> GetExchangeRateResultService(IEnumerable<int> methodIds, DateTime dateTime)
         {
-            var methodUrl = CreateMethodUrl(CONVERT_MEHTOD_BY_LIST_NAME);
+            var methodUrl = CreateMethodUrl(CONVERT_METHOD_BY_LIST_NAME);
             var exchangeRateResultModel = new ExchangeRateResultModel
                 {
                     DateTime = dateTime,
                     MethodIds = methodIds
                 };
-            var result = GetResponseType<IEnumerable<ExchangeRateResult>>(methodUrl, true, exchangeRateResultModel);
-            return result;
+            var request = new WebApiRequest(methodUrl, HttpMethod.Get)
+            {
+	            Model = exchangeRateResultModel
+            };
+
+            return GetResponseAs<IEnumerable<ExchangeRateResult>>(request);
         }
 
-        protected override string GetApiBaseDomain()
-        {
-            return _serviceUrl;
+		protected override string GetApiBaseDomain()
+		{
+			return _serviceUrl;
         }
+        
 
-        protected override string ControllerName()
-        {
-            return CURRENCY_SERVICE_NAME;
-        }
-
-        #endregion
-
-
+		#endregion
     }
 }

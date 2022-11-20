@@ -76,5 +76,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
 			await GetResponseAsync(request);
 		}
+
+		public WebApiScheduledTasksService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		{
+		}
 	}
 }

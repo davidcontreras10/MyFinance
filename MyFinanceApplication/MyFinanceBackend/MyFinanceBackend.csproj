@@ -50,6 +50,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\MyFinanceModel\MyFinanceModel.csproj" />
+    <ProjectReference Include="..\WebApiBaseConsumer\WebApiBaseConsumer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">

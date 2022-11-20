@@ -26,5 +26,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
 			var request = new WebApiRequest(url, HttpMethod.Get, token);
 			return await GetResponseAsAsync<IReadOnlyCollection<ExecutedTaskViewModel>>(request);
 		}
+
+		public WebApiExecutedTasksService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		{
+		}
 	}
 }

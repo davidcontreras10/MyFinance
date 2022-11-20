@@ -135,5 +135,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
 	    }
 
 	    #endregion
+
+	    public WebApiSpendTypeService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+	    {
+	    }
     }
 }

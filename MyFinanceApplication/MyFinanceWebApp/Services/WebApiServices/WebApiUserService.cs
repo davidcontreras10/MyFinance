@@ -28,17 +28,10 @@ namespace MyFinanceWebApp.Services.WebApiServices
             {
                 IsJsonModel = false,
                 UseControllerBaseUrl = false,
-                Model = content
+                Model = content,
             };
 
-            var response = GetResponse(request);
-		    if (response.IsSuccessStatusCode)
-		    {
-			    var token = response.Content.ReadAsAsync<AuthToken>().Result;
-			    return token;
-		    }
-
-		    return null;
+            return GetResponseAs<AuthToken>(request);
 	    }
 
         public async Task<LoginResult> AttemptLoginAsync(string username, string password)
@@ -80,14 +73,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
                 IsJsonModel = false
             };
 
-            var response = GetResponse(request);
-            if (response.IsSuccessStatusCode)
-            {
-                var token = response.Content.ReadAsAsync<AuthToken>().Result;
-                return token;
-            }
-
-            return null;
+            return GetResponseAs<AuthToken>(request);
         }
 
         public ResetPasswordValidationResult ValidateResetPasswordActionResult(string actionLink)
@@ -159,5 +145,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
         }
 
         protected override string ControllerName => "User";
+
+        public WebApiUserService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+        {
+        }
     }
 }

@@ -142,5 +142,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
             var response = GetResponseAs<IEnumerable<ItemModified>>(request);
             return response;
         }
+
+        public WebApiLoanService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+        {
+        }
     }
 }

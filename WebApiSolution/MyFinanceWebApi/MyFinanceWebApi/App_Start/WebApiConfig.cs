@@ -1,10 +1,12 @@
-﻿using System.Reflection;
+﻿using System.Net.Http;
+using System.Reflection;
 using System.Web.Http;
-using System.Web.OData.Extensions;
-using System.Web.OData.Query;
 using Autofac;
 using Autofac.Integration.WebApi;
 using DataAccess;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Query;
+using Microsoft.Extensions.DependencyInjection;
 using MyFinanceBackend.Data;
 using MyFinanceBackend.Services;
 using MyFinanceBackend.Services.AuthServices;
@@ -105,6 +107,15 @@ namespace MyFinanceWebApi
 
 	        builder.RegisterType<AccountFinanceService>().As<IAccountFinanceService>();
 	        builder.RegisterType<LoanService>().As<ILoanService>();
+
+	        builder.Register<IHttpClientFactory>(_ =>
+	        {
+		        var services = new ServiceCollection();
+		        services.AddHttpClient();
+		        var provider = services.BuildServiceProvider();
+		        return provider.GetRequiredService<IHttpClientFactory>();
+	        });
+
             SerilogSetup(builder);
 		}
 

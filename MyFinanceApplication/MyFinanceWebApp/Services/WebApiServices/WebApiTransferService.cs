@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web.Http;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
@@ -28,14 +26,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
             var url = CreateMethodUrl(WebServicesConstants.GET_TRANSFER_POSSIBLE_CURRENCIES, parameters);
             var request = new WebApiRequest(url, HttpMethod.Get, token);
-            var response = GetResponse(request);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception(response.StatusCode.ToString());
-            }
-
-            var list = response.Content.ReadAsAsync<IEnumerable<CurrencyViewModel>>().Result;
-            return list;
+            return GetResponseAs<IEnumerable<CurrencyViewModel>>(request);
         }
 
         public IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountPeriodId, int currencyId, string token,
@@ -55,18 +46,15 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
             var url = CreateMethodUrl(WebServicesConstants.GET_TRANSFER_POSSIBLE_DESTINATION_ACCOUNTS, parameters);
             var request = new WebApiRequest(url, HttpMethod.Get, token);
-            var response = GetResponse(request);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception(response.StatusCode.ToString());
-            }
-
-            var list = response.Content.ReadAsAsync<IEnumerable<AccountViewModel>>().Result;
-            return list;
+            return GetResponseAs<IEnumerable<AccountViewModel>>(request);
         }
 
-        public async Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountPeriodId, int currencyId, string token,
-	        BalanceTypes balanceType)
+        public async Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(
+	        int accountPeriodId,
+	        int currencyId,
+	        string token,
+	        BalanceTypes balanceType
+        )
         {
 	        if (string.IsNullOrEmpty(token) || accountPeriodId == 0)
 	        {
@@ -82,14 +70,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
 	        var url = CreateMethodUrl(WebServicesConstants.GET_TRANSFER_POSSIBLE_DESTINATION_ACCOUNTS, parameters);
 	        var request = new WebApiRequest(url, HttpMethod.Get, token);
-	        var response = await GetResponseAsync(request);
-	        if (!response.IsSuccessStatusCode)
-	        {
-		        throw new Exception(response.StatusCode.ToString());
-	        }
-
-	        var list = response.Content.ReadAsAsync<IEnumerable<AccountViewModel>>().Result;
-	        return list;
+	        return await GetResponseAsAsync<IEnumerable<AccountViewModel>>(request);
         }
 
         public TransferAccountDataViewModel GetBasicAccountInfo(int accountPeriodId, string token)
@@ -106,16 +87,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
             var url = CreateMethodUrl(WebServicesConstants.GET_TRANSFER_ACCOUNT_BASIC_INFO, parameters);
             var request = new WebApiRequest(url, HttpMethod.Get, token);
-            var response = GetResponse(request);
-            if (!response.IsSuccessStatusCode)
-            {
-                var message = response.Content.ReadAsStringAsync().Result;
-                Debug.WriteLine(message);
-                throw new HttpResponseException(response);
-            }
-
-            var account = response.Content.ReadAsAsync<TransferAccountDataViewModel>().Result;
-            return account;
+            return GetResponseAs<TransferAccountDataViewModel>(request);
         }
 
         public IEnumerable<ItemModified> SubmitTransfer(string token, TransferClientViewModel transferClientViewModel)
@@ -131,15 +103,13 @@ namespace MyFinanceWebApp.Services.WebApiServices
                 Model = transferClientViewModel
             };
 
-            var response = GetResponse(request);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception(response.StatusCode.ToString());
-            }
-
-            return response.Content.ReadAsAsync<IEnumerable<ItemModified>>().Result;
+            return GetResponseAs<IEnumerable<ItemModified>>(request);
         }
 
 		protected override string ControllerName => "Transfer";
+
+		public WebApiTransferService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		{
+		}
     }
 }

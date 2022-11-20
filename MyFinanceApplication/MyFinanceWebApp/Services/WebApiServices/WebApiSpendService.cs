@@ -266,5 +266,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
 		#endregion
 
 		protected override string ControllerName => "spends";
+
+		public WebApiSpendService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		{
+		}
     }
 }

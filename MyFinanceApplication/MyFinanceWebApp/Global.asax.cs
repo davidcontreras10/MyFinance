@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
 using Autofac.Integration.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using MyFinanceWebApp.Autofac;
 using MyFinanceWebApp.CustomHandlers;
 using MyFinanceWebApp.Models;
@@ -68,6 +70,13 @@ namespace MyFinanceWebApp
             builder.RegisterType<WebApiLoanService>().As<ILoanService>();
             builder.RegisterType<WebApiScheduledTasksService>().As<IScheduledTasksService>();
             builder.RegisterType<WebApiExecutedTasksService>().As<IExecutedTasksService>();
+            builder.Register<IHttpClientFactory>(_ =>
+            {
+	            var services = new ServiceCollection();
+	            services.AddHttpClient();
+	            var provider = services.BuildServiceProvider();
+	            return provider.GetRequiredService<IHttpClientFactory>();
+            });
 
             builder.RegisterType<WebApiUserService>().As<IUserService>().InstancePerRequest();
 			builder.RegisterType<TokenAuthorizeAttribute>().PropertiesAutowired();

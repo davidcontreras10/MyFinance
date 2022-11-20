@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using MyFinanceModel;
 using Newtonsoft.Json;
@@ -12,8 +13,11 @@ namespace WebApiBaseConsumer
 {
 	public abstract class WebApiBaseService
 	{
-		protected WebApiBaseService()
+		private readonly IHttpClientFactory _httpClientFactory;
+
+		protected WebApiBaseService(IHttpClientFactory httpClientFactory)
 		{
+			_httpClientFactory = httpClientFactory;
 			ValidateModelState = true;
 			ValidateServiceException = true;
 		}
@@ -55,16 +59,8 @@ namespace WebApiBaseConsumer
 			{
 				if (webApiRequest.IsJsonModel)
 				{
-					var jsonFormatter = new System.Net.Http.Formatting.JsonMediaTypeFormatter
-					{
-						SerializerSettings = new JsonSerializerSettings
-						{
-							TypeNameHandling = TypeNameHandling.None,
-							Formatting = Formatting.Indented,
-							NullValueHandling = NullValueHandling.Ignore
-						}
-					};
-					request.Content = new ObjectContent(webApiRequest.Model.GetType(), webApiRequest.Model, jsonFormatter);
+					request.Content = new StringContent(JsonConvert.SerializeObject(webApiRequest.Model), Encoding.UTF8,
+						"application/json");
 				}
 				else
 				{
@@ -136,24 +132,22 @@ namespace WebApiBaseConsumer
 		protected HttpResponseMessage GetResponse(WebApiRequest webApiRequest)
 		{
 			var request = CreateHttpRequestMessage(webApiRequest);
-			using (var client = new HttpClient())
+			var client = _httpClientFactory.CreateClient();
+			try
 			{
-				try
+				var response = client.SendAsync(request).Result;
+				if (webApiRequest.ProcessResponse)
 				{
-					var response = client.SendAsync(request).Result;
-					if (webApiRequest.ProcessResponse)
-					{
-						var result = ProcessResponseAsync(response);
-						result.Wait();
-					}
+					var result = ProcessResponseAsync(response);
+					result.Wait();
+				}
 
-					return response;
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e);
-					throw;
-				}
+				return response;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
 			}
 		}
 
