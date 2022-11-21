@@ -181,5 +181,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
             var request = new WebApiRequest(url, HttpMethod.Delete, token);
             GetResponse(request);
 	    }
+
+	    public WebApiAccountService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+	    {
+	    }
 	}
 }
