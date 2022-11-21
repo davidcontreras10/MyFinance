@@ -16,6 +16,10 @@ namespace Domain.Repositories
 		protected override string ControllerName => string.Empty;
 		private const RequestSource SelectedRequestSource = RequestSource.GetBccrBridge;
 
+		public BccrWebApiService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		{
+		}
+
 		public async Task<DataTable> GetIndicatorAsync(string indicator, DateTime initial, DateTime end)
 		{
 			switch (SelectedRequestSource)

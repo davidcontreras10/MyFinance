@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net.Http;
+using System.Reflection;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
@@ -6,6 +7,7 @@ using CurrencyService.Services;
 using DataAccess;
 using Domain.Repositories;
 using Domain.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CurrencyService
 {
@@ -43,6 +45,14 @@ namespace CurrencyService
 	        builder.RegisterType<DolarColonesBccrService>().As<IDolarColonesBccrService>();
 	        builder.RegisterType<BccrCurrencyService>().As<IBccrCurrencyService>();
 	        builder.RegisterType<BccrWebApiService>().As<IBccrCurrencyRepository>();
-        }
+
+			builder.Register<IHttpClientFactory>(_ =>
+			{
+				var services = new ServiceCollection();
+				services.AddHttpClient();
+				var provider = services.BuildServiceProvider();
+				return provider.GetRequiredService<IHttpClientFactory>();
+			});
+		}
     }
 }
