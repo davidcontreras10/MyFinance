@@ -11,6 +11,7 @@ using MyFinanceBackend.Data;
 using MyFinanceBackend.Services;
 using MyFinanceBackend.Services.AuthServices;
 using MyFinanceWebApi.CustomHandlers;
+using MyFinanceWebApi.Helpers;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 using Swashbuckle.Application;
@@ -80,7 +81,7 @@ namespace MyFinanceWebApi
 
         private static void RegisterTypes(ContainerBuilder builder)
         {
-            builder.RegisterType<LocalConnectionConfig>().As<IConnectionConfig>();
+            builder.RegisterType<ConnectionConfig>().As<IConnectionConfig>();
             builder.RegisterType<TransferService>().As<ITransferService>();
             builder.RegisterType<UsersService>().As<IUsersService>();
             builder.RegisterType<SpendsService>().As<ISpendsService>();
