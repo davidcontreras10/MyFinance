@@ -2,11 +2,13 @@ $windir = [System.Environment]::ExpandEnvironmentVariables("%WINDIR%");
 
 $vs17dir = 'C:\Program Files (x86)\Microsoft Visual Studio\2017'
 $vs19dir = 'C:\Program Files (x86)\Microsoft Visual Studio\2019'
+$vs22dir = 'C:\Program Files\Microsoft Visual Studio\2022'
 $vs17communityDir = $vs17dir + '\Community\MSBuild\15.0\Bin'
 $vs17enterpriseDir = $vs17dir + '\Enterprise\MSBuild\15.0\Bin'
 $vs17professionalDir = $vs17dir + '\Professional\MSBuild\15.0\Bin'
 $vs17genericDir = $vs17dir + '\BuildTools\MSBuild\15.0\Bin'
 $vs19enterprise = $vs19dir + '\Enterprise\MSBuild\Current\Bin'
+$vs22communityDir = $vs22dir + '\Community\MSBuild\Current\Bin'
 
 # if(Test-Path -Path $vs17communityDir){
 	# $msBuildDir = $vs17communityDir
@@ -20,9 +22,7 @@ $vs19enterprise = $vs19dir + '\Enterprise\MSBuild\Current\Bin'
 	# $msBuildDir = $vs17enterpriseDir
 # }
 
-$msBuildDir = $vs19enterprise
-
-$msBuild14Dir = 'C:\Program Files (x86)\MSBuild\14.0\Bin'
+$msBuildDir = $vs22communityDir
 $baseProjectsDir = split-path -parent $PSScriptRoot
 $solutionDir = '..\MyFinanceApplication'
 $utilitiesDir = $baseProjectsDir + '\Utilities\Utilities'

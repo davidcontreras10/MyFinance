@@ -415,13 +415,6 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
-    <Content Include="NgClient\.gitignore" />
-    <Content Include="NgClient\karma.conf.js" />
-    <Content Include="NgClient\src\app\app.component.css" />
-    <Content Include="NgClient\src\app\app.component.html" />
-    <Content Include="NgClient\src\favicon.ico" />
-    <Content Include="NgClient\src\index.html" />
-    <Content Include="NgClient\src\styles.css" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap-multiselect-collapsible-groups.js" />
@@ -432,18 +425,6 @@
     <Content Include="Scripts\gridster-custom.js" />
     <Content Include="Scripts\gridster-responsive.js" />
     <Content Include="Scripts\index.js" />
-    <Content Include="NgClient\.browserslistrc" />
-    <Content Include="NgClient\.editorconfig" />
-    <Content Include="NgClient\.vscode\extensions.json" />
-    <Content Include="NgClient\.vscode\launch.json" />
-    <Content Include="NgClient\.vscode\tasks.json" />
-    <Content Include="NgClient\angular.json" />
-    <Content Include="NgClient\package.json" />
-    <Content Include="NgClient\README.md" />
-    <Content Include="NgClient\src\assets\.gitkeep" />
-    <Content Include="NgClient\tsconfig.app.json" />
-    <Content Include="NgClient\tsconfig.json" />
-    <Content Include="NgClient\tsconfig.spec.json" />
     <None Include="Properties\PublishProfiles\myfinanceapp - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\myfinanceapp - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
@@ -557,17 +538,6 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="NgClient\src\app\app-routing.module.ts" />
-    <TypeScriptCompile Include="NgClient\src\app\app.component.spec.ts" />
-    <TypeScriptCompile Include="NgClient\src\app\app.component.ts" />
-    <TypeScriptCompile Include="NgClient\src\app\app.module.ts" />
-    <TypeScriptCompile Include="NgClient\src\environments\environment.prod.ts" />
-    <TypeScriptCompile Include="NgClient\src\environments\environment.ts" />
-    <TypeScriptCompile Include="NgClient\src\main.ts" />
-    <TypeScriptCompile Include="NgClient\src\polyfills.ts" />
-    <TypeScriptCompile Include="NgClient\src\test.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
