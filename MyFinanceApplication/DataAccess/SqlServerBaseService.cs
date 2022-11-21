@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -153,9 +153,9 @@ namespace DataAccess
                     sqlCommand.Parameters.Add(parameter);
                 }
 
-                using (var sqlDataAdapter = new AsyncDataAdapter.SqlDataAdapter(sqlCommand))
+                using (var sqlDataAdapter = new SqlDataAdapter(sqlCommand))
                 {
-                    await sqlDataAdapter.FillAsync(ds);
+	                await FillAsync(sqlDataAdapter, ds);
                 }
 
             }
@@ -213,14 +213,19 @@ namespace DataAccess
                         sqlCommand.Parameters.Add(parameter);
                     }
 
-                    using (var sqlDataAdapter = new AsyncDataAdapter.SqlDataAdapter(sqlCommand))
+                    using (var sqlDataAdapter = new SqlDataAdapter(sqlCommand))
                     {
-                        await sqlDataAdapter.FillAsync(dataSet);
+	                    await FillAsync(sqlDataAdapter, dataSet);
                     }
                 }
             }
 
             return dataSet;
+        }
+
+        private static Task FillAsync(IDataAdapter sqlDataAdapter, DataSet dataSet)
+        {
+	        return Task.Run(() => sqlDataAdapter.Fill(dataSet));
         }
 
         private async Task<SqlConnection> GetSqlConnectionAsync()

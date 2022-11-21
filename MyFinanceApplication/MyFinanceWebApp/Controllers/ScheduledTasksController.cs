@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using MyFinanceModel.ClientViewModel;
-using MyFinanceModel.ViewModel;
 using MyFinanceWebApp.CustomHandlers;
 using MyFinanceWebApp.Helpers;
 using MyFinanceWebApp.Models;

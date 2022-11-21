@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Net.Http;
 using WebApiBaseConsumer;
 
 namespace MyFinanceWebApp.Services.WebApiServices
@@ -11,6 +12,10 @@ namespace MyFinanceWebApp.Services.WebApiServices
 			if (string.IsNullOrEmpty(domainValue))
 				throw new ConfigurationErrorsException("MyFinanceWsServer value is not set");
 			return domainValue;
+		}
+
+		protected MvcWebApiBaseService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		{
 		}
 	}
 }

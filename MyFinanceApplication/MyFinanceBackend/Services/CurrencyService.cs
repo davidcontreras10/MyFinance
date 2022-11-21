@@ -3,90 +3,92 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using MyFinanceModel;
 using MyFinanceModel.WebMethodsModel;
+using WebApiBaseConsumer;
 
 namespace MyFinanceBackend.Services
 {
-    public interface ICurrencyService
-    {
-        ExchangeRateResult GetExchangeRateResult(int methodId, DateTime dateTime);
-        IEnumerable<ExchangeRateResult> GetExchangeRateResult(IEnumerable<int> methodIds, DateTime dateTime);
-    }
+	public interface ICurrencyService
+	{
+		ExchangeRateResult GetExchangeRateResult(int methodId, DateTime dateTime);
+		IEnumerable<ExchangeRateResult> GetExchangeRateResult(IEnumerable<int> methodIds, DateTime dateTime);
+	}
 
-    public class CurrencyService : WebApiBaseService, ICurrencyService
-    {
-        #region Attributes
+	public class CurrencyService : WebApiBaseService, ICurrencyService
+	{
+		#region Attributes
 
-        private readonly string _serviceUrl;
-        private const string CURRENCY_SERVICE_NAME = "Convert";
-        private const string CONVERT_MEHTOD_BY_LIST_NAME = "ExchangeRateResultByMethodIds";
-        private const string CONVERT_MEHTOD_NAME = "ExchangeRateResultByMethodId";
+		private readonly string _serviceUrl;
+		private const string CURRENCY_SERVICE_NAME = "Convert";
+		private const string CONVERT_METHOD_BY_LIST_NAME = "ExchangeRateResultByMethodIds";
+		private const string CONVERT_METHOD_NAME = "ExchangeRateResultByMethodId";
 
-        #endregion
+		protected override string ControllerName => CURRENCY_SERVICE_NAME;
 
-        #region Constructors
+		#endregion
 
-        public CurrencyService()
-        {
-            _serviceUrl = ConfigurationManager.AppSettings["CurrencyServiceUrl"];
-            if (string.IsNullOrEmpty(_serviceUrl))
-                throw new ConfigurationErrorsException("CurrencyServiceUrl invalid");
-        }
+		#region Constructors
 
-        #endregion
+		public CurrencyService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		{
+			_serviceUrl = ConfigurationManager.AppSettings["CurrencyServiceUrl"];
+			if (string.IsNullOrEmpty(_serviceUrl))
+				throw new ConfigurationErrorsException("CurrencyServiceUrl invalid");
+		}
 
-        #region Public Methods
+		#endregion
 
-        public ExchangeRateResult GetExchangeRateResult(int methodId, DateTime dateTime)
-        {
-            return GetExchangeRateResultService(methodId, dateTime);
-        }
+		#region Public Methods
 
-        public IEnumerable<ExchangeRateResult> GetExchangeRateResult(IEnumerable<int> methodIds, DateTime dateTime)
-        {
-            return methodIds == null || !methodIds.Any()
-                ? new List<ExchangeRateResult>()
-                : GetExchangeRateResultService(methodIds, dateTime);
-        }
+		public ExchangeRateResult GetExchangeRateResult(int methodId, DateTime dateTime)
+		{
+			return GetExchangeRateResultService(methodId, dateTime);
+		}
 
-        #endregion
+		public IEnumerable<ExchangeRateResult> GetExchangeRateResult(IEnumerable<int> methodIds, DateTime dateTime)
+		{
+			return methodIds == null || !methodIds.Any()
+				? new List<ExchangeRateResult>()
+				: GetExchangeRateResultService(methodIds, dateTime);
+		}
 
-        #region Private Methods
+		#endregion
 
-        private ExchangeRateResult GetExchangeRateResultService(int methodId, DateTime dateTime)
-        {
-            var requestDateTime = dateTime.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-            var parameters = new Dictionary<string, object> { { "methodId", methodId }, { "dateTime", requestDateTime } };
-            var methodUrl = CreateMethodUrl(CONVERT_MEHTOD_NAME, parameters);
-            var result = GetResponseType<ExchangeRateResult>(methodUrl, false, null);
-            return result;
-        }
+		#region Private Methods
 
-        private IEnumerable<ExchangeRateResult> GetExchangeRateResultService(IEnumerable<int> methodIds, DateTime dateTime)
-        {
-            var methodUrl = CreateMethodUrl(CONVERT_MEHTOD_BY_LIST_NAME);
-            var exchangeRateResultModel = new ExchangeRateResultModel
-                {
-                    DateTime = dateTime,
-                    MethodIds = methodIds
-                };
-            var result = GetResponseType<IEnumerable<ExchangeRateResult>>(methodUrl, true, exchangeRateResultModel);
-            return result;
-        }
+		private ExchangeRateResult GetExchangeRateResultService(int methodId, DateTime dateTime)
+		{
+			var requestDateTime = dateTime.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+			var parameters = new Dictionary<string, object> { { "methodId", methodId }, { "dateTime", requestDateTime } };
+			var methodUrl = CreateMethodUrl(CONVERT_METHOD_NAME, parameters);
+			var request = new WebApiRequest(methodUrl, HttpMethod.Get);
+			return GetResponseAs<ExchangeRateResult>(request);
+		}
 
-        protected override string GetApiBaseDomain()
-        {
-            return _serviceUrl;
-        }
+		private IEnumerable<ExchangeRateResult> GetExchangeRateResultService(IEnumerable<int> methodIds, DateTime dateTime)
+		{
+			var methodUrl = CreateMethodUrl(CONVERT_METHOD_BY_LIST_NAME);
+			var exchangeRateResultModel = new ExchangeRateResultModel
+				{
+					DateTime = dateTime,
+					MethodIds = methodIds
+				};
+			var request = new WebApiRequest(methodUrl, HttpMethod.Post)
+			{
+				Model = exchangeRateResultModel
+			};
 
-        protected override string ControllerName()
-        {
-            return CURRENCY_SERVICE_NAME;
-        }
+			return GetResponseAs<IEnumerable<ExchangeRateResult>>(request);
+		}
 
-        #endregion
+		protected override string GetApiBaseDomain()
+		{
+			return _serviceUrl;
+		}
+		
 
-
-    }
+		#endregion
+	}
 }

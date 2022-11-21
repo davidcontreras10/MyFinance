@@ -84,5 +84,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
 		}
 
 		#endregion
+
+		public WebApiAccountGroupService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		{
+		}
 	}
 }

@@ -4,13 +4,13 @@ using DataAccess;
 using System;
 using System.Data;
 using Ut = Utilities.SystemDataUtilities;
-using System.Data.SqlClient;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
 using Domain.Models;
 using Domain.Repositories;
 using Domain.Services;
+using Microsoft.Data.SqlClient;
 
 namespace CurrencyService.Services
 {
