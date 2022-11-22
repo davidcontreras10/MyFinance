@@ -1,4 +1,4 @@
-﻿using CurrencyService.Services;
+﻿using Domain.Services;
 using MyFinanceModel;
 using System;
 using System.Collections.Generic;
@@ -7,10 +7,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Domain.Services;
 using MyFinanceModel.WebMethodsModel;
 
-namespace CurrencyService.Controllers
+namespace Domain.Controllers
 {
     public class ConvertController : ApiController
     {

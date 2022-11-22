@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 
-namespace CurrencyService
+namespace Domain
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

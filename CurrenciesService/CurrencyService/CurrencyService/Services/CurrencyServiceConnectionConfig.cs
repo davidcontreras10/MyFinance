@@ -1,7 +1,7 @@
 ﻿using System.Configuration;
 using DataAccess;
 
-namespace CurrencyService.Services
+namespace Domain.Services
 {
     public class CurrencyServiceConnectionConfig : IConnectionConfig
     {
