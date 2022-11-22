@@ -3,13 +3,13 @@ using System.Reflection;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
-using CurrencyService.Services;
+using Domain.Services;
 using DataAccess;
 using Domain.Repositories;
 using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CurrencyService
+namespace Domain
 {
     public static class WebApiConfig
     {

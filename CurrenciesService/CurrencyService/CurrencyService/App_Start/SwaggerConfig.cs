@@ -1,11 +1,11 @@
 using System.Web.Http;
 using WebActivatorEx;
-using CurrencyService;
+using Domain;
 using Swashbuckle.Application;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
-namespace CurrencyService
+namespace Domain
 {
     public class SwaggerConfig
     {

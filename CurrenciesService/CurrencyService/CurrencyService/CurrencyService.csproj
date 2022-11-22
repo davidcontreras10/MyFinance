@@ -293,7 +293,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CurrencyServiceConnectionConfig.cs" />
-    <Compile Include="Services\ExchangeCurrencyDataService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
