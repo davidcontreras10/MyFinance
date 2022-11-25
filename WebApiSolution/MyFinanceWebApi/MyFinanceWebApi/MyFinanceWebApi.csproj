@@ -369,6 +369,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Authorization\ApplicationRefreshTokenProvider.cs" />
     <Compile Include="Authorization\AuthCommonSettings.cs" />
+    <Compile Include="Authorization\ExAuthorizeAttribute.cs" />
     <Compile Include="Authorization\SimpleAuthorizationServerProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountGroupController.cs" />

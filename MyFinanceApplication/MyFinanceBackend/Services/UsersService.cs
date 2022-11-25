@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MyFinanceBackend.Data;
 using MyFinanceBackend.Utils;
 using MyFinanceModel;
@@ -31,7 +32,13 @@ namespace MyFinanceBackend.Services
 
 		#region Public Methods
 
-        public AppUser GetUser(string userId)
+		public async Task<AppUser> GetUserAsync(string userId)
+		{
+			var user = await _userRespository.GetUserByUserIdAsync(userId);
+			return user;
+		}
+
+		public AppUser GetUser(string userId)
 		{
 			var user = _userRespository.GetUserByUserId(userId);
 			return user;
@@ -44,7 +51,14 @@ namespace MyFinanceBackend.Services
 	        return result;
         }
 
-	    public bool SetPassword(string userId, string newPassword)
+		public async Task<LoginResult> AttemptToLoginAsync(string username, string password)
+		{
+			var encryptedPassword = PasswordUtils.EncryptText(password);
+			var result = await _userRespository.AttemptToLoginAsync(username, encryptedPassword);
+			return result;
+		}
+
+		public bool SetPassword(string userId, string newPassword)
 	    {
 		    var encryptedPassword = PasswordUtils.EncryptText(newPassword);
 		    var result = _userRespository.SetPassword(userId, encryptedPassword);

@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MyFinanceBackend.Data;
 using MyFinanceBackend.Services;
 using MyFinanceBackend.Services.AuthServices;
+using MyFinanceWebApi.Authorization;
 using MyFinanceWebApi.CustomHandlers;
 using MyFinanceWebApi.Helpers;
 using Newtonsoft.Json.Serialization;
@@ -72,7 +73,7 @@ namespace MyFinanceWebApi
 
         private static void AddGlobalFilters(HttpConfiguration config)
         {
-            config.Filters.Add(new AuthorizeAttribute());
+            config.Filters.Add(new ExAuthorizeAttribute());
             config.Filters.Add(new ErrorHandlerExceptionAttribute());
             config.Filters.Add(new ValidateModelStateAttribute());
             config.Filters.Add(new ResourceAuthorizationFilter());
