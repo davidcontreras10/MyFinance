@@ -7,11 +7,11 @@ namespace MyFinanceWebApiCore.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class Authentication : ControllerBase
+	public class AuthenticationController : ControllerBase
 	{
 		private readonly IAuthenticationService _authenticationService;
 
-		public Authentication(IAuthenticationService authenticationService)
+		public AuthenticationController(IAuthenticationService authenticationService)
 		{
 			_authenticationService = authenticationService;
 		}

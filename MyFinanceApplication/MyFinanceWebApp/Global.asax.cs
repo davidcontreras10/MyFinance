@@ -80,6 +80,7 @@ namespace MyFinanceWebApp
 
             builder.RegisterType<WebApiUserService>().As<IUserService>().InstancePerRequest();
 			builder.RegisterType<TokenAuthorizeAttribute>().PropertiesAutowired();
+            builder.RegisterType<AuthenticationService>().As<IAuthenticationService>();
 
 	    }
     }

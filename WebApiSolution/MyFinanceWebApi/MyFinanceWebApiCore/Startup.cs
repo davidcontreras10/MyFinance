@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MyFinanceBackend.Data;
+using MyFinanceBackend.Models;
 using MyFinanceBackend.Services;
 using MyFinanceBackend.Services.AuthServices;
 using MyFinanceWebApiCore.Authentication;
@@ -105,6 +106,7 @@ namespace MyFinanceWebApiCore
 
 		private static void RegisterServices(IServiceCollection services)
 		{
+			services.AddSingleton<IBackendSettings, BackendSettings>();
 			services.AddScoped<IConnectionConfig, SqlServerConfig>();
 			services.AddScoped<IAuthenticationService, AuthenticationService>();
 

@@ -14,21 +14,21 @@ namespace MyFinanceWebApi.Authorization
 	{
 		public override void OnAuthorization(HttpActionContext actionContext)
 		{
-			var anonymousAttributes = actionContext.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>();
-			if(anonymousAttributes.Any())
-			{
-				return;
-			}
-
-			var bearerToken = actionContext.Request.Headers.Authorization.Parameter;
+			var anonymousRequest = actionContext.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any();
+			var bearerToken = actionContext.Request.Headers.Authorization?.Parameter ?? string.Empty;
 			if (string.IsNullOrWhiteSpace(bearerToken))
 			{
+				if (anonymousRequest)
+				{
+					return;
+				}
+
 				throw new UnauthorizedAccessException("Access token is required");
 			}
 
 			bearerToken = bearerToken.Replace("bearer ", string.Empty);
 			var secret = ConfigurationManager.AppSettings.Get("authSecret");
-			var principal = GetToken(bearerToken, secret);
+			var principal = GetToken(bearerToken, secret, anonymousRequest);
 			if(principal == null)
 			{
 				throw new UnauthorizedAccessException();
@@ -37,7 +37,7 @@ namespace MyFinanceWebApi.Authorization
 			actionContext.RequestContext.Principal = principal;
 		}
 
-		private ClaimsPrincipal GetToken(string token, string secret)
+		private ClaimsPrincipal GetToken(string token, string secret, bool anonymousRequest)
 		{
 
 			var tokenHandler = new JwtSecurityTokenHandler();
@@ -48,6 +48,10 @@ namespace MyFinanceWebApi.Authorization
 
 			if (!tokenHandler.CanReadToken(token))
 			{
+				if (anonymousRequest)
+				{
+					return null;
+				}
 				throw new UnauthorizedAccessException();
 			}
 
