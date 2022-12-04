@@ -94,7 +94,7 @@ export class SpInAutomaticTask implements IAutomaticTask {
     accountName: string = "";
     amount: number = 0;
     currencySymbol: string = "";
-    isSpendTrx!: boolean;
+    isSpend!: boolean;
     frequencyType!: FrequencyType;
     taskType!: AutomaticTaskType;
     days!: number[];
