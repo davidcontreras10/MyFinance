@@ -397,6 +397,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BackendSettings.cs" />
     <Compile Include="Helpers\ConnectionConfig.cs" />
     <Compile Include="Helpers\CustomAppSettings.cs" />
     <Compile Include="Models\Exceptions.cs" />

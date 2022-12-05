@@ -6,7 +6,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 {
 	public abstract class MvcWebApiBaseService : WebApiBaseService
 	{
-		private bool _coreVersion = false;
+		private readonly bool _coreVersion = false;
 
 		protected override string GetApiBaseDomain()
 		{
