@@ -59,7 +59,6 @@ namespace MyFinanceWebApiCore.Controllers
 			return supportedAccountIncludeViewModelList;
 		}
 
-		[RequestSizeLimit(200_000_000)]
 		[Route("finance")]
 		[HttpGet]
 		//[IncludeRestrictObjectHeader]
