@@ -13,7 +13,8 @@ namespace MyFinanceWebApiCore
 	{
 		public static void Main(string[] args)
 		{
-			CreateHostBuilder(args).Build().Run();
+			var host = CreateHostBuilder(args).Build();
+			host.Run();
 		}
 
 		public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -21,6 +22,11 @@ namespace MyFinanceWebApiCore
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
 					webBuilder.UseStartup<Startup>();
+					webBuilder.ConfigureKestrel(options =>
+					{
+						options.Limits.MaxRequestBufferSize = int.MaxValue;
+						options.Limits.MaxRequestLineSize = int.MaxValue;
+					});
 				});
 	}
 }

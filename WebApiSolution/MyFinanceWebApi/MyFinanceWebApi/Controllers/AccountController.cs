@@ -63,7 +63,7 @@ namespace MyFinanceWebApi.Controllers
 
 		[Route("finance")]
 	    [HttpGet]
-	    [IncludeRestrictObjectHeader]
+	    //[IncludeRestrictObjectHeader]
 	    public IEnumerable<AccountFinanceViewModel> GetAccountFinanceViewModel([FromUri]ClientAccountFinanceViewModel[] accountPeriods)
 	    {
 		    var userId = GetUserId();

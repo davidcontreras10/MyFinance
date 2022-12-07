@@ -12,7 +12,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 {
 	public class WebApiAccountService : MvcWebApiBaseService, IAccountService
 	{
-		protected override string ControllerName => "account";
+		protected override string ControllerName => "accounts";
 
 		public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> BasicUserAccountsAsync(string token)
 		{
@@ -182,8 +182,8 @@ namespace MyFinanceWebApp.Services.WebApiServices
             GetResponse(request);
 	    }
 
-	    public WebApiAccountService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
-	    {
-	    }
+		public WebApiAccountService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, coreVersion: true)
+		{
+		}
 	}
 }
