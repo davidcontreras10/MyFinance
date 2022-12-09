@@ -47,10 +47,6 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
 		public async Task<IEnumerable<AccountFinanceViewModel>> GetSimpleAccountFinanceViewModelAsync(IEnumerable<ClientAccountFinanceViewModel> accountPeriods, string token)
 		{
-			var parameters = new Dictionary<string, object>
-			{
-				{"accountPeriods", accountPeriods}
-			};
 
 			var appServiceHeader = ServiceAppHeader.GetServiceAppHeader(ServiceAppHeader.ServiceAppHeaderType.Restrict);
 			var headers = new Dictionary<string, string>
@@ -58,10 +54,11 @@ namespace MyFinanceWebApp.Services.WebApiServices
 				{appServiceHeader.Name, "[].SpendViewModels" }
 			};
 
-			var url = CreateMethodUrl("finance", parameters);
-			var request = new WebApiRequest(url, HttpMethod.Get, token)
+			var url = CreateMethodUrl("finance");
+			var request = new WebApiRequest(url, HttpMethod.Post, token)
 			{
-				Headers = headers
+				Headers = headers,
+				Model = accountPeriods
 			};
 
 			var accountFinanceViewModelList = await GetResponseAsAsync<IEnumerable<AccountFinanceViewModel>>(request);
@@ -80,12 +77,11 @@ namespace MyFinanceWebApp.Services.WebApiServices
 				PendingSpends = isPending
 			});
 
-			var parameters = new Dictionary<string, object>
+			var url = CreateMethodUrl("finance");
+			var request = new WebApiRequest(url, HttpMethod.Post, token)
 			{
-				{"accountPeriods", accountPeriods}
+				Model = accountPeriods
 			};
-			var url = CreateMethodUrl("finance", parameters);
-			var request = new WebApiRequest(url, HttpMethod.Get, token);
 			var accountFinanceViewModelList = await GetResponseAsAsync<IEnumerable<AccountFinanceViewModel>>(request);
 			return accountFinanceViewModelList;
 		}
