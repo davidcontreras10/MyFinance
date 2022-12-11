@@ -6,11 +6,11 @@ namespace MyFinanceWebApp.Services.WebApiServices
 {
 	public abstract class MvcWebApiBaseService : WebApiBaseService
 	{
-		private readonly bool _coreVersion = false;
+		public bool CoreVersion { private set; get; } = false;
 
 		protected override string GetApiBaseDomain()
 		{
-			var appName = _coreVersion ? "MyFinanceCoreWsServer" : "MyFinanceWsServer";
+			var appName = CoreVersion ? "MyFinanceCoreWsServer" : "MyFinanceWsServer";
 			var domainValue = ConfigurationManager.AppSettings[appName];
 			if (string.IsNullOrEmpty(domainValue))
 				throw new ConfigurationErrorsException("MyFinanceWsServer value is not set");
@@ -19,7 +19,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
 		protected MvcWebApiBaseService(IHttpClientFactory httpClientFactory, bool coreVersion = false) : base(httpClientFactory)
 		{
-			_coreVersion = coreVersion;
+			CoreVersion = coreVersion;
 		}
 	}
 }
