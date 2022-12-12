@@ -12,4 +12,14 @@ namespace MyFinanceWebApiCore.Models
 		{
 		}
 	}
+
+	internal class RequiredHeaderException : ServiceException
+	{
+		public RequiredHeaderException(ServiceAppHeader header) : base($"Header {header.Name} is required for this request", 1, System.Net.HttpStatusCode.BadRequest)
+		{
+			RequiredHeader = header;
+		}
+
+		public ServiceAppHeader RequiredHeader { get; private set; }
+	}
 }
