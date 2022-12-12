@@ -150,7 +150,7 @@
 														<tbody>
 															<tr>
 																<td>
-																	@ModelHtmlExtension.GetHtmlAmount(loan.LoanSpendViewModel.CurrencySymbol, loan.LoanSpendViewModel.GetConvertedAmount())
+																	@ModelHtmlExtension.GetHtmlAmount(loan.LoanSpendViewModel.CurrencySymbol, loan.LoanSpendViewModel.ConvertedAmount)
 																</td>
 																<td>
 																	@ModelHtmlExtension.GetHtmlAmount(loan.LoanSpendViewModel.CurrencySymbol, loan.PaymentSumary)
@@ -193,7 +193,7 @@
 																{
 																	<tr>
 																		<td>
-																			@ModelHtmlExtension.GetHtmlAmount(spend.CurrencySymbol, spend.GetConvertedAmount())
+																			@ModelHtmlExtension.GetHtmlAmount(spend.CurrencySymbol, spend.ConvertedAmount)
 																		</td>
 																		<td>
 																			@spend.SpendDate.ToShortDateString()

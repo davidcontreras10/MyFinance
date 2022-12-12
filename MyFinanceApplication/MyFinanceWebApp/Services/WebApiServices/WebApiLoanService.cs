@@ -10,7 +10,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 {
     public class WebApiLoanService : MvcWebApiBaseService, ILoanService
     {
-        protected override string ControllerName => "loan";
+        protected override string ControllerName => CoreVersion ? "loans" : "loan";
 
         public IEnumerable<SpendItemModified> AddLoanSpend(ClientLoanSpendViewModel clientLoanSpendViewModel, string token)
         {
@@ -143,7 +143,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
             return response;
         }
 
-        public WebApiLoanService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+        public WebApiLoanService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, true)
         {
         }
     }
