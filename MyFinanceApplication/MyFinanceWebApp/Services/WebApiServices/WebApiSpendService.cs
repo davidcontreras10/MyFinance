@@ -267,7 +267,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
 		protected override string ControllerName => "spends";
 
-		public WebApiSpendService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		public WebApiSpendService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, true)
 		{
 		}
     }
