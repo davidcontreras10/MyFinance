@@ -63,7 +63,7 @@ export class TaskDetailComponent implements OnInit, OnChanges {
   public getDesc(task: IAutomaticTask): string {
     if (task.taskType === AutomaticTaskType.SpIn) {
       const basicTask = task as SpInAutomaticTask;
-      return `${basicTask.currencySymbol}${basicTask.amount} ${!basicTask.isSpendTrx ? 'Income' : 'Spend'} ${this._getFrequencyText(task)}`;
+      return `${basicTask.currencySymbol}${basicTask.amount} ${!basicTask.isSpend ? 'Income' : 'Spend'} ${this._getFrequencyText(task)}`;
     }
 
     if (task.taskType === AutomaticTaskType.Trasnfer) {

@@ -74,7 +74,7 @@ namespace ApiFunctions.Services
 
 		private async Task<IReadOnlyCollection<SimpleScheduledTask>> GetTodaysScheduledTasksAsync(string token)
 		{
-			var url = $"{_envSettings.BaseAPIUrl}api/scheduledTasks";
+			var url = $"{_envSettings.BaseAPIUrl}api/scheduledTasks/today";
 			var request = new HttpRequestMessage(HttpMethod.Get, url);
 			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 			return await CallServiceAsync<IReadOnlyCollection<SimpleScheduledTask>>(request);
