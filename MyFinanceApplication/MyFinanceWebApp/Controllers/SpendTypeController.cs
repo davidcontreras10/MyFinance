@@ -8,8 +8,8 @@ using MyFinanceWebApp.Services;
 namespace MyFinanceWebApp.Controllers
 {
 	[HandleTokenError]
-    public class SpendTypeController : Controller
-    {
+    public class SpendTypeController : FinanceAppBaseController
+	{
         #region Attributes
 
         private readonly ISpendTypeService _spendTypeService;
@@ -103,15 +103,6 @@ namespace MyFinanceWebApp.Controllers
 		#endregion
 
 		#region Privates
-
-		private string GetUserToken()
-		{
-			var cookie = Request.Cookies["TokenAuthorization"];
-			var authTokenEncrypted = cookie != null ? cookie.Values["AuthToken"] : "";
-			var userId = User.Identity.Name;
-			var authToken = LocalHelper.UnProtect(authTokenEncrypted, userId);
-			return authToken;
-		}
 
 		private MainHeaderModel CreateMainHeaderModel()
         {
