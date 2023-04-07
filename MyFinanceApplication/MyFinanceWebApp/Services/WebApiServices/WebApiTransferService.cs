@@ -106,9 +106,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
             return GetResponseAs<IEnumerable<ItemModified>>(request);
         }
 
-		protected override string ControllerName => "Transfer";
+		protected override string ControllerName => CoreVersion ? "transfers" : "Transfer";
 
-		public WebApiTransferService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		public WebApiTransferService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, true)
 		{
 		}
     }
