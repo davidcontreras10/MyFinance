@@ -15,6 +15,11 @@ namespace MyFinanceWebApp.Services.WebApiServices
     {
 	    public AuthToken GetAuthToken(string username, string password)
 	    {
+            if (CoreVersion)
+            {
+                return GetAuthTokenCore(username, password);
+            }
+
 		    var url = GetBaseUrl("token");
 		    var parameters = new Dictionary<string, string>
 		    {
@@ -34,7 +39,23 @@ namespace MyFinanceWebApp.Services.WebApiServices
             return GetResponseAs<AuthToken>(request);
 	    }
 
-        public async Task<LoginResult> AttemptLoginAsync(string username, string password)
+        private AuthToken GetAuthTokenCore(string username, string password)
+        {
+            var url = GetBaseUrl("authentication");
+            var authModel = new
+            {
+				username,
+				password
+			};
+
+            var request = new WebApiRequest(url, HttpMethod.Post)
+            {
+                Model = authModel
+            };
+            return GetResponseAs<AuthToken>(request);
+		}
+
+		public async Task<LoginResult> AttemptLoginAsync(string username, string password)
         {
             var parameters = new Dictionary<string, object>
                 {
@@ -144,9 +165,9 @@ namespace MyFinanceWebApp.Services.WebApiServices
             return appUser;
         }
 
-        protected override string ControllerName => "User";
+        protected override string ControllerName => CoreVersion ? "users" : "User";
 
-        public WebApiUserService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+        public WebApiUserService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, true)
         {
         }
     }
