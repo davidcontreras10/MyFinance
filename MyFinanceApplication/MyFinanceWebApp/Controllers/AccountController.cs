@@ -12,7 +12,7 @@ using MyFinanceWebApp.Helpers;
 namespace MyFinanceWebApp.Controllers
 {
 	[HandleTokenError]
-    public class AccountController : Controller
+    public class AccountController : FinanceAppBaseController
 	{	
 		#region Attributes
 
@@ -195,15 +195,6 @@ namespace MyFinanceWebApp.Controllers
 		#endregion
 
 		#region Privates
-
-		private string GetUserToken()
-		{
-			var cookie = Request.Cookies["TokenAuthorization"];
-			var authTokenEncrypted = cookie != null ? cookie.Values["AuthToken"] : "";
-			var userId = User.Identity.Name;
-			var authToken = LocalHelper.UnProtect(authTokenEncrypted, userId);
-			return authToken;
-		}
 
 		private MainHeaderModel CreateMainHeaderModel()
 		{

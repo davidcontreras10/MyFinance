@@ -369,6 +369,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Authorization\ApplicationRefreshTokenProvider.cs" />
     <Compile Include="Authorization\AuthCommonSettings.cs" />
+    <Compile Include="Authorization\ExAuthorizeAttribute.cs" />
     <Compile Include="Authorization\SimpleAuthorizationServerProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountGroupController.cs" />
@@ -396,6 +397,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BackendSettings.cs" />
     <Compile Include="Helpers\ConnectionConfig.cs" />
     <Compile Include="Helpers\CustomAppSettings.cs" />
     <Compile Include="Models\Exceptions.cs" />

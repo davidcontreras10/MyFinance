@@ -8,6 +8,7 @@ using MyFinanceBackend.Services;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 using DContre.MyFinance.StUtilities;
+using System.Threading.Tasks;
 
 namespace MyFinanceBackend.Data
 {
@@ -40,7 +41,16 @@ namespace MyFinanceBackend.Data
 					   : ServicesUtils.CreateUser(dataSet.Tables[0].Rows[0]);
 		}
 
-	    public AppUser GetUserByUsername(string username)
+		public async Task<AppUser> GetUserByUserIdAsync(string userId)
+		{
+			var sqlParameterUsername = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_USER_LIST, sqlParameterUsername);
+			return dataSet == null || dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0
+					   ? null
+					   : ServicesUtils.CreateUser(dataSet.Tables[0].Rows[0]);
+		}
+
+		public AppUser GetUserByUsername(string username)
 	    {
 	        var sqlParameterUsername = new SqlParameter(DatabaseConstants.PAR_USERNAME, username);
 	        var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_LIST, sqlParameterUsername);
@@ -54,6 +64,21 @@ namespace MyFinanceBackend.Data
 			var sqlParameterUsername = new SqlParameter(DatabaseConstants.PAR_USERNAME, username);
 			var sqlParameterPassword = new SqlParameter(DatabaseConstants.PAR_PASSWORD, encryptedPassword);
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_LOGIN_ATTEMPT, sqlParameterUsername,
+													 sqlParameterPassword);
+			if (dataSet == null || dataSet.Tables.Count == 0)
+				return null;
+			var dataRow = dataSet.Tables[0].Rows.Count > 0 ? dataSet.Tables[0].Rows[0] : null;
+			var userDataRow = dataSet.Tables.Count > 1 && dataSet.Tables[1].Rows.Count > 0
+									  ? dataSet.Tables[1].Rows[0]
+									  : null;
+			return ServicesUtils.CreateResultLogin(dataRow, userDataRow);
+		}
+
+		public async Task<LoginResult> AttemptToLoginAsync(string username, string encryptedPassword)
+		{
+			var sqlParameterUsername = new SqlParameter(DatabaseConstants.PAR_USERNAME, username);
+			var sqlParameterPassword = new SqlParameter(DatabaseConstants.PAR_PASSWORD, encryptedPassword);
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_LOGIN_ATTEMPT, sqlParameterUsername,
 													 sqlParameterPassword);
 			if (dataSet == null || dataSet.Tables.Count == 0)
 				return null;

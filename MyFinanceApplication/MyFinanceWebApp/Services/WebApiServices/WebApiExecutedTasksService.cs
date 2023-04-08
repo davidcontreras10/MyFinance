@@ -27,7 +27,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 			return await GetResponseAsAsync<IReadOnlyCollection<ExecutedTaskViewModel>>(request);
 		}
 
-		public WebApiExecutedTasksService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		public WebApiExecutedTasksService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, true)
 		{
 		}
 	}

@@ -8,8 +8,10 @@ using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Query;
 using Microsoft.Extensions.DependencyInjection;
 using MyFinanceBackend.Data;
+using MyFinanceBackend.Models;
 using MyFinanceBackend.Services;
 using MyFinanceBackend.Services.AuthServices;
+using MyFinanceWebApi.Authorization;
 using MyFinanceWebApi.CustomHandlers;
 using MyFinanceWebApi.Helpers;
 using Newtonsoft.Json.Serialization;
@@ -72,7 +74,7 @@ namespace MyFinanceWebApi
 
         private static void AddGlobalFilters(HttpConfiguration config)
         {
-            config.Filters.Add(new AuthorizeAttribute());
+            config.Filters.Add(new ExAuthorizeAttribute());
             config.Filters.Add(new ErrorHandlerExceptionAttribute());
             config.Filters.Add(new ValidateModelStateAttribute());
             config.Filters.Add(new ResourceAuthorizationFilter());
@@ -81,7 +83,8 @@ namespace MyFinanceWebApi
 
         private static void RegisterTypes(ContainerBuilder builder)
         {
-            builder.RegisterType<ConnectionConfig>().As<IConnectionConfig>();
+            builder.RegisterType<BackendSettings>().As<IBackendSettings>().SingleInstance();
+            builder.RegisterType<ConnectionConfig>().As<IConnectionConfig>().SingleInstance();
             builder.RegisterType<TransferService>().As<ITransferService>();
             builder.RegisterType<UsersService>().As<IUsersService>();
             builder.RegisterType<SpendsService>().As<ISpendsService>();

@@ -12,6 +12,7 @@ using MyFinanceWebApp.Contants;
 using MyFinanceWebApp.Helpers;
 using MyFinanceWebApp.Models;
 using MyFinanceWebApp.Services;
+using MyFinanceWebApp.Services.WebApiServices;
 
 namespace MyFinanceWebApp.Controllers
 {
@@ -19,24 +20,26 @@ namespace MyFinanceWebApp.Controllers
     {
         #region Constructor
 
-        public UserController(IUserService userService, IHtmlHeaderHelper htmlHeaderHelper)
+        public UserController(IUserService userService, IHtmlHeaderHelper htmlHeaderHelper, IAuthenticationService authenticationService)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _htmlHeaderHelper = htmlHeaderHelper;
+            _authenticationService = authenticationService;
         }
 
-        #endregion
+		#endregion
 
-        #region Attributes
+		#region Attributes
 
-	    private readonly IUserService _userService;
+		private readonly IUserService _userService;
         private readonly IHtmlHeaderHelper _htmlHeaderHelper;
+        private readonly IAuthenticationService _authenticationService;
 
-        #endregion
+		#endregion
 
-        #region Public Action Methods
+		#region Public Action Methods
 
-        [HttpGet]
+		[HttpGet]
         public ActionResult MeUser()
         {
             var userId = User.Identity.Name;
@@ -318,9 +321,9 @@ namespace MyFinanceWebApp.Controllers
             return result;
         }
 
-        private AuthToken GetAuthToken(string username, string password)
+        private async Task<AuthToken> GetAuthTokenAsync(string username, string password)
 	    {
-		    var authToken = _userService.GetAuthToken(username, password);
+		    var authToken = await _authenticationService.GetAuthTokenAsync(username, password);
 		    return authToken;
 	    }
 
@@ -340,24 +343,17 @@ namespace MyFinanceWebApp.Controllers
                 throw new UserAuthenticationException(attemptLogin);
             }
 
-			//var timeout = FormsAuthentication.Timeout;
-            var token = GetAuthToken(username,password);
-	        if (token == null)
-	        {
-		        throw new UserAuthenticationException();
-	        }
+            var token = await GetAuthTokenAsync(username, password);
+            if (token == null)
+            {
+                throw new UserAuthenticationException();
+            }
 
-            var encryptedAccessToken = LocalHelper.Protect(token.AccessToken, attemptLogin.User.UserId.ToString());
-            var encryptedRefreshToken = LocalHelper.Protect(token.RefreshToken, attemptLogin.User.UserId.ToString());
-            var lastUpdated = DateTime.Now;
-            var lastUpdatedString = lastUpdated.ToString("O");
-
-            var authorizationCookie = new HttpCookie("TokenAuthorization");//instantiate an new cookie and give it a name
-            authorizationCookie.Values.Add("AuthToken", encryptedAccessToken);//populate it with key, value pairs
-            authorizationCookie.Values.Add("RefreshToken", encryptedRefreshToken);//populate it with key, value pairs
-            authorizationCookie.Values.Add("LastUpdate",lastUpdatedString);
+            var authorizationCookie = new HttpCookie(Constants.AuthorizationCookieName);//instantiate an new cookie and give it a name
+            authorizationCookie.Values.Add(Constants.AuthTokenCookieName, token.AccessToken);
+            authorizationCookie.Expires = DateTime.Now.AddSeconds(token.ExpiresIn);
             Response.Cookies.Add(authorizationCookie);//add it to the client
-            FormsAuthentication.SetAuthCookie(attemptLogin.User.UserId.ToString(), rememberme);           
+            FormsAuthentication.SetAuthCookie(attemptLogin.User.UserId.ToString(), rememberme);
             return attemptLogin;
         }
 

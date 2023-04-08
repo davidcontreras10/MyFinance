@@ -24,13 +24,8 @@ namespace MyFinanceBackend.Data
 			: base(connectionConfig)
 		{
 			_currencyService = currencyService;
-			_savingAmountTypeName = ConfigurationManager.AppSettings["SavingAmountTypeName"];
-			if (string.IsNullOrEmpty(_savingAmountTypeName))
-				throw new MissingSettingException("SavingAmountTypeName");
-
-			_spendAmountTypeName = ConfigurationManager.AppSettings["SpendAmountTypeName"];
-			if (string.IsNullOrEmpty(_spendAmountTypeName))
-				throw new MissingSettingException("SpendAmountTypeName");
+			_savingAmountTypeName = "Saving";
+			_spendAmountTypeName = "Spend";
 		}
 
 		#endregion

@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using MyFinanceBackend.Models;
 using MyFinanceModel;
 using MyFinanceModel.WebMethodsModel;
 using WebApiBaseConsumer;
@@ -31,11 +32,9 @@ namespace MyFinanceBackend.Services
 
 		#region Constructors
 
-		public CurrencyService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		public CurrencyService(IHttpClientFactory httpClientFactory, IBackendSettings backendSettings) : base(httpClientFactory)
 		{
-			_serviceUrl = ConfigurationManager.AppSettings["CurrencyServiceUrl"];
-			if (string.IsNullOrEmpty(_serviceUrl))
-				throw new ConfigurationErrorsException("CurrencyServiceUrl invalid");
+			_serviceUrl = backendSettings.CurrencyServiceUrl;
 		}
 
 		#endregion

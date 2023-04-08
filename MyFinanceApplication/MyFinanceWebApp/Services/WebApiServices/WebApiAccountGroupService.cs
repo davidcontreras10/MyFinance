@@ -10,7 +10,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 	{
 		#region Attributes
 
-		protected override string ControllerName => "accountGroup";
+		protected override string ControllerName => CoreVersion ? "accountsGroups" : "accountGroup";
 
 		#endregion
 
@@ -24,7 +24,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 			};
 
 			var url = CreateRootUrl(parameters);
-            var request = new WebApiRequest(url, HttpMethod.Delete);
+            var request = new WebApiRequest(url, HttpMethod.Delete, token);
             GetResponse(request);
 		}
 
@@ -85,7 +85,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 
 		#endregion
 
-		public WebApiAccountGroupService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
+		public WebApiAccountGroupService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, true)
 		{
 		}
 	}

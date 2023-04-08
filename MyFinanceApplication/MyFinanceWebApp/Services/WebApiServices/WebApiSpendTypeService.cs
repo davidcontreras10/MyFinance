@@ -12,7 +12,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
     {
         #region Attributes
 
-        protected override string ControllerName => "spendType";
+        protected override string ControllerName => CoreVersion ? "spendTypes" : "spendType";
 
 	    #endregion
 
@@ -134,10 +134,10 @@ namespace MyFinanceWebApp.Services.WebApiServices
 		    return response;
 	    }
 
-	    #endregion
+        #endregion
 
-	    public WebApiSpendTypeService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
-	    {
-	    }
+        public WebApiSpendTypeService(IHttpClientFactory httpClientFactory) : base(httpClientFactory, true)
+        {
+        }
     }
 }

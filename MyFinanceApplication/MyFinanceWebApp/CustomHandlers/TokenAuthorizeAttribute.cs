@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
 using MyFinanceWebApp.Helpers;
+using MyFinanceWebApp.Models;
 using MyFinanceWebApp.Services;
 
 namespace MyFinanceWebApp.CustomHandlers
@@ -57,41 +58,9 @@ namespace MyFinanceWebApp.CustomHandlers
 	        }
 
             var userId = httpContext.User.Identity.Name;
-            var cookie = httpContext.Request.Cookies["TokenAuthorization"];
-
-	        var lastUpdateCookie = cookie?.Values["LastUpdate"];
-	        if (string.IsNullOrEmpty(lastUpdateCookie))
-	        {
-	            return false;
-	        }
-
-            var latestUpdate = DateTime.ParseExact(lastUpdateCookie, "O", CultureInfo.InvariantCulture);
-		    if (DateTime.Now < latestUpdate.Add(CustomAppSettings.RefreshAuthTokenTime))
-		    {
-			    return true;
-		    }
-
-		    var refreshTokenEncrypted = cookie.Values["RefreshToken"];
-	        if (string.IsNullOrEmpty(refreshTokenEncrypted))
-	        {
-	            return false;
-	        }
-
-            var refreshToken = LocalHelper.UnProtect(refreshTokenEncrypted, userId);
-	        var newToken = UserService.RefreshToken(refreshToken);
-	        if (newToken == null)
-	        {
-	            return false;
-	        }
-
-            var encryptRefreshToken = LocalHelper.Protect(newToken.RefreshToken, userId);
-            var encryptAccessToken = LocalHelper.Protect(newToken.AccessToken, userId);
-            var lastUpdatedString = DateTime.Now.ToString("O");
-            cookie.Values["RefreshToken"] = encryptRefreshToken;
-	        cookie.Values["AuthToken"] = encryptAccessToken;
-	        cookie.Values["LastUpdate"] = lastUpdatedString;
-	        httpContext.Response.Cookies.Add(cookie);
-	        return true;
+            var cookie = httpContext.Request.Cookies[Constants.AuthorizationCookieName];
+			var tokenCookie = cookie.Values[Constants.AuthTokenCookieName];
+			return !string.IsNullOrWhiteSpace(userId) && !string.IsNullOrWhiteSpace(tokenCookie);
 	    }
 
         #endregion

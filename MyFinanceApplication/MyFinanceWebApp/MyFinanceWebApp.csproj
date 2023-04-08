@@ -296,6 +296,8 @@
     <Compile Include="Helpers\LocalHelper.cs" />
     <Compile Include="Helpers\ModelHtmlExtension.cs" />
     <Compile Include="Helpers\PageHeaderBuilder.cs" />
+    <Compile Include="Models\AuthenticateRequest.cs" />
+    <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\CustomViewModel.cs" />
     <Compile Include="Models\ExcelFileModels.cs" />
     <Compile Include="Models\Exceptions.cs" />
@@ -304,15 +306,14 @@
     <Compile Include="Models\ScheduledTasksViewModel.cs" />
     <Compile Include="Models\UserSelectAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\ILoanService.cs" />
     <Compile Include="Services\ISpendService.cs" />
     <Compile Include="Services\ISpendTypeService.cs" />
     <Compile Include="Services\ITransferService.cs" />
     <Compile Include="Services\IUserService.cs" />
-    <Compile Include="Services\UserService.cs" />
     <Compile Include="Services\IAccountGroupService.cs" />
+    <Compile Include="Services\WebApiServices\AuthenticationService.cs" />
     <Compile Include="Services\WebApiServices\WebApiAccountGroupService.cs" />
     <Compile Include="Services\WebApiServices\WebApiAccountService.cs" />
     <Compile Include="Services\WebApiServices\MvcWebApiBaseService.cs" />
@@ -323,7 +324,6 @@
     <Compile Include="Services\WebApiServices\WebApiSpendTypeService.cs" />
     <Compile Include="Services\WebApiServices\WebApiTransferService.cs" />
     <Compile Include="Services\WebApiServices\WebApiUserService.cs" />
-    <Compile Include="Services\WebServiceCaller.cs" />
     <Compile Include="Models\TableModels.cs" />
     <Compile Include="Views\Shared\MainPage.Master.cs">
       <DependentUpon>MainPage.Master</DependentUpon>

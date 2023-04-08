@@ -33,10 +33,8 @@ namespace MyFinanceWebApp.Controllers
 
         protected string GetUserToken()
         {
-            var cookie = Request.Cookies["TokenAuthorization"];
-            var authTokenEncrypted = cookie != null ? cookie.Values["AuthToken"] : "";
-            var userId = User.Identity.Name;
-            var authToken = LocalHelper.UnProtect(authTokenEncrypted, userId);
+            var cookie = Request.Cookies[Constants.AuthorizationCookieName];
+            var authToken = cookie != null ? cookie.Values[Constants.AuthTokenCookieName] : string.Empty;
             return authToken;
         }
 
