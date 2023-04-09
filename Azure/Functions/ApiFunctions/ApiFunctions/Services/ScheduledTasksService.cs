@@ -82,6 +82,14 @@ namespace ApiFunctions.Services
 
 		private async Task<AuthTokenResponse> GetTokenAsync(ApiCredentials apiCredentials)
 		{
+			var tokenTask = _envSettings.UseCoreVersion ?
+				GetTokenAuthenticationAsync(apiCredentials)
+				: GetNetTokenAsync(apiCredentials);
+			return await tokenTask;
+		}
+
+		private async Task<AuthTokenResponse> GetNetTokenAsync(ApiCredentials apiCredentials)
+		{
 			var tokenUrl = _envSettings.BaseAPIUrl + "token";
 			var request = new HttpRequestMessage(HttpMethod.Post, tokenUrl);
 			var parameters = new Dictionary<string, string>
@@ -94,6 +102,20 @@ namespace ApiFunctions.Services
 			var content = new FormUrlEncodedContent(parameters);
 			request.Content = content;
 			return await CallServiceAsync<AuthTokenResponse>(request);
+		}
+
+		private async Task<AuthTokenResponse> GetTokenAuthenticationAsync(ApiCredentials apiCredentials)
+		{
+			var tokenUrl = _envSettings.BaseAPIUrl + "api/authentication";
+			var request = new HttpRequestMessage(HttpMethod.Post, tokenUrl);
+			var response = await CallServiceAsync<CoreTokenResponse>(request, apiCredentials);
+			return new AuthTokenResponse
+			{
+				AccessToken = response.AccessToken,
+				ExpiresIn = response.ExpiresIn,
+				RefreshToken = response.RefreshToken,
+				TokenType = response.TokenType
+			};
 		}
 
 		private async Task<T> CallServiceAsync<T>(HttpRequestMessage httpRequest, object jsonModel = null)
@@ -122,6 +144,14 @@ namespace ApiFunctions.Services
 				throw;
 			}
 
+		}
+
+		public record CoreTokenResponse
+		{
+			public string AccessToken { get; set; }
+			public int ExpiresIn { get; set; }
+			public string RefreshToken { get; set; }
+			public string TokenType { get; set; }
 		}
 	}
 }

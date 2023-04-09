@@ -37,7 +37,7 @@ namespace MyFinanceWebApiCore.Controllers
 			await _scheduledTasksService.CreateTransferTrxAsync(userId, model);
 		}
 
-		[ServiceFilter(typeof(AdminRequiredAttribute))]
+		[AdminRequired]
 		[Route("today")]
 		[HttpGet]
 		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetTodayScheduledTaskAsync()
@@ -45,7 +45,7 @@ namespace MyFinanceWebApiCore.Controllers
 			return await _scheduledTasksService.GetTodayScheduledTaskAsync();
 		}
 
-		[ServiceFilter(typeof(AdminRequiredAttribute))]
+		[AdminRequired]
 		[Route("")]
 		[HttpGet]
 		public async Task<IReadOnlyCollection<BaseScheduledTaskVm>> GetAllScheduledTaskAsync()

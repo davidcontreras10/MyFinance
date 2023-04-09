@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using MyFinanceWebApiCore.Models;
+using System;
 
 namespace MyFinanceWebApiCore.Authentication
 {
-	public class AdminRequiredAttribute : IActionFilter
+	public class AdminRequiredAttribute : Attribute, IActionFilter
 	{
 		public void OnActionExecuted(ActionExecutedContext context)
 		{

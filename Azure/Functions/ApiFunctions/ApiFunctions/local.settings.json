@@ -4,8 +4,10 @@
         "AzureWebJobsStorage": "UseDevelopmentStorage=true",
         "FUNCTIONS_WORKER_RUNTIME": "dotnet",
         "webApiBaseApi": "http://localhost:51142/",
+        "webApiCoreBaseApi": "https://localhost:44324/",
         "azureAppUser": "AzureAdmin",
         "azureAppPw": "AzureAdminPass",
+        "useCoreVersion": true,
         "DefaultMYFNDB": "Server=.\\SQLExpress;Database=MYFNDB;User Id=FinanceAzureAppUser; Password=FNAzure_01;MultipleActiveResultSets=true"
     }
 }
