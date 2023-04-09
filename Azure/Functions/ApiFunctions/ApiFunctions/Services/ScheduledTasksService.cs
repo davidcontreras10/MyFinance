@@ -62,14 +62,26 @@ namespace ApiFunctions.Services
 
 		private async Task<TaskExecutedResult> ExecuteTaskAsync(string taskId, string token)
 		{
-			var url = $"{_envSettings.BaseAPIUrl}api/scheduledTasks/{taskId}/execution";
-			var request = new HttpRequestMessage(HttpMethod.Post, url);
-			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-			return await CallServiceAsync<TaskExecutedResult>(request, new ClientExecuteTask
+			try
 			{
-				DateTime = DateTime.UtcNow,
-				RequestType = ExecuteTaskRequestType.Automatic
-			});
+				var url = $"{_envSettings.BaseAPIUrl}api/scheduledTasks/{taskId}/execution";
+				var request = new HttpRequestMessage(HttpMethod.Post, url);
+				request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+				return await CallServiceAsync<TaskExecutedResult>(request, new ClientExecuteTask
+				{
+					DateTime = DateTime.UtcNow,
+					RequestType = ExecuteTaskRequestType.Automatic
+				});
+			}
+			catch(Exception ex)
+			{
+				return new TaskExecutedResult
+				{
+					ErrorMsg = ex.Message,
+					Status = ExecutedTaskStatus.Failed,
+					TaskId = taskId
+				};
+			}
 		}
 
 		private async Task<IReadOnlyCollection<SimpleScheduledTask>> GetTodaysScheduledTasksAsync(string token)

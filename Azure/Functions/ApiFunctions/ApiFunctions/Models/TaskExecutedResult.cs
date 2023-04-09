@@ -16,7 +16,7 @@ namespace ApiFunctions.Models
 
 	public class TaskExecutedResult
 	{
-		public string TaskId { get; }
+		public string TaskId { get; set; }
 		public ExecutedTaskStatus Status { get; set; }
 		public string ErrorMsg { get; set; }
 	}

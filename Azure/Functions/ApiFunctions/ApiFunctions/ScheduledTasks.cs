@@ -25,7 +25,14 @@ namespace ApiFunctions
 		public async Task Run([TimerTrigger(DailyCron)] TimerInfo myTimer, ILogger log)
 		{
 			log.LogInformation($"C# ScheduledTasks executing at: {DateTime.Now}");
-			await _scheduledTasksService.ExecuteAllTasksAsync();
+			try
+			{
+				await _scheduledTasksService.ExecuteAllTasksAsync();
+			}
+			catch (Exception ex)
+			{
+				log.LogError(ex, "LogError ScheduledTasks");
+			}
 			log.LogInformation($"C# ScheduledTasks executed at: {DateTime.Now}");
 		}
 	}
