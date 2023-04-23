@@ -31,9 +31,9 @@ namespace MyFinanceWebApiCore.Services
 		public async Task<AuthToken> AuthenticateAsync(AuthenticateRequest request)
 		{
 			var appUser = await _usersService.AttemptToLoginAsync(request.Username, request.Password);
-			if (appUser == null)
+			if (appUser.User == null)
 			{
-				throw new UnauthorizedAccessException("Incorrect username or password");
+				throw new UnauthorizedAccessException(appUser.ResultMessage);
 			}
 
 			return GenerateJwtToken(appUser);

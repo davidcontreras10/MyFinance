@@ -15,6 +15,7 @@ using MyFinanceBackend.Services;
 using MyFinanceBackend.Services.AuthServices;
 using MyFinanceWebApiCore.Authentication;
 using MyFinanceWebApiCore.Config;
+using MyFinanceWebApiCore.FilterAttributes;
 using MyFinanceWebApiCore.Services;
 using Serilog;
 using System;
@@ -36,7 +37,10 @@ namespace MyFinanceWebApiCore
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers();
+			services.AddControllers(options =>
+			{
+				options.Filters.Add<HttpResponseExceptionFilter>();
+			});
 			RegisterServices(services);
 			services.AddHttpClient();
 			services.ConfigureSettings(Configuration);
@@ -81,14 +85,19 @@ namespace MyFinanceWebApiCore
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-			}
 
 			app.UseMiddleware<AuthenticationMiddleware>();
 
 			app.UseHttpsRedirection();
+
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+				app.UseCors(x => x
+					.AllowAnyOrigin()
+					.AllowAnyMethod()
+					.AllowAnyHeader());
+			}
 
 			app.UseRouting();
 
@@ -100,7 +109,8 @@ namespace MyFinanceWebApiCore
 			});
 
 			app.UseSwagger();
-			app.UseSwaggerUI(c => {
+			app.UseSwaggerUI(c =>
+			{
 				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Showing API V1");
 			});
 		}
@@ -113,14 +123,14 @@ namespace MyFinanceWebApiCore
 
 			services.AddScoped<ITransferService, TransferService>();
 			services.AddScoped<IUsersService, UsersService>();
-			services.AddScoped<ISpendsService,SpendsService>();
+			services.AddScoped<ISpendsService, SpendsService>();
 			services.AddScoped<IAccountsPeriodsService, AccountsPeriodsService>();
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<ICurrencyService, CurrencyService>();
 			services.AddScoped<ISpendTypeService, SpendTypeService>();
 			services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
 			services.AddScoped<IAccountGroupService, AccountGroupService>();
-			services.AddScoped<ISpendTypeRepository,SpendTypeRepository>();
+			services.AddScoped<ISpendTypeRepository, SpendTypeRepository>();
 			services.AddScoped<IUserRespository, UserRepository>();
 			services.AddScoped<ISpendsRepository, SpendsRepository>();
 			services.AddScoped<IEmailService, EmailService>();
