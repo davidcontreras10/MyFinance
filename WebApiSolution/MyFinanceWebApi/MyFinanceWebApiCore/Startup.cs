@@ -93,11 +93,13 @@ namespace MyFinanceWebApiCore
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
-				app.UseCors(x => x
-					.AllowAnyOrigin()
-					.AllowAnyMethod()
-					.AllowAnyHeader());
 			}
+
+			app.UseCors(x => x
+				.AllowAnyOrigin()
+				.AllowAnyMethod()
+				.AllowAnyHeader()
+			);
 
 			app.UseRouting();
 
