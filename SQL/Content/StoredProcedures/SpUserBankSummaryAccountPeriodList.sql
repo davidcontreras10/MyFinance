@@ -40,7 +40,9 @@ DECLARE
 @BankAccounts TABLE
 (
 	AccountId INT,
-	AccountPeriodId INT
+	AccountPeriodId INT,
+	FinancialEntityId INT,
+	FinancialEntityName VARCHAR
 );
 
 --==============================================================================================================================================
@@ -74,9 +76,12 @@ BEGIN TRY
 	INSERT INTO @CurrentPeriodTemp
 	EXEC dbo.SpCurrentAccountPeriodList @pUserId = @pUserId, @pDate = @pDate;
 
-	SELECT ubsa.AccountId AccountId, cpt.AccountPeriodId AccountPeriodId 
+	SELECT ubsa.AccountId AccountId, cpt.AccountPeriodId AccountPeriodId
+	,fe.FinancialEntityId, fe.Name FinancialEntityName
 	FROM dbo.UserBankSummaryAccount ubsa
 	JOIN @CurrentPeriodTemp cpt ON cpt.AccountId = ubsa.AccountId
+	JOIN dbo.Account acc ON acc.AccountId = ubsa.AccountId
+	LEFT JOIN dbo.FinancialEntity fe ON fe.FinancialEntityId = acc.FinancialEntityId
 	WHERE ubsa.UserId = @pUserId
 
 END TRY
