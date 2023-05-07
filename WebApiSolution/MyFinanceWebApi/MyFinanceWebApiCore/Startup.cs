@@ -44,6 +44,10 @@ namespace MyFinanceWebApiCore
 			RegisterServices(services);
 			services.AddHttpClient();
 			services.ConfigureSettings(Configuration);
+			services.Configure<ApiBehaviorOptions>(options =>
+			{
+				options.SuppressModelStateInvalidFilter = true;
+			});
 			services.AddSingleton(Log.Logger);
 			services.AddSwaggerGen();
 			services.AddSwaggerGen(c =>

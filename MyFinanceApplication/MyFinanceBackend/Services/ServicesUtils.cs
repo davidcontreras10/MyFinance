@@ -900,7 +900,8 @@ namespace MyFinanceBackend.Services
 				SpendTypeId = dataRow.ToInt(DatabaseConstants.COL_SPEND_TYPE_ID),
 				CurrencyConverterMethodId = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_CURRENCY_CONVERTER_METHOD_ID),
 				SetPaymentDate = dataRow.ToDateTime(DatabaseConstants.COL_SPEND_SET_PAYMENT_DATE),
-				IsPending = dataRow.ToBool(DatabaseConstants.COL_IS_PENDING)
+				IsPending = dataRow.ToBool(DatabaseConstants.COL_IS_PENDING),
+				AmountTypeId = dataRow.ToInt(DatabaseConstants.COL_AMOUNT_TYPE_ID)
 			};
 
 			if (model.SetPaymentDate == default(DateTime))
