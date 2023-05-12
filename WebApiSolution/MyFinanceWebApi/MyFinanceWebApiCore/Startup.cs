@@ -93,6 +93,7 @@ namespace MyFinanceWebApiCore
 				.AllowAnyOrigin()
 				.AllowAnyHeader()
 				.AllowAnyMethod()
+				.WithExposedHeaders("Content-Disposition")
 			);
 
 			app.UseMiddleware<AuthenticationMiddleware>();
