@@ -82,7 +82,8 @@ namespace MyFinanceBackend.Models
 		public string SpendDescription { get; set; }
 		public int CurrencyConverterMethodId { get; set; }
         public bool IsPending { get; set; }
-	}
+        public int AmountTypeId { get; set; }
+    }
 
 	#endregion
 

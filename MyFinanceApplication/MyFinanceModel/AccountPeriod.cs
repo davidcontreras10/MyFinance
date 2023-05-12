@@ -50,4 +50,10 @@ namespace MyFinanceModel
 		public int AccountPeriodId { get; set; }
 		public int AccountId { get; set; }
 	}
+
+    public class BankAccountPeriodBasicId : AccountPeriodBasicId
+	{
+		public int? FinancialEntityId { get; set; }
+		public string FinancialEntityName { get; set; }
+	}
 }

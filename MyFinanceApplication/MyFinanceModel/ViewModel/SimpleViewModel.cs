@@ -104,5 +104,7 @@ namespace MyFinanceModel.ViewModel
 	public class BankAccountSummary : AccountBasicInfo
 	{
 		public CurrencyAmount Balance { get; set; }
-	}
+        public int? FinancialEntityId { get; set; }
+        public string FinancialEntityName { get; set; }
+    }
 }

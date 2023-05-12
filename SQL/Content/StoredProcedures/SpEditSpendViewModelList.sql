@@ -146,7 +146,8 @@ DECLARE @SpendDataTemp TABLE (
 	SpendDescription NVARCHAR(500),
 	CurrencyConverterMethodId INT,
 	SetPaymentDate DATETIME,
-	IsPending BIT
+	IsPending BIT,
+	AmountTypeId INT
 );
 
 DECLARE @DateRangeTemp Table(
@@ -275,10 +276,10 @@ BEGIN TRY
 
 	INSERT INTO @SpendDataTemp 
 		(AccountId, SpendId, SpendTypeId, AmountCurrencyId, SpendDate, SpendDescription, OriginalAmount,
-		 Numerator, Denominator, CurrencyConverterMethodId, SetPaymentDate, IsPending)
+		 Numerator, Denominator, CurrencyConverterMethodId, SetPaymentDate, IsPending, AmountTypeId)
 	SELECT 
 		tmpAccpt.AccountId, sp.SpendId, sp.SpendTypeId, sp.AmountCurrencyId, sp.SpendDate, sp.Description, 
-		sp.OriginalAmount, sp.Numerator, sp.Denominator, sop.CurrencyConverterMethodId, sp.SetPaymentDate, sp.IsPending	
+		sp.OriginalAmount, sp.Numerator, sp.Denominator, sop.CurrencyConverterMethodId, sp.SetPaymentDate, sp.IsPending, sp.AmountTypeId
 	FROM dbo.Spend sp
 	JOIN @AccountPeriodsTemp tmpAccpt ON tmpAccpt.SpendId = sp.SpendId
 	JOIN dbo.SpendOnPeriod sop ON sop.AccountPeriodId = tmpAccpt.AccountPeriodId AND sop.SpendId = tmpAccpt.SpendId

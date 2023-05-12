@@ -121,6 +121,24 @@ namespace MyFinanceBackend.Services
 			};
 		}
 
+		public static BankAccountPeriodBasicId CreateBankAccountPeriodBasicId(DataRow dataRow)
+		{
+			if (dataRow == null)
+			{
+				throw new ArgumentNullException(nameof(dataRow));
+			}
+
+			return new BankAccountPeriodBasicId
+			{
+				AccountId = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_ID,
+					DataRowConvert.ParseBehaviorOption.ThrowException),
+				AccountPeriodId = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_PERIOD_ID,
+					DataRowConvert.ParseBehaviorOption.ThrowException),
+				FinancialEntityId = GetNullableInt(dataRow, DatabaseConstants.COL_FINANCIAL_ENTITY_ID),
+				FinancialEntityName = dataRow.ToString(DatabaseConstants.COL_FINANCIAL_ENTITY_NAME, DataRowConvert.ParseBehaviorOption.DefaultValue)
+			};
+		}
+
 		public static AccountPeriodBasicId CreateAccountPeriodBasicId(DataRow dataRow)
 		{
 			if (dataRow == null)
@@ -882,7 +900,8 @@ namespace MyFinanceBackend.Services
 				SpendTypeId = dataRow.ToInt(DatabaseConstants.COL_SPEND_TYPE_ID),
 				CurrencyConverterMethodId = dataRow.ToInt(DatabaseConstants.COL_ACCOUNT_CURRENCY_CONVERTER_METHOD_ID),
 				SetPaymentDate = dataRow.ToDateTime(DatabaseConstants.COL_SPEND_SET_PAYMENT_DATE),
-				IsPending = dataRow.ToBool(DatabaseConstants.COL_IS_PENDING)
+				IsPending = dataRow.ToBool(DatabaseConstants.COL_IS_PENDING),
+				AmountTypeId = dataRow.ToInt(DatabaseConstants.COL_AMOUNT_TYPE_ID)
 			};
 
 			if (model.SetPaymentDate == default(DateTime))
@@ -1538,6 +1557,22 @@ namespace MyFinanceBackend.Services
 
 			var enumValue = (T)Enum.Parse(typeof(T), intValue.ToString());
 			return enumValue;
+		}
+
+		private static int? GetNullableInt(DataRow dataRow, string columnName)
+		{
+			if (!dataRow.Table.Columns.Contains(columnName) || dataRow.IsDbNull(columnName))
+			{
+				return null;
+			}
+
+			var rowValue = dataRow[columnName];
+			if(rowValue == null)
+			{
+				return null;
+			}
+
+			return dataRow.ToInt(columnName);
 		}
 	}
 }

@@ -61,6 +61,16 @@ namespace MyFinanceWebApiCore.Controllers
 		[HttpPatch]
 		public IEnumerable<SpendItemModified> EditSpend([FromQuery] int spendId, [FromBody] ClientEditSpendModel model)
 		{
+			if(spendId < 0)
+			{
+				throw new ArgumentException("Value should be greater than 0", nameof(spendId));
+			}
+
+			if(model == null)
+			{
+				throw new ArgumentNullException(nameof(model));
+			}
+
 			model.SpendId = spendId;
 			model.UserId = GetUserId();
 			return _spendsService.EditSpend(model);

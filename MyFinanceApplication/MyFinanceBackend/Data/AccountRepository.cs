@@ -189,23 +189,23 @@ namespace MyFinanceBackend.Data
 			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountBasicInfo);
 		}
 
-		public IEnumerable<AccountPeriodBasicId> GetBankSummaryAccountsPeriodByUserId(string userId)
+		public IEnumerable<BankAccountPeriodBasicId> GetBankSummaryAccountsPeriodByUserId(string userId)
 		{
 			var userParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_BANK_SUMMARY_ACCOUNT_PERIOD_LIST, userParameter);
 			if (dataSet == null || dataSet.Tables.Count == 0)
 			{
-				return new AccountPeriodBasicId[0];
+				return Array.Empty<BankAccountPeriodBasicId>();
 			}
 
-			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountPeriodBasicId);
+			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateBankAccountPeriodBasicId);
 		}
 
 		public IEnumerable<AccountViewModel> GetOrderedAccountViewModelList(IEnumerable<int> accountIds, string userId)
 		{
 			if (accountIds == null || !accountIds.Any())
 			{
-				return new AccountViewModel[] { };
+				return Array.Empty<AccountViewModel>();
 			}
 
 			var idsDataTable = ServicesUtils.CreateIntDataTable(accountIds);

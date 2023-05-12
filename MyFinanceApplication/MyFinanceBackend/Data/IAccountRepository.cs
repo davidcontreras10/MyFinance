@@ -13,7 +13,7 @@ namespace MyFinanceBackend.Data
 
 		Task<AccountPeriodBasicInfo> GetAccountPeriodInfoByAccountIdDateTimeAsync(int accountId, DateTime dateTime);
 
-		IEnumerable<AccountPeriodBasicId> GetBankSummaryAccountsPeriodByUserId(string userId);
+		IEnumerable<BankAccountPeriodBasicId> GetBankSummaryAccountsPeriodByUserId(string userId);
 		IEnumerable<AccountBasicInfo> GetBankSummaryAccountsByUserId(string userId);
         IEnumerable<AccountViewModel> GetOrderedAccountViewModelList(IEnumerable<int> accountIds, string userId);
         IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds);

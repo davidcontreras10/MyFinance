@@ -199,7 +199,7 @@ namespace MyFinanceBackend.Data
 			if (model == null || model.SpendId == 0 || string.IsNullOrEmpty(model.UserId) || !model.ModifyList.Any() ||
 				model.ModifyList.Any(i => i == 0) || model.ModifyList.Any(i => !((int)i).TryParseEnum<ClientEditSpendModel.Field>(out _)))
 				throw new Exception("Invalid parameters");
-
+			SetAmountType(model, model.ModifyList.Any(i => i == ClientEditSpendModel.Field.AmountType));
 			var modifyList = ServicesUtils.CreateStringCharSeparated(model.ModifyList.Select(ml => (int)ml));
 			//var databaseValues = CreateAddSpendDbValues(model);
 			//var accountsTable = ServicesUtils.ClientAddSpendAccountDataTable(databaseValues.IncludedAccounts);
@@ -243,7 +243,7 @@ namespace MyFinanceBackend.Data
 		public IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel)
 		{
 			ValidateSpendCurrencyConvertibleValues(clientAddSpendModel);
-			SetAmountType(clientAddSpendModel);
+			SetAmountType(clientAddSpendModel, false);
 			if (clientAddSpendModel == null)
 				throw new ArgumentNullException(nameof(clientAddSpendModel));
 
@@ -676,7 +676,8 @@ namespace MyFinanceBackend.Data
 				Denominator = spendModelResultSet.Denominator,
 				Description = spendModelResultSet.SpendDescription,
 				SetPaymentDate = spendModelResultSet.SetPaymentDate,
-				IsPending = spendModelResultSet.IsPending
+				IsPending = spendModelResultSet.IsPending,
+				AmountTypeId = spendModelResultSet.AmountTypeId
 			};
 		}
 
@@ -872,10 +873,14 @@ namespace MyFinanceBackend.Data
 			};
 		}
 		
-		private void SetAmountType(ClientBasicAddSpend clientAddSpendModel)
+		private void SetAmountType(ClientBasicAddSpend clientAddSpendModel, bool acceptDefault)
 		{
 			if (clientAddSpendModel.AmountTypeId == TransactionTypeIds.Invalid)
 			{
+				if (acceptDefault)
+				{
+					return;
+				}
 				throw new InvalidSpendAmountType();
 			}
 

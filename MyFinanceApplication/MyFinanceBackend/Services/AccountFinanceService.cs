@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MyFinanceBackend.Data;
+using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 
@@ -30,29 +31,32 @@ namespace MyFinanceBackend.Services
 	        var bankAccounts = _accountRepository.GetBankSummaryAccountsPeriodByUserId(userId);
             if (bankAccounts == null || !bankAccounts.Any())
             {
-                return new BankAccountSummary[0];
+				return Array.Empty<BankAccountSummary>();
             }
 
             var requestItems = bankAccounts.Select(acc => CreateBankAccountClientAccountFinanceRequest(acc.AccountPeriodId));
             var financeInfoAccounts = GetAccountFinanceViewModel(requestItems, userId);
-	        return financeInfoAccounts.Select(CreateBankAccountSummary);    
+			return financeInfoAccounts.Select(fa => CreateBankAccountSummary(fa, bankAccounts));    
         }
 
-        #endregion
+		#endregion
 
-        #region Privates
+		#region Privates
 
-		private static BankAccountSummary CreateBankAccountSummary(AccountFinanceViewModel accountFinanceViewModel)
+		private static BankAccountSummary CreateBankAccountSummary(AccountFinanceViewModel accountFinanceViewModel, IEnumerable<BankAccountPeriodBasicId> bankAccounts)
 		{
 			if (accountFinanceViewModel == null)
 			{
 				throw new ArgumentNullException(nameof(accountFinanceViewModel));
 			}
 
+			var bankAccount = bankAccounts?.FirstOrDefault(ba => ba.AccountId == accountFinanceViewModel.AccountId);
 			return new BankAccountSummary
 			{
 				AccountId = accountFinanceViewModel.AccountId,
 				AccountName = accountFinanceViewModel.AccountName,
+				FinancialEntityId = bankAccount?.FinancialEntityId,
+				FinancialEntityName = bankAccount?.FinancialEntityName,
 				Balance = new CurrencyAmount
 				{
 					Amount = accountFinanceViewModel.GeneralBalanceToday,

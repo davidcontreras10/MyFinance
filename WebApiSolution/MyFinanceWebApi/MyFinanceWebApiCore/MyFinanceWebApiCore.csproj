@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="6.2.3" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
@@ -17,6 +18,9 @@
   <ItemGroup>
     <Reference Include="DataAccess">
       <HintPath>..\..\..\MyFinanceApplication\DataAccess\bin\Debug\netstandard2.0\DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="DContre.MyFinance.StUtilities">
+      <HintPath>..\..\..\Utilities\StUtilities\obj\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
     </Reference>
     <Reference Include="MyFinanceBackend">
       <HintPath>..\..\..\MyFinanceApplication\MyFinanceBackend\bin\Debug\netstandard2.0\MyFinanceBackend.dll</HintPath>
