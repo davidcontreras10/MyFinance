@@ -59,15 +59,6 @@ namespace EFDataAccess.Models
         public virtual DbSet<UserBankSummaryAccount> UserBankSummaryAccount { get; set; }
         public virtual DbSet<UserSpendType> UserSpendType { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=DAVIDCONTRERAS-\\SQLEXPRESS;Database=MYFNDB;user id=FinanceAzureAppUser;password=FinanceAzureAppPass;TrustServerCertificate=true;");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>(entity =>

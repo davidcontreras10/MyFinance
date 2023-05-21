@@ -10,7 +10,12 @@ namespace MyFinanceWebApiCore.Controllers
 	[ApiController]
 	public class TestsController : BaseApiController
 	{
-		private static readonly MyFinanceContext _context = new MyFinanceContext();
+		private readonly MyFinanceContext _context;
+
+		public TestsController(MyFinanceContext context) 
+		{
+			_context = context;
+		}
 
 		[HttpGet]
 		public async Task<ActionResult<MyFinanceModel.AppUser>> GetUsers()

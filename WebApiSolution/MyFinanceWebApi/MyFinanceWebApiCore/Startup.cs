@@ -1,9 +1,11 @@
 using DataAccess;
+using EFDataAccess.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -122,8 +124,10 @@ namespace MyFinanceWebApiCore
 			});
 		}
 
-		private static void RegisterServices(IServiceCollection services)
+		private void RegisterServices(IServiceCollection services)
 		{
+			services.AddDbContext<MyFinanceContext>(
+				options => options.UseSqlServer(Configuration.GetConnectionString("SqlServerLocalConnection")));
 			services.AddSingleton<IBackendSettings, BackendSettings>();
 			services.AddScoped<IConnectionConfig, SqlServerConfig>();
 			services.AddScoped<IAuthenticationService, AuthenticationService>();
