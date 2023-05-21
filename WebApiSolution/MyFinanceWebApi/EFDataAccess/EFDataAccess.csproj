@@ -17,4 +17,20 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DContre.MyFinance.StUtilities">
+      <HintPath>..\..\..\Utilities\StUtilities\obj\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="MyFinanceBackend">
+      <HintPath>..\..\..\MyFinanceApplication\MyFinanceBackend\bin\Debug\netstandard2.0\MyFinanceBackend.dll</HintPath>
+    </Reference>
+    <Reference Include="MyFinanceModel">
+      <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\netstandard2.0\MyFinanceModel.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EFDataAccess\EFDataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="DataAccess">
       <HintPath>..\..\..\MyFinanceApplication\DataAccess\bin\Debug\netstandard2.0\DataAccess.dll</HintPath>
     </Reference>
