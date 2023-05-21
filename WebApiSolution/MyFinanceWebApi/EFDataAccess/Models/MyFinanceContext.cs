@@ -64,7 +64,7 @@ namespace EFDataAccess.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=DAVIDCONTRERAS-\\SQLEXPRESS;Database=MYFNDB;user id=FinanceAzureAppUser;password=FinanceAzureAppPass;");
+                optionsBuilder.UseSqlServer("Server=DAVIDCONTRERAS-\\SQLEXPRESS;Database=MYFNDB;user id=FinanceAzureAppUser;password=FinanceAzureAppPass;TrustServerCertificate=true;");
             }
         }
 
