@@ -1,5 +1,6 @@
 using DataAccess;
 using EFDataAccess.Models;
+using EFDataAccess.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -139,7 +140,7 @@ namespace MyFinanceWebApiCore
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<ICurrencyService, CurrencyService>();
 			services.AddScoped<ISpendTypeService, SpendTypeService>();
-			services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
+			services.AddScoped<IAccountGroupRepository, EFAccountGroupRepository>();
 			services.AddScoped<IAccountGroupService, AccountGroupService>();
 			services.AddScoped<ISpendTypeRepository, SpendTypeRepository>();
 			services.AddScoped<IUserRespository, UserRepository>();
