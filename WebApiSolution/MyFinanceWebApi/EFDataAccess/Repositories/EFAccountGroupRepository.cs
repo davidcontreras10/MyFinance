@@ -4,8 +4,8 @@ using MyFinanceBackend.Models;
 using MyFinanceModel.ClientViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
 namespace EFDataAccess.Repositories
 {
@@ -20,12 +20,66 @@ namespace EFDataAccess.Repositories
 
 		public int AddorEditAccountGroup(AccountGroupClientViewModel accountGroupClientViewModel)
 		{
-			throw new NotImplementedException();
+			var userId = new Guid(accountGroupClientViewModel.UserId);
+			var isInsert = accountGroupClientViewModel.AccountGroupId == 0;
+			AccountGroup efAccountGroup = null;
+			if (isInsert)
+			{
+				efAccountGroup = new AccountGroup
+				{
+					AccountGroupName = accountGroupClientViewModel.AccountGroupName,
+					DisplayValue = accountGroupClientViewModel.AccountGroupDisplayValue,
+					AccountGroupPosition = accountGroupClientViewModel.AccountGroupPosition,
+					DisplayDefault = accountGroupClientViewModel.DisplayDefault,
+					UserId = userId,
+					AccountGroupId = GetNextId()
+				};
+
+				var insertedEntity = _context.AccountGroup.Add(efAccountGroup);
+			}
+			else
+			{
+				efAccountGroup = _context.AccountGroup.First(x => x.AccountGroupId == accountGroupClientViewModel.AccountGroupId);
+				efAccountGroup.AccountGroupName = accountGroupClientViewModel.AccountGroupName;
+				efAccountGroup.DisplayDefault = accountGroupClientViewModel.DisplayDefault;
+				efAccountGroup.DisplayValue = accountGroupClientViewModel.AccountGroupDisplayValue;
+			}
+
+			var userAccountGroups = _context.AccountGroup.Where(accg => accg.UserId == userId);
+			if (isInsert || accountGroupClientViewModel.AccountGroupPosition != efAccountGroup.AccountGroupPosition)
+			{
+				efAccountGroup.AccountGroupPosition = accountGroupClientViewModel.AccountGroupPosition;
+				var maxPosition = userAccountGroups.Where(accg => accg.UserId == userId).Max(x => x.AccountGroupPosition) ?? 0;
+				if (efAccountGroup.AccountGroupPosition >= maxPosition)
+				{
+					efAccountGroup.AccountGroupPosition = maxPosition + 1;
+				}
+				else
+				{
+					var updatePos = userAccountGroups
+						.Where(accg => accg.AccountGroupId != accountGroupClientViewModel.AccountGroupId
+							&& accg.AccountGroupPosition >= accountGroupClientViewModel.AccountGroupPosition);
+					foreach (var accg in updatePos)
+					{
+						accg.AccountGroupPosition += 1;
+					}
+				}
+			}
+
+			UpdatePositions(userAccountGroups);
+			_context.SaveChanges();
+			return isInsert ? efAccountGroup.AccountGroupId : 0;
 		}
 
 		public void DeleteAccountGroup(string userId, int accountGroupId)
 		{
-			throw new NotImplementedException();
+			if (_context.Account.Any(ac => ac.AccountGroupId == accountGroupId))
+			{
+				throw new Exception("Accounts still associated to this group");
+			}
+
+			_context.AccountGroup.RemoveRange(_context.AccountGroup.Where(accg => accg.AccountGroupId == accountGroupId));
+			_context.SaveChanges();
 		}
 
 		public IEnumerable<AccountGroupDetailResultSet> GetAccountGroupDetails(string userId, IEnumerable<int> accountGroupIds = null)
@@ -41,6 +95,30 @@ namespace EFDataAccess.Repositories
 				AccountGroupPosition = x.AccountGroupPosition ?? 0,
 				DisplayDefault = x.DisplayDefault ?? false
 			});
+		}
+
+		private void UpdatePositions(IEnumerable<AccountGroup> userAccountGroups = null, Guid? userId = null)
+		{
+			if ((userAccountGroups == null || !userAccountGroups.Any()) && userId == null)
+			{
+				throw new ArgumentException($"Either {nameof(userAccountGroups)} or {nameof(userId)} must be provided");
+			}
+
+			var updatePositions = userAccountGroups != null && userAccountGroups.Any()
+				? userAccountGroups.OrderBy(accg => accg.AccountGroupPosition)
+				: (IEnumerable<AccountGroup>)_context.AccountGroup.Where(accg => accg.UserId == userId).OrderBy(accg => accg.AccountGroupPosition);
+			var pos = 1;
+			Debug.WriteLine("UpdatePositions");
+			foreach (var positionAccg in updatePositions)
+			{
+				positionAccg.AccountGroupPosition = pos++;
+				Debug.WriteLine($"Accg {positionAccg.AccountGroupName}: {positionAccg.AccountGroupPosition}");
+			}
+		}
+
+		private int GetNextId()
+		{
+			return _context.AccountGroup.Max(accg => accg.AccountGroupId);
 		}
 	}
 }

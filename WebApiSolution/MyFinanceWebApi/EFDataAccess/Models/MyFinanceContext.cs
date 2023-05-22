@@ -19,7 +19,9 @@ namespace EFDataAccess.Models
         {
         }
 
-        public virtual DbSet<Account> Account { get; set; }
+		#region DbSets
+
+		public virtual DbSet<Account> Account { get; set; }
         public virtual DbSet<AccountGroup> AccountGroup { get; set; }
         public virtual DbSet<AccountInclude> AccountInclude { get; set; }
         public virtual DbSet<AccountPeriod> AccountPeriod { get; set; }
@@ -59,7 +61,9 @@ namespace EFDataAccess.Models
         public virtual DbSet<UserBankSummaryAccount> UserBankSummaryAccount { get; set; }
         public virtual DbSet<UserSpendType> UserSpendType { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		#endregion
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>(entity =>
             {
@@ -124,6 +128,10 @@ namespace EFDataAccess.Models
                     .WithMany(p => p.AccountGroup)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("AccountGroup_FK_UserId");
+
+                entity
+                    .Property(e => e.AccountGroupId)
+                    .ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<AccountInclude>(entity =>
