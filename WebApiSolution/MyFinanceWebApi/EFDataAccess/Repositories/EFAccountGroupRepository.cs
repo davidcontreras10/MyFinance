@@ -9,13 +9,11 @@ using System.Linq;
 
 namespace EFDataAccess.Repositories
 {
-	public class EFAccountGroupRepository : IAccountGroupRepository
+	public class EFAccountGroupRepository : BaseEFRepository, IAccountGroupRepository
 	{
-		private readonly MyFinanceContext _context;
 
-		public EFAccountGroupRepository(MyFinanceContext context)
+		public EFAccountGroupRepository(MyFinanceContext context) : base(context)
 		{
-			_context = context;
 		}
 
 		public int AddorEditAccountGroup(AccountGroupClientViewModel accountGroupClientViewModel)
@@ -35,17 +33,17 @@ namespace EFDataAccess.Repositories
 					AccountGroupId = GetNextId()
 				};
 
-				var insertedEntity = _context.AccountGroup.Add(efAccountGroup);
+				var insertedEntity = Context.AccountGroup.Add(efAccountGroup);
 			}
 			else
 			{
-				efAccountGroup = _context.AccountGroup.First(x => x.AccountGroupId == accountGroupClientViewModel.AccountGroupId);
+				efAccountGroup = Context.AccountGroup.First(x => x.AccountGroupId == accountGroupClientViewModel.AccountGroupId);
 				efAccountGroup.AccountGroupName = accountGroupClientViewModel.AccountGroupName;
 				efAccountGroup.DisplayDefault = accountGroupClientViewModel.DisplayDefault;
 				efAccountGroup.DisplayValue = accountGroupClientViewModel.AccountGroupDisplayValue;
 			}
 
-			var userAccountGroups = _context.AccountGroup.Where(accg => accg.UserId == userId);
+			var userAccountGroups = Context.AccountGroup.Where(accg => accg.UserId == userId);
 			if (isInsert || accountGroupClientViewModel.AccountGroupPosition != efAccountGroup.AccountGroupPosition)
 			{
 				efAccountGroup.AccountGroupPosition = accountGroupClientViewModel.AccountGroupPosition;
@@ -67,26 +65,26 @@ namespace EFDataAccess.Repositories
 			}
 
 			UpdatePositions(userAccountGroups);
-			_context.SaveChanges();
+			Context.SaveChanges();
 			return isInsert ? efAccountGroup.AccountGroupId : 0;
 		}
 
 		public void DeleteAccountGroup(string userId, int accountGroupId)
 		{
-			if (_context.Account.Any(ac => ac.AccountGroupId == accountGroupId))
+			if (Context.Account.Any(ac => ac.AccountGroupId == accountGroupId))
 			{
 				throw new Exception("Accounts still associated to this group");
 			}
 
-			_context.AccountGroup.RemoveRange(_context.AccountGroup.Where(accg => accg.AccountGroupId == accountGroupId));
-			_context.SaveChanges();
+			Context.AccountGroup.RemoveRange(Context.AccountGroup.Where(accg => accg.AccountGroupId == accountGroupId));
+			Context.SaveChanges();
 		}
 
 		public IEnumerable<AccountGroupDetailResultSet> GetAccountGroupDetails(string userId, IEnumerable<int> accountGroupIds = null)
 		{
 			var dbItems = accountGroupIds != null && accountGroupIds.Any()
-				? _context.AccountGroup.Where(accgp => accgp.UserId.ToString() == userId && accountGroupIds.Any(id => id == accgp.AccountGroupId))
-				: _context.AccountGroup.Where(accgp => accgp.UserId.ToString() == userId);
+				? Context.AccountGroup.Where(accgp => accgp.UserId.ToString() == userId && accountGroupIds.Any(id => id == accgp.AccountGroupId))
+				: Context.AccountGroup.Where(accgp => accgp.UserId.ToString() == userId);
 			return dbItems.Select(x => new AccountGroupDetailResultSet
 			{
 				AccountGroupDisplayValue = x.DisplayValue,
@@ -106,7 +104,7 @@ namespace EFDataAccess.Repositories
 
 			var updatePositions = userAccountGroups != null && userAccountGroups.Any()
 				? userAccountGroups.OrderBy(accg => accg.AccountGroupPosition)
-				: (IEnumerable<AccountGroup>)_context.AccountGroup.Where(accg => accg.UserId == userId).OrderBy(accg => accg.AccountGroupPosition);
+				: (IEnumerable<AccountGroup>)Context.AccountGroup.Where(accg => accg.UserId == userId).OrderBy(accg => accg.AccountGroupPosition);
 			var pos = 1;
 			Debug.WriteLine("UpdatePositions");
 			foreach (var positionAccg in updatePositions)
@@ -118,7 +116,7 @@ namespace EFDataAccess.Repositories
 
 		private int GetNextId()
 		{
-			return _context.AccountGroup.Max(accg => accg.AccountGroupId);
+			return Context.AccountGroup.Max(accg => accg.AccountGroupId);
 		}
 	}
 }

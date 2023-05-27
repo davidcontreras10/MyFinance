@@ -24,5 +24,6 @@ namespace EFDataAccess.Models
         public virtual CurrencyConverter CurrencyConverter { get; set; }
         public virtual ICollection<AccountInclude> AccountInclude { get; set; }
         public virtual ICollection<SpendOnPeriod> SpendOnPeriod { get; set; }
+        public virtual FinancialEntity FinancialEntity { get; set; }
     }
 }

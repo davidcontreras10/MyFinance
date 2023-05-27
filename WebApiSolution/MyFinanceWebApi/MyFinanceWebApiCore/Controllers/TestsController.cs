@@ -1,6 +1,7 @@
 ﻿using EFDataAccess.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyFinanceBackend.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,25 +11,17 @@ namespace MyFinanceWebApiCore.Controllers
 	[ApiController]
 	public class TestsController : BaseApiController
 	{
-		private readonly MyFinanceContext _context;
+		private readonly IAccountRepository _accountRepository;
 
-		public TestsController(MyFinanceContext context) 
+		public TestsController(IAccountRepository accountRepository)
 		{
-			_context = context;
+			_accountRepository = accountRepository;
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<MyFinanceModel.AppUser>> GetUsers()
+		public ActionResult TestGetEndpoint([FromQuery]int[] accountIds, [FromQuery]string userId)
 		{
-			var users = await _context.AppUser.ToListAsync();
-			var dtoUsers = users.Select(u => new MyFinanceModel.AppUser
-			{
-				Name = u.Name,
-				PrimaryEmail = u.PrimaryEmail,
-				UserId = u.UserId,
-				Username = u.Username
-			});
-			return Ok(dtoUsers);
+			return Ok(_accountRepository.GetAccountDetailsViewModel(accountIds, userId));
 		}
 	}
 }

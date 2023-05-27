@@ -20,6 +20,7 @@ using MyFinanceWebApiCore.Authentication;
 using MyFinanceWebApiCore.Config;
 using MyFinanceWebApiCore.FilterAttributes;
 using MyFinanceWebApiCore.Services;
+using OfficeOpenXml.FormulaParsing.Logging;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -127,8 +128,19 @@ namespace MyFinanceWebApiCore
 
 		private void RegisterServices(IServiceCollection services)
 		{
+			var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
+			{
+				builder.AddDebug();
+			});
+
 			services.AddDbContext<MyFinanceContext>(
-				options => options.UseSqlServer(Configuration.GetConnectionString("SqlServerLocalConnection")));
+				options =>
+				{
+					options.UseSqlServer(Configuration.GetConnectionString("SqlServerLocalConnection"))
+					.UseLoggerFactory(loggerFactory)  // Set the logger factory
+					.EnableSensitiveDataLogging();
+
+				});
 			services.AddSingleton<IBackendSettings, BackendSettings>();
 			services.AddScoped<IConnectionConfig, SqlServerConfig>();
 			services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -149,7 +161,7 @@ namespace MyFinanceWebApiCore
 			services.AddScoped<IAuthorizationService, AuthorizationService>();
 			services.AddScoped<IUserAuthorizeService, UserAuthorizeService>();
 			services.AddScoped<IAuthorizationDataRepository, AuthorizationDataRepository>();
-			services.AddScoped<IAccountRepository, AccountRepository>();
+			services.AddScoped<IAccountRepository, EFAccountRepository>();
 			services.AddScoped<ITransferRepository, TransferRepository>();
 			services.AddScoped<IAutomaticTaskRepository, AutomaticTaskRepository>();
 

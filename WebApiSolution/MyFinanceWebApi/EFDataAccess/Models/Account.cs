@@ -23,7 +23,7 @@ namespace EFDataAccess.Models
         public int PeriodDefinitionId { get; set; }
         public string Name { get; set; }
         public int? CurrencyId { get; set; }
-        public double? BaseBudget { get; set; }
+        public float? BaseBudget { get; set; }
         public int? Position { get; set; }
         public string HeaderColor { get; set; }
         public int AccountTypeId { get; set; }

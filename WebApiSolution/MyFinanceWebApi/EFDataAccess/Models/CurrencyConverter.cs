@@ -15,8 +15,12 @@ namespace EFDataAccess.Models
         }
 
         public int CurrencyConverterId { get; set; }
+
         public int CurrencyIdOne { get; set; }
+        public virtual Currency CurrencyOne { get; set; }
+
         public int CurrencyIdTwo { get; set; }
+        public virtual Currency CurrencyTwo { get; set; }
 
         public virtual ICollection<CurrencyConverterMethod> CurrencyConverterMethod { get; set; }
     }

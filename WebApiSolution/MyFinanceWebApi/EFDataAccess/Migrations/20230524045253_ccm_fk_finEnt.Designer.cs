@@ -4,14 +4,16 @@ using EFDataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EFDataAccess.Migrations
 {
     [DbContext(typeof(MyFinanceContext))]
-    partial class MyFinanceContextModelSnapshot : ModelSnapshot
+    [Migration("20230524045253_ccm_fk_finEnt")]
+    partial class ccm_fk_finEnt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -407,10 +409,6 @@ namespace EFDataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("CurrencyConverterId");
-
-                    b.HasIndex("CurrencyIdOne");
-
-                    b.HasIndex("CurrencyIdTwo");
 
                     b.ToTable("CurrencyConverter");
                 });
@@ -1179,21 +1177,6 @@ namespace EFDataAccess.Migrations
                         .WithMany("AutomaticTask")
                         .HasForeignKey("UserId")
                         .HasConstraintName("AutomaticTask_FK_UserId")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EFDataAccess.Models.CurrencyConverter", b =>
-                {
-                    b.HasOne("EFDataAccess.Models.Currency", "CurrencyOne")
-                        .WithMany()
-                        .HasForeignKey("CurrencyIdOne")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("EFDataAccess.Models.Currency", "CurrencyTwo")
-                        .WithMany()
-                        .HasForeignKey("CurrencyIdTwo")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

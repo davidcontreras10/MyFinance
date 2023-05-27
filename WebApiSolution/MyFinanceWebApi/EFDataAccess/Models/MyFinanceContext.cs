@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -331,7 +332,20 @@ namespace EFDataAccess.Models
                     .HasMaxLength(10);
             });
 
-            modelBuilder.Entity<CurrencyConverterMethod>(entity =>
+            modelBuilder.Entity<CurrencyConverter>(entity =>
+            {
+                entity.HasOne(e => e.CurrencyOne)
+                    .WithMany()
+                    .HasForeignKey(e => e.CurrencyIdOne)
+                    .OnDelete(DeleteBehavior.NoAction);
+				entity.HasOne(e => e.CurrencyTwo)
+	                .WithMany()
+	                .HasForeignKey(e => e.CurrencyIdTwo)
+					.OnDelete(DeleteBehavior.NoAction);
+			});
+
+
+			modelBuilder.Entity<CurrencyConverterMethod>(entity =>
             {
                 entity.Property(e => e.Name)
                     .IsRequired()
