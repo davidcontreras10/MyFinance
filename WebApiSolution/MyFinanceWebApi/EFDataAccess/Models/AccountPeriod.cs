@@ -16,7 +16,7 @@ namespace EFDataAccess.Models
 
         public int AccountPeriodId { get; set; }
         public int? AccountId { get; set; }
-        public double? Budget { get; set; }
+        public float? Budget { get; set; }
         public DateTime? InitialDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? CurrencyId { get; set; }

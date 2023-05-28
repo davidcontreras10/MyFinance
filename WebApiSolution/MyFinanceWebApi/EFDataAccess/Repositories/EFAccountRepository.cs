@@ -221,7 +221,18 @@ namespace EFDataAccess.Repositories
 
         public IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds)
         {
-            throw new NotImplementedException();
+            return Context.AccountPeriod
+                .Where(accp => accountPeriodIds.Contains(accp.AccountPeriodId))
+                .Include(accp => accp.Account)
+                .Select(accp => new AccountPeriodBasicInfo
+                {
+                    AccountPeriodId = accp.AccountPeriodId,
+                    AccountId = accp.AccountId ?? 0,
+                    AccountName = accp.Account.Name,
+                    InitialDate = accp.InitialDate ?? new DateTime(),
+                    EndDate = accp.EndDate ?? new DateTime(),
+                    Budget = accp.Budget ?? 0,
+                });
         }
 
         public AccountPeriodBasicInfo GetAccountPeriodInfoByAccountIdDateTime(int accountId, DateTime dateTime)

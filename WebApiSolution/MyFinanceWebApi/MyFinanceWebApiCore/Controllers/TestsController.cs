@@ -19,9 +19,9 @@ namespace MyFinanceWebApiCore.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult TestGetEndpoint([FromQuery]int[] accountIds, [FromQuery]string userId)
+		public ActionResult TestGetEndpoint([FromQuery]int[] accountPeriodIds)
 		{
-			return Ok(_accountRepository.GetAccountDetailsViewModel(accountIds, userId));
+			return Ok(_accountRepository.GetAccountPeriodBasicInfo(accountPeriodIds));
 		}
 	}
 }
