@@ -159,14 +159,33 @@ namespace EFDataAccess.Repositories
 
             var userAccounts = Context.Account.Where(acc => acc.UserId == userGuid);
             var queryAccounts = Context.Account.Where(acc => accountIds.Contains(acc.AccountId));
+            var efCurrencies = Context.Currency.ToList();
+            var efAccountGroups = Context.AccountGroup.ToList();
             var acc = queryAccounts.Select(acc => new AccountDetailsInfoViewModel
             {
                 AccountName = acc.Name,
+                AccountPosition = acc.Position ?? 0,
+
                 SpendTypeViewModels = Context.UserSpendType.Where(ust => ust.UserId == userGuid).Include(x => x.SpendType).Select(x => ToSpendTypeViewModel(x.SpendType, acc.DefaultSpendTypeId)),
                 AccountTypeViewModels = accountTypes,
                 PeriodTypeViewModels = periodTypeViewModels,
                 FinancialEntityViewModels = financialEntityViewModels,
-                AccountIncludeViewModels = GetPossibleAccountIncludes(acc, acc.AccountIncludeAccount, userAccounts, currencyConverters)
+                AccountIncludeViewModels = GetPossibleAccountIncludes(acc, acc.AccountIncludeAccount, userAccounts, currencyConverters),
+                CurrencyViewModels = efCurrencies.Select(c => new CurrencyViewModel
+                {
+                    CurrencyId = c.CurrencyId,
+                    CurrencyName = c.Name,
+                    Symbol = c.Symbol,
+                    Isdefault = c.CurrencyId == acc.CurrencyId
+                }),
+                AccountGroupViewModels = efAccountGroups.Select(accg => new AccountGroupViewModel
+                {
+                    AccountGroupDisplayValue = accg.DisplayValue,
+                    AccountGroupId = accg.AccountGroupId,
+                    AccountGroupName = accg.AccountGroupName,
+                    AccountGroupPosition = accg.AccountGroupPosition ?? 0,
+                    IsSelected = acc.AccountGroupId == accg.AccountGroupId
+                })
             });
 
             return acc;
@@ -174,7 +193,30 @@ namespace EFDataAccess.Repositories
 
         public IEnumerable<AccountIncludeViewModel> GetAccountIncludeViewModel(string userId, int currencyId)
         {
-            throw new NotImplementedException();
+            var userGuid = new Guid(userId);
+            var userAccounts = Context.Account.Where(acc => acc.UserId == userGuid);
+            var currencyConverterMethods = Context.CurrencyConverterMethod.Include(c => c.CurrencyConverter).Include(c => c.FinancialEntity);
+            var applicable = new List<AccountIncludeViewModel>();
+            foreach (var account in userAccounts)
+            {
+                var ccMethods = currencyConverterMethods.Where(ccm => 
+                    ccm.CurrencyConverter.CurrencyIdOne == currencyId && ccm.CurrencyConverter.CurrencyIdTwo == account.CurrencyId);
+                var acci = new AccountIncludeViewModel
+                {
+                    AccountId = account.AccountId,
+                    AccountName = account.Name,
+                    MethodIds = ccMethods.Select(ccm => new MethodId
+                    {
+                        Id = ccm.CurrencyConverterMethodId,
+                        Name = ccm.Name,
+                        IsDefault = ccm.IsDefault ?? false
+                    })
+                };
+
+                applicable.Add(acci);
+            }
+
+            return applicable;
         }
 
         public IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds)
