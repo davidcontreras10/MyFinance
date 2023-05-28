@@ -199,7 +199,7 @@ namespace EFDataAccess.Repositories
             var applicable = new List<AccountIncludeViewModel>();
             foreach (var account in userAccounts)
             {
-                var ccMethods = currencyConverterMethods.Where(ccm => 
+                var ccMethods = currencyConverterMethods.Where(ccm =>
                     ccm.CurrencyConverter.CurrencyIdOne == currencyId && ccm.CurrencyConverter.CurrencyIdTwo == account.CurrencyId);
                 var acci = new AccountIncludeViewModel
                 {
@@ -232,17 +232,56 @@ namespace EFDataAccess.Repositories
                     InitialDate = accp.InitialDate ?? new DateTime(),
                     EndDate = accp.EndDate ?? new DateTime(),
                     Budget = accp.Budget ?? 0,
+                    UserId = accp.Account.UserId.ToString()
                 });
         }
 
         public AccountPeriodBasicInfo GetAccountPeriodInfoByAccountIdDateTime(int accountId, DateTime dateTime)
         {
-            throw new NotImplementedException();
+            var account = Context.Account
+                .Where(acc => acc.AccountId == accountId)
+                .Include(acc => acc.AccountPeriod
+                    .Where(accp => dateTime >= accp.InitialDate && dateTime < accp.EndDate)).FirstOrDefault();
+            var accountPeriod = account?.AccountPeriod?.FirstOrDefault();
+            if (accountPeriod == null)
+            {
+                return null;
+            }
+
+            return new AccountPeriodBasicInfo
+            {
+                AccountId = account.AccountId,
+                AccountName = account.Name,
+                AccountPeriodId = accountPeriod.AccountPeriodId,
+                InitialDate = accountPeriod.InitialDate ?? new DateTime(),
+                EndDate = accountPeriod.EndDate ?? new DateTime(),
+                Budget = accountPeriod.Budget ?? 0,
+                UserId = account.UserId.ToString()
+            };
         }
 
-        public Task<AccountPeriodBasicInfo> GetAccountPeriodInfoByAccountIdDateTimeAsync(int accountId, DateTime dateTime)
+        public async Task<AccountPeriodBasicInfo> GetAccountPeriodInfoByAccountIdDateTimeAsync(int accountId, DateTime dateTime)
         {
-            throw new NotImplementedException();
+            var account = await Context.Account
+                .Where(acc => acc.AccountId == accountId)
+                .Include(acc => acc.AccountPeriod
+                    .Where(accp => dateTime >= accp.InitialDate && dateTime < accp.EndDate)).FirstOrDefaultAsync();
+            var accountPeriod = account?.AccountPeriod?.FirstOrDefault();
+            if (accountPeriod == null)
+            {
+                return null;
+            }
+
+            return new AccountPeriodBasicInfo
+            {
+                AccountId = account.AccountId,
+                AccountName = account.Name,
+                AccountPeriodId = accountPeriod.AccountPeriodId,
+                InitialDate = accountPeriod.InitialDate ?? new DateTime(),
+                EndDate = accountPeriod.EndDate ?? new DateTime(),
+                Budget = accountPeriod.Budget ?? 0,
+                UserId = account.UserId.ToString()
+            };
         }
 
         public UserAccountsViewModel GetAccountsByUserId(string userId)
