@@ -14,5 +14,10 @@ namespace EFDataAccess.Repositories
 		{
 			Context = context;
 		}
+
+		protected void CommitChanges()
+		{
+			Context.SaveChanges();
+		}
 	}
 }

@@ -13,12 +13,15 @@ namespace EFDataAccess.Models
     {
         public MyFinanceContext()
         {
-        }
+			ChangeTracker.LazyLoadingEnabled = false;
+
+		}
 
         public MyFinanceContext(DbContextOptions<MyFinanceContext> options)
             : base(options)
         {
-        }
+			ChangeTracker.LazyLoadingEnabled = false;
+		}
 
 		#region DbSets
 
@@ -172,6 +175,8 @@ namespace EFDataAccess.Models
                     .WithMany(p => p.AccountPeriod)
                     .HasForeignKey(d => d.CurrencyId)
                     .HasConstraintName("AccountPeriod_FK_CurrencyId");
+                entity.Property(p=>p.AccountPeriodId)
+                    .UseIdentityColumn();
             });
 
             modelBuilder.Entity<AccountType>(entity =>
