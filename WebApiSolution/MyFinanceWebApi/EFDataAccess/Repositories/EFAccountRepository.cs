@@ -1,5 +1,6 @@
 ﻿using EFDataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyFinanceBackend.Data;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -18,8 +19,11 @@ namespace EFDataAccess.Repositories
 {
 	public class EFAccountRepository : BaseEFRepository, IAccountRepository
 	{
-		public EFAccountRepository(MyFinanceContext context) : base(context)
+		private readonly ILogger<EFAccountRepository> _logger;
+
+		public EFAccountRepository(MyFinanceContext context, ILogger<EFAccountRepository> logger) : base(context)
 		{
+			_logger = logger;
 		}
 
 		public void AddAccount(string userId, ClientAddAccount clientAddAccount)
@@ -290,19 +294,19 @@ namespace EFDataAccess.Repositories
 		{
 			var dateTime = DateTime.UtcNow;
 			var userGuid = new Guid(userId);
-			var userAccounts = Context.Account.Where(acc => acc.UserId == userGuid)
+			var userAccounts = Context.Account
 				.Include(acc => acc.Currency)
 				.Include(acc => acc.PeriodDefinition)
 				.Include(acc => acc.AccountPeriod)
 				.Include(acc => acc.AccountGroup)
+				.Where(acc => acc.UserId == userGuid)
 				.ToList();
-
 			UpdateCurrentCurrentAccountPeriods(userAccounts, dateTime);
 			CommitChanges();
 			var accountGroupViewModels = new List<AccountGroupMainViewViewModel>();
 			foreach (var acc in userAccounts)
 			{
-				var accgViewModel = accountGroupViewModels.FirstOrDefault(accg => accg.AccountGroupId == acc.AccountId);
+				var accgViewModel = accountGroupViewModels.FirstOrDefault(accg => accg.AccountGroupId == acc.AccountGroupId);
 				if (accgViewModel == null)
 				{
 					var accountGroup = acc.AccountGroup;
@@ -386,7 +390,9 @@ namespace EFDataAccess.Repositories
 		private void UpdateCurrentCurrentAccountPeriods(string userId, DateTime? currentDate)
 		{
 			var userGuid = new Guid(userId);
-			var userAccounts = Context.Account.Where(acc => acc.UserId == userGuid)
+			var userAccounts = Context.Account
+				.AsNoTracking()
+				.Where(acc => acc.UserId == userGuid)
 				.Include(acc => acc.AccountPeriod)
 				.Include(acc => acc.PeriodDefinition);
 			UpdateCurrentCurrentAccountPeriods(userAccounts, currentDate);
@@ -402,6 +408,7 @@ namespace EFDataAccess.Repositories
 			var nonCurretPeriodAccounts = userAccounts.Where(acc => GetCurrentAccountPeriod(currentDate, acc.AccountPeriod) == null);
 			var nonCurretPeriodAccountsCount = nonCurretPeriodAccounts.Count();
 			var newAccountPeriods = new List<AccountPeriod>();
+			_logger.LogInformation($"Updating {nonCurretPeriodAccountsCount} accounts");
 			foreach (var account in nonCurretPeriodAccounts)
 			{
 				var newPeriod = PeriodCreatorHelper.GetNewPeriodDates(account, currentDate.Value);

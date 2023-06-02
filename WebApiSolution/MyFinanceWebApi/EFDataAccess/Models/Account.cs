@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace EFDataAccess.Models
 {
-    public partial class Account
+	public partial class Account
     {
         public Account()
         {

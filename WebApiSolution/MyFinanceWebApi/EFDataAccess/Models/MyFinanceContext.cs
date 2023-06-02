@@ -13,14 +13,12 @@ namespace EFDataAccess.Models
     {
         public MyFinanceContext()
         {
-			ChangeTracker.LazyLoadingEnabled = false;
 
 		}
 
         public MyFinanceContext(DbContextOptions<MyFinanceContext> options)
             : base(options)
         {
-			ChangeTracker.LazyLoadingEnabled = false;
 		}
 
 		#region DbSets
@@ -115,6 +113,9 @@ namespace EFDataAccess.Models
                     .WithMany(p => p.Account)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("Account_FK_UserId");
+
+                entity.HasIndex(p => p.UserId)
+                    .IsUnique(false);
             });
 
             modelBuilder.Entity<AccountGroup>(entity =>
