@@ -152,7 +152,7 @@ namespace MyFinanceWebApiCore
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<ICurrencyService, CurrencyService>();
 			services.AddScoped<ISpendTypeService, SpendTypeService>();
-			services.AddScoped<IAccountGroupRepository, EFAccountGroupRepository>();
+			services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
 			services.AddScoped<IAccountGroupService, AccountGroupService>();
 			services.AddScoped<ISpendTypeRepository, SpendTypeRepository>();
 			services.AddScoped<IUserRespository, UserRepository>();

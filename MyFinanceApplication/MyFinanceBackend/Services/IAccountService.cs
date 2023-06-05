@@ -19,7 +19,7 @@ namespace MyFinanceBackend.Services
         AccountMainViewModel GetAccountDetailsViewModel(string userId, int? accountGroupId);
 	    IEnumerable<ItemModified> UpdateAccountPositions(string userId, IEnumerable<ClientAccountPosition> accountPositions);
 	    void UpdateAccount(string userId, ClientEditAccount clientEditAccount);
-	    AddAccountViewModel GetAddAccountViewModel(string userId);
+	    Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId);
         void AddAccount(string userId, ClientAddAccount clientAddAccount);
         void DeleteAccount(string userId, int accountId);
 	    IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(

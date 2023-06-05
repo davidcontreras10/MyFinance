@@ -26,7 +26,7 @@ namespace MyFinanceBackend.Data
 
 	    void DeleteAccount(string userId, int accountId);
 	    void AddAccount(string userId, ClientAddAccount clientAddAccount);
-	    AddAccountViewModel GetAddAccountViewModel(string userId);
+	    Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId);
 	    IEnumerable<ItemModified> UpdateAccountPositions(string userId,
 		    IEnumerable<ClientAccountPosition> accountPositions);
 

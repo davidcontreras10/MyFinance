@@ -103,7 +103,7 @@ namespace MyFinanceBackend.Data
 			return result;
 		}
 
-		public AddAccountViewModel GetAddAccountViewModel(string userId)
+		public Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId)
 		{
 			var parameters = new[]
 			{
@@ -113,7 +113,7 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNTS_CREATE_VIEW_MODEL, parameters);
 			var resultSet = ServicesUtils.CreateAccountAddViewModelResultSet(dataSet);
 			var result = CreateAddAccountViewModel(resultSet);
-			return result;
+			return Task.FromResult(result);
 		}
 
 		public void AddAccount(string userId, ClientAddAccount clientAddAccount)

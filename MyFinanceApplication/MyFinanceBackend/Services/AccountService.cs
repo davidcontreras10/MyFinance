@@ -61,10 +61,10 @@ namespace MyFinanceBackend.Services
 	        _accountRepository.AddAccount(userId, clientAddAccount);
         }
 
-        public AddAccountViewModel GetAddAccountViewModel(string userId)
-        {
-	        return _accountRepository.GetAddAccountViewModel(userId);
-        }
+		public async Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId)
+		{
+			return await _accountRepository.GetAddAccountViewModelAsync(userId);
+		}
 
 	    public AccountMainViewModel GetAccountDetailsViewModel(string userId, int? accountGroupId)
 	    {

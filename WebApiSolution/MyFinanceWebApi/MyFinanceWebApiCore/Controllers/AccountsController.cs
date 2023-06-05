@@ -123,10 +123,10 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("add")]
 		[HttpGet]
-		public AddAccountViewModel GetAddAccountViewModel()
+		public async Task<AddAccountViewModel> GetAddAccountViewModel()
 		{
 			var userId = GetUserId();
-			var result = _accountService.GetAddAccountViewModel(userId);
+			var result = await _accountService.GetAddAccountViewModelAsync(userId);
 			return result;
 		}
 

@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AccountPeriod = EFDataAccess.Models.AccountPeriod;
@@ -176,7 +175,7 @@ namespace EFDataAccess.Repositories
 				AccountTypeViewModels = accountTypes,
 				PeriodTypeViewModels = periodTypeViewModels,
 				FinancialEntityViewModels = financialEntityViewModels,
-				AccountIncludeViewModels = GetPossibleAccountIncludes(acc, acc.AccountIncludeAccount, userAccounts, currencyConverters),
+				AccountIncludeViewModels = GetPossibleAccountIncludes(acc.AccountIncludeAccount.ToList(), userAccounts.ToList(), currencyConverters, acc),
 				CurrencyViewModels = efCurrencies.Select(c => new CurrencyViewModel
 				{
 					CurrencyId = c.CurrencyId,
@@ -352,9 +351,80 @@ namespace EFDataAccess.Repositories
 			};
 		}
 
-		public AddAccountViewModel GetAddAccountViewModel(string userId)
+		public async Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId)
 		{
-			throw new NotImplementedException();
+			var userGuid = new Guid(userId);
+			var accountTypeViewModels = await Context.AccountType.Select(acct => new AccountTypeViewModel
+			{
+				AccountTypeId = acct.AccountTypeId,
+				AccountTypeName = acct.AccountTypeName
+			}).ToListAsync();
+			var userData = await Context.AppUser
+				.Include(u => u.UserSpendType)
+					.ThenInclude(ust => ust.SpendType)
+				.Where(u => u.UserId == userGuid)
+				.ToListAsync();
+			var spendTypeViewModels = userData.FirstOrDefault()
+				.UserSpendType
+				.Select(ust => new SpendTypeViewModel
+				{
+					Description = ust.SpendType.Description,
+					SpendTypeName = ust.SpendType.Name,
+					SpendTypeId = ust.SpendTypeId,
+				});
+
+			const int initialCurrencyId = 1;
+			var accountIncludeViewModels = GetAccountIncludeViewModel(userId, initialCurrencyId);
+			var currencyViewModels = await Context.Currency.Select(c => new CurrencyViewModel
+			{
+				CurrencyId = c.CurrencyId,
+				CurrencyName = c.Name,
+				Symbol = c.Symbol
+			}).ToListAsync();
+
+			var financialEntityViewModels = await Context.FinancialEntity.
+				Select(fe => new FinancialEntityViewModel
+				{
+					FinancialEntityId = fe.FinancialEntityId,
+					FinancialEntityName = fe.Name
+				})
+				.Where(fe => !EF.Functions.Like(fe.FinancialEntityName, "%default%"))
+				.ToListAsync();
+
+			var periodTypeViewModels = await Context.PeriodDefinition
+				.Include(pd => pd.PeriodType).Where(pd => pd.PeriodType != null)
+				.Select(pd =>
+					new PeriodTypeViewModel
+					{
+						CuttingDate = pd.CuttingDate,
+						PeriodDefinitionId = pd.PeriodDefinitionId,
+						PeriodTypeId = pd.PeriodTypeId,
+						PeriodTypeName = pd.PeriodType.Name
+					}
+				)
+				.ToListAsync();
+
+			var accountGroupViewModels = Context.AccountGroup.Select(accg => new AccountGroupViewModel
+			{
+				AccountGroupDisplayValue = accg.DisplayValue,
+				AccountGroupId = accg.AccountGroupId,
+				AccountGroupName = accg.AccountGroupName,
+				AccountGroupPosition = accg.AccountGroupPosition ?? 0
+			});
+			return new AddAccountViewModel
+			{
+				AccountGroupViewModels = accountGroupViewModels,
+				AccountIncludeViewModels = accountIncludeViewModels,
+				AccountName = string.Empty,
+				AccountStyle = null,
+				AccountTypeViewModels = accountTypeViewModels,
+				BaseBudget = 0,
+				CurrencyViewModels = currencyViewModels,
+				FinancialEntityViewModels = financialEntityViewModels,
+				PeriodTypeViewModels = periodTypeViewModels,
+				SpendTypeViewModels = spendTypeViewModels
+			};
+
 		}
 
 		public IEnumerable<AccountBasicInfo> GetBankSummaryAccountsByUserId(string userId)
@@ -450,17 +520,33 @@ namespace EFDataAccess.Repositories
 		}
 
 		private static IEnumerable<AccountIncludeViewModel> GetPossibleAccountIncludes(
-			Account account,
-			IEnumerable<AccountInclude> defaultAccountIncludes,
-			IEnumerable<Account> userAccounts,
-			IReadOnlyCollection<CurrencyConverter> currencyConverters
+			IReadOnlyCollection<AccountInclude> defaultAccountIncludes,
+			IReadOnlyCollection<Account> userAccounts,
+			IReadOnlyCollection<CurrencyConverter> currencyConverters,
+			Account currentAccount
 			)
 		{
-			var applicableUserAccounts = userAccounts.Where(acc => acc.AccountId != account.AccountId);
+			var applicableUserAccounts = currentAccount != null
+				? userAccounts.Where(acc => acc.AccountId != currentAccount.AccountId).ToList()
+				: userAccounts;
+			var currentCurrencyId = currentAccount?.CurrencyId != null ? currentAccount.CurrencyId.Value : 1;
+
+			return GetPossibleAccountIncludes(defaultAccountIncludes, userAccounts, currencyConverters, applicableUserAccounts, currentCurrencyId);
+		}
+
+		private static IEnumerable<AccountIncludeViewModel> GetPossibleAccountIncludes(
+			IReadOnlyCollection<AccountInclude> defaultAccountIncludes,
+			IReadOnlyCollection<Account> userAccounts,
+			IReadOnlyCollection<CurrencyConverter> currencyConverters,
+			IReadOnlyCollection<Account> applicableUserAccounts,
+			int currentCurrencyId
+		)
+		{
 			var accountIncludes = new List<AccountIncludeViewModel>();
 			foreach (var appAccount in applicableUserAccounts)
 			{
-				var appCurrencyConverters = currencyConverters.Where(cc => cc.CurrencyIdOne == account.CurrencyId && cc.CurrencyIdTwo == appAccount.CurrencyId);
+				var appCurrencyConverters = currencyConverters
+					.Where(cc => cc.CurrencyIdOne == currentCurrencyId && cc.CurrencyIdTwo == appAccount.CurrencyId).ToList();
 				var accountIncludeViewModel = CreateAccountIncludeViewModel(appAccount, appCurrencyConverters, defaultAccountIncludes);
 				accountIncludes.Add(accountIncludeViewModel);
 			}
@@ -468,13 +554,14 @@ namespace EFDataAccess.Repositories
 			return accountIncludes;
 		}
 
+
 		private static AccountIncludeViewModel CreateAccountIncludeViewModel(
 			Account includeAccount
-			, IEnumerable<CurrencyConverter> currencyConverters
-			, IEnumerable<AccountInclude> defaultAccountIncludes
+			, IReadOnlyCollection<CurrencyConverter> currencyConverters
+			, IReadOnlyCollection<AccountInclude> defaultAccountIncludes
 			)
 		{
-			var defaultAccountInclude = defaultAccountIncludes.FirstOrDefault(d => d.AccountIncludeId == includeAccount.AccountId);
+			var defaultAccountInclude = defaultAccountIncludes?.FirstOrDefault(d => d.AccountIncludeId == includeAccount.AccountId);
 			var methodIds = new List<MethodId>();
 			foreach (var currencyConverter in currencyConverters)
 			{
@@ -502,11 +589,6 @@ namespace EFDataAccess.Repositories
 		private int GetAccountNextId()
 		{
 			return Context.Account.Max(x => x.AccountId);
-		}
-
-		private int GetAccountPeriodNextId()
-		{
-			return Context.AccountPeriod.Max(x => x.AccountPeriodId);
 		}
 
 		private static SpendTypeViewModel ToSpendTypeViewModel(SpendType spendType, int? defaultSpendTypeId)
