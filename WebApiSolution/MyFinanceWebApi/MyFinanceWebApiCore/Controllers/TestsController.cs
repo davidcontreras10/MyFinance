@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyFinanceBackend.Data;
+using MyFinanceModel;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,9 +22,9 @@ namespace MyFinanceWebApiCore.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult TestGetEndpoint([FromQuery]int[] accountPeriodIds)
+		public async Task<IEnumerable<BankAccountPeriodBasicId>> TestGetEndpoint([FromQuery]string userId)
 		{
-			return Ok(_accountRepository.GetAccountPeriodBasicInfo(accountPeriodIds));
+			return await _accountRepository.GetBankSummaryAccountsPeriodByUserIdAsync(userId, DateTime.Now);
 		}
 	}
 }

@@ -27,9 +27,9 @@ namespace MyFinanceBackend.Services
 			return _spendsRepository.GetAccountFinanceViewModel(requestItems, userId);
 		}
 
-		public async Task<IEnumerable<BankAccountSummary>> GetAccountFinanceSummaryViewModelAsync(string userId)
+		public async Task<IEnumerable<BankAccountSummary>> GetAccountFinanceSummaryViewModelAsync(string userId, DateTime? dateTime = null)
 		{
-			var bankAccounts = await _accountRepository.GetBankSummaryAccountsPeriodByUserIdAsync(userId);
+			var bankAccounts = await _accountRepository.GetBankSummaryAccountsPeriodByUserIdAsync(userId, dateTime);
 			if (bankAccounts == null || !bankAccounts.Any())
 			{
 				return Array.Empty<BankAccountSummary>();

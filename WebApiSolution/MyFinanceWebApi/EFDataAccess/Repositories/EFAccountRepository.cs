@@ -427,9 +427,31 @@ namespace EFDataAccess.Repositories
 
 		}
 
-		public async Task<IEnumerable<BankAccountPeriodBasicId>> GetBankSummaryAccountsPeriodByUserIdAsync(string userId)
+		public async Task<IEnumerable<BankAccountPeriodBasicId>> GetBankSummaryAccountsPeriodByUserIdAsync(string userId, DateTime? dateTime)
 		{
-			throw new NotImplementedException();
+			if(dateTime == null)
+			{
+				dateTime = DateTime.UtcNow;
+			}
+			var userGuid = new Guid(userId);
+			var userBankAccounts = await Context.UserBankSummaryAccount
+				.Where(bacc => bacc.UserId == userGuid)
+				.Include(bacc => bacc.Account)
+					.ThenInclude(acc => acc.FinancialEntity)
+				.Include(bacc => bacc.Account)
+					.ThenInclude(acc => acc.AccountPeriod)
+				.ToListAsync();
+			var currentAccountPeriods = userBankAccounts
+				.Select(bacc => GetCurrentAccountPeriod(dateTime, bacc.Account.AccountPeriod))
+				.Where(p => p != null).ToList();
+
+			return userBankAccounts.Select(bacc => new BankAccountPeriodBasicId
+			{
+				AccountId = bacc.AccountId,
+				AccountPeriodId = currentAccountPeriods.FirstOrDefault(accp => accp.AccountId == bacc.AccountId)?.AccountPeriodId ?? 0,
+				FinancialEntityId = bacc.Account.FinancialEntityId,
+				FinancialEntityName = bacc.Account.FinancialEntity.Name
+			});
 		}
 
 		public IEnumerable<AccountViewModel> GetOrderedAccountViewModelList(IEnumerable<int> accountIds, string userId)

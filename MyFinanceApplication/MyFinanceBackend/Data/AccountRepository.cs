@@ -177,7 +177,7 @@ namespace MyFinanceBackend.Data
 			return ServicesUtils.CreateMainViewModel(dataSet);
 		}
 
-		public Task<IEnumerable<BankAccountPeriodBasicId>> GetBankSummaryAccountsPeriodByUserIdAsync(string userId)
+		public Task<IEnumerable<BankAccountPeriodBasicId>> GetBankSummaryAccountsPeriodByUserIdAsync(string userId, DateTime? dateTime)
 		{
 			var userParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_BANK_SUMMARY_ACCOUNT_PERIOD_LIST, userParameter);
