@@ -427,12 +427,7 @@ namespace EFDataAccess.Repositories
 
 		}
 
-		public IEnumerable<AccountBasicInfo> GetBankSummaryAccountsByUserId(string userId)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IEnumerable<BankAccountPeriodBasicId> GetBankSummaryAccountsPeriodByUserId(string userId)
+		public async Task<IEnumerable<BankAccountPeriodBasicId>> GetBankSummaryAccountsPeriodByUserIdAsync(string userId)
 		{
 			throw new NotImplementedException();
 		}

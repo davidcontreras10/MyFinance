@@ -177,28 +177,19 @@ namespace MyFinanceBackend.Data
 			return ServicesUtils.CreateMainViewModel(dataSet);
 		}
 
-		public IEnumerable<AccountBasicInfo> GetBankSummaryAccountsByUserId(string userId)
-		{
-			var userParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
-			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_BANK_SUMMARY_ACCOUNT_LIST, userParameter);
-			if (dataSet == null || dataSet.Tables.Count == 0)
-			{
-				return new AccountBasicInfo[0];
-			}
-
-			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountBasicInfo);
-		}
-
-		public IEnumerable<BankAccountPeriodBasicId> GetBankSummaryAccountsPeriodByUserId(string userId)
+		public Task<IEnumerable<BankAccountPeriodBasicId>> GetBankSummaryAccountsPeriodByUserIdAsync(string userId)
 		{
 			var userParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_BANK_SUMMARY_ACCOUNT_PERIOD_LIST, userParameter);
+			IEnumerable<BankAccountPeriodBasicId> res;
 			if (dataSet == null || dataSet.Tables.Count == 0)
 			{
-				return Array.Empty<BankAccountPeriodBasicId>();
+				res = Array.Empty<BankAccountPeriodBasicId>();
+				return Task.FromResult(res);
 			}
 
-			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateBankAccountPeriodBasicId);
+			res = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateBankAccountPeriodBasicId);
+			return Task.FromResult(res);
 		}
 
 		public IEnumerable<AccountViewModel> GetOrderedAccountViewModelList(IEnumerable<int> accountIds, string userId)

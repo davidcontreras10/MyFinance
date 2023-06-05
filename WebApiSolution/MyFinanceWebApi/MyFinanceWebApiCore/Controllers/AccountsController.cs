@@ -71,10 +71,10 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("finance/summary")]
 		[HttpGet]
-		public IEnumerable<BankAccountSummary> GetAccountFinanceSummaryViewModel()
+		public async Task<IEnumerable<BankAccountSummary>> GetAccountFinanceSummaryViewModel()
 		{
 			var userId = GetUserId();
-			var accounts = _accountFinanceService.GetAccountFinanceSummaryViewModel(userId);
+			var accounts = await _accountFinanceService.GetAccountFinanceSummaryViewModelAsync(userId);
 			return accounts;
 		}
 

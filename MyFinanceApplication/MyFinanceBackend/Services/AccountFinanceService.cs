@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MyFinanceBackend.Data;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -11,13 +12,13 @@ namespace MyFinanceBackend.Services
 	public class AccountFinanceService : IAccountFinanceService
 	{
 		private readonly ISpendsRepository _spendsRepository;
-        private readonly IAccountRepository _accountRepository;
+		private readonly IAccountRepository _accountRepository;
 
 		public AccountFinanceService(ISpendsRepository spendsRepository, IAccountRepository accountRepository)
 		{
 			_spendsRepository = spendsRepository;
-            _accountRepository = accountRepository;
-        }
+			_accountRepository = accountRepository;
+		}
 
 		#region Publics
 
@@ -26,18 +27,18 @@ namespace MyFinanceBackend.Services
 			return _spendsRepository.GetAccountFinanceViewModel(requestItems, userId);
 		}
 
-        public IEnumerable<BankAccountSummary> GetAccountFinanceSummaryViewModel(string userId)
-        {
-	        var bankAccounts = _accountRepository.GetBankSummaryAccountsPeriodByUserId(userId);
-            if (bankAccounts == null || !bankAccounts.Any())
-            {
+		public async Task<IEnumerable<BankAccountSummary>> GetAccountFinanceSummaryViewModelAsync(string userId)
+		{
+			var bankAccounts = await _accountRepository.GetBankSummaryAccountsPeriodByUserIdAsync(userId);
+			if (bankAccounts == null || !bankAccounts.Any())
+			{
 				return Array.Empty<BankAccountSummary>();
-            }
+			}
 
-            var requestItems = bankAccounts.Select(acc => CreateBankAccountClientAccountFinanceRequest(acc.AccountPeriodId));
-            var financeInfoAccounts = GetAccountFinanceViewModel(requestItems, userId);
-			return financeInfoAccounts.Select(fa => CreateBankAccountSummary(fa, bankAccounts));    
-        }
+			var requestItems = bankAccounts.Select(acc => CreateBankAccountClientAccountFinanceRequest(acc.AccountPeriodId));
+			var financeInfoAccounts = GetAccountFinanceViewModel(requestItems, userId);
+			return financeInfoAccounts.Select(fa => CreateBankAccountSummary(fa, bankAccounts));
+		}
 
 		#endregion
 
@@ -65,17 +66,17 @@ namespace MyFinanceBackend.Services
 			};
 		}
 
-        private static ClientAccountFinanceViewModel CreateBankAccountClientAccountFinanceRequest(int accountPeriodId)
-        {
-            return new ClientAccountFinanceViewModel
-            {
-                AccountPeriodId = accountPeriodId,
-                AmountTypeId = 0,
-                LoanSpends = true,
-                PendingSpends = false
-            };
-        }
+		private static ClientAccountFinanceViewModel CreateBankAccountClientAccountFinanceRequest(int accountPeriodId)
+		{
+			return new ClientAccountFinanceViewModel
+			{
+				AccountPeriodId = accountPeriodId,
+				AmountTypeId = 0,
+				LoanSpends = true,
+				PendingSpends = false
+			};
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }
