@@ -415,8 +415,8 @@ namespace EFDataAccess.Repositories
 			{
 				AccountGroupViewModels = accountGroupViewModels,
 				AccountIncludeViewModels = accountIncludeViewModels,
-				AccountName = string.Empty,
-				AccountStyle = null,
+				AccountName = "New account",
+				AccountStyle = new FrontStyleData(),
 				AccountTypeViewModels = accountTypeViewModels,
 				BaseBudget = 0,
 				CurrencyViewModels = currencyViewModels,
