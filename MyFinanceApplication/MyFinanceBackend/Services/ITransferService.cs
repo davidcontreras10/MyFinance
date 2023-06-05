@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
@@ -7,10 +8,10 @@ namespace MyFinanceBackend.Services
 {
     public interface ITransferService
     {
-        IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountPeriodId, int currencyId,
+        Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountPeriodId, int currencyId,
             string userId, BalanceTypes balanceType);
         IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId);
-        TransferAccountDataViewModel GetBasicAccountInfo(int accountPeriodId, string userId);
-        IEnumerable<ItemModified> SubmitTransfer(TransferClientViewModel transferClientViewModel);
+        Task<TransferAccountDataViewModel> GetBasicAccountInfoAsync(int accountPeriodId, string userId);
+        Task<IEnumerable<ItemModified>> SubmitTransferAsync(TransferClientViewModel transferClientViewModel);
     }
 }

@@ -7,6 +7,7 @@ using MyFinanceBackend.Data;
 using MyFinanceBackend.ServicesExceptions;
 using MyFinanceModel.ViewModel;
 using MyFinanceBackend.Utils;
+using System.Threading.Tasks;
 
 namespace MyFinanceBackend.Services
 {
@@ -20,7 +21,7 @@ namespace MyFinanceBackend.Services
             IEnumerable<int> accountPeriodIds = null, IEnumerable<int> accountIds = null);
         AddLoanSpendViewModel GetAddLoanSpendViewModel(int loanRecordId, string userId);
         IEnumerable<AccountDetailsViewModel> GetSupportedLoanAccount(string userId);
-        IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountId, DateTime dateTime,
+        Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountId, DateTime dateTime,
             string userId, int currencyId);
         IEnumerable<ItemModified> DeleteLoan(int loanRecordId, string userId);
     }
@@ -151,11 +152,11 @@ namespace MyFinanceBackend.Services
 
         #region Get
 
-        public IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountId, DateTime dateTime,
+        public async Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountId, DateTime dateTime,
             string userId, int currencyId)
         {
             var accountPeriod = _accountRepository.GetAccountPeriodInfoByAccountIdDateTime(accountId, dateTime);
-            var result = _transferService.GetPossibleDestinationAccount(accountPeriod.AccountPeriodId, currencyId,
+            var result = await _transferService.GetPossibleDestinationAccountAsync(accountPeriod.AccountPeriodId, currencyId,
                 userId, BalanceTypes.Custom);
             return result;
         }

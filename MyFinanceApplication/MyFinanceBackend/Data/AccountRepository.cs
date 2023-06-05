@@ -192,11 +192,11 @@ namespace MyFinanceBackend.Data
 			return Task.FromResult(res);
 		}
 
-		public IEnumerable<AccountViewModel> GetOrderedAccountViewModelList(IEnumerable<int> accountIds, string userId)
+		public Task<IEnumerable<AccountViewModel>> GetOrderedAccountViewModelListAsync(IEnumerable<int> accountIds, string userId)
 		{
 			if (accountIds == null || !accountIds.Any())
 			{
-				return Array.Empty<AccountViewModel>();
+				return Task.FromResult((IEnumerable<AccountViewModel>)Array.Empty<AccountViewModel>());
 			}
 
 			var idsDataTable = ServicesUtils.CreateIntDataTable(accountIds);
@@ -206,11 +206,11 @@ namespace MyFinanceBackend.Data
 				accountIdsDataTable);
 			if (dataSet == null || dataSet.Tables.Count == 0)
 			{
-				return new AccountViewModel[] { };
+				return Task.FromResult((IEnumerable<AccountViewModel>)Array.Empty<AccountViewModel>());
 			}
 
 			var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountViewModel);
-			return result;
+			return Task.FromResult(result);
 		}
 
 		public IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds)

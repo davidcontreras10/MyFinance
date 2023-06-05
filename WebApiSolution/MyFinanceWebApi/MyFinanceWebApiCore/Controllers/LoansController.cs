@@ -6,6 +6,7 @@ using MyFinanceModel;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore.Controllers
 {
@@ -120,11 +121,11 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[HttpGet]
 		[Route("destinationAccounts")]
-		public IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountId, DateTime dateTime,
+		public async Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccount(int accountId, DateTime dateTime,
 			int currencyId)
 		{
 			var userId = GetUserId();
-			var result = _loanService.GetPossibleDestinationAccount(accountId, dateTime, userId, currencyId);
+			var result = await _loanService.GetPossibleDestinationAccountAsync(accountId, dateTime, userId, currencyId);
 			return result;
 		}
 

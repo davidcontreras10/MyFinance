@@ -454,7 +454,7 @@ namespace EFDataAccess.Repositories
 			});
 		}
 
-		public IEnumerable<AccountViewModel> GetOrderedAccountViewModelList(IEnumerable<int> accountIds, string userId)
+		public Task<IEnumerable<AccountViewModel>> GetOrderedAccountViewModelListAsync(IEnumerable<int> accountIds, string userId)
 		{
 			throw new NotImplementedException();
 		}

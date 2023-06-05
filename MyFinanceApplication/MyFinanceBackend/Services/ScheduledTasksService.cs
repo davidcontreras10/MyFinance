@@ -247,7 +247,7 @@ namespace MyFinanceBackend.Services
 				DestinationAccount = transferScheduledTask.ToAccountId
 			};
 
-			_transferService.SubmitTransfer(transferRequest);
+			_transferService.SubmitTransferAsync(transferRequest);
 			return TaskExecutedResult.Success(transferScheduledTask.Id.ToString());
 		}
 
