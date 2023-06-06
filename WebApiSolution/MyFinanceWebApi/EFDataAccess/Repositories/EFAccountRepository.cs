@@ -454,9 +454,27 @@ namespace EFDataAccess.Repositories
 			});
 		}
 
-		public Task<IEnumerable<AccountViewModel>> GetOrderedAccountViewModelListAsync(IEnumerable<int> accountIds, string userId)
+		public async Task<IEnumerable<AccountViewModel>> GetOrderedAccountViewModelListAsync(IEnumerable<int> accountIds, string userId)
 		{
-			throw new NotImplementedException();
+			var userGuid = new Guid(userId);
+			var count = 1;
+			var viewModels = await Context.Account
+				.Include(acc => acc.AccountGroup)
+				.Where(acc => acc.UserId == userGuid && accountIds.Contains(acc.AccountId))
+				.OrderBy(acc => acc.AccountGroup.AccountGroupPosition)
+					.ThenBy(acc => acc.Position)
+				.Select(acc => new AccountViewModel
+				{
+					AccountId = acc.AccountId,
+					AccountName = acc.Name,
+				})
+				.ToListAsync();
+			viewModels.ForEach(acc =>
+			{
+				acc.GlobalOrder = count++;
+			});
+
+			return viewModels;
 		}
 
 		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string userId)
