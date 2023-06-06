@@ -35,12 +35,6 @@ namespace MyFinanceBackend.Services
 			return await _accountRepository.GetAccountDetailsPeriodViewModelAsync(userId, dateTime);
 		}
 
-		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
-			IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string userId)
-		{
-			return _accountRepository.GetSupportedAccountIncludeViewModel(listUpdates, userId);
-		}
-
 		public UserAccountsViewModel GetAccountsByUserId(string userId)
 		{
 			if (string.IsNullOrEmpty(userId))

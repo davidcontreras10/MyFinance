@@ -154,19 +154,6 @@ namespace MyFinanceBackend.Data
 			ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNT_DELETE, parameters);
 		}
 
-		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
-			IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string userId)
-		{
-			var dataTable = CreateClientAddSpendAccountIncludeUpdateDataTable(listUpdates);
-			var dataTableParameter = new SqlParameter(DatabaseConstants.PAR_ACCOUNT_INCLUDE_UPDATE_TABLE, dataTable);
-			var userIdParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
-			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ADD_SPEND_ACCOUNT_INCLUDE_LIST, userIdParameter,
-				dataTableParameter);
-			var supportedAccountIncludeViewModelDb = ServicesUtils.CreateSupportedAccountIncludeViewModelDb(dataSet);
-			var result = CreateSupportedAccountIncludeViewModel(supportedAccountIncludeViewModelDb);
-			return result;
-		}
-
 		public UserAccountsViewModel GetAccountsByUserId(string userId)
 		{
 			if (string.IsNullOrEmpty(userId))

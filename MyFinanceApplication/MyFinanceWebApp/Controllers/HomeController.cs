@@ -262,22 +262,6 @@ namespace MyFinanceWebApp.Controllers
 
 		[JsonErrorHandling]
 		[HttpPost]
-		public async Task<ActionResult> UpdateAddSpendAccountInclude(AddSpendUpdateAccountIncludeModel addSpendUpdateAccountIncludeModel)
-		{
-			if (addSpendUpdateAccountIncludeModel == null)
-				throw new ArgumentNullException(nameof(addSpendUpdateAccountIncludeModel));
-			var updateList = CreateClientAddSpendAccountIncludeUpdates(addSpendUpdateAccountIncludeModel);
-			var authToken = GetUserToken();
-			var accountIncludeViewModel = await AccountService.GetSupportedAccountIncludeViewModelAsync(updateList, authToken);
-			var accountData =
-				accountIncludeViewModel.FirstOrDefault(item => item.AccountId == addSpendUpdateAccountIncludeModel.AccountId);
-			if (accountData == null)
-				throw new Exception("Invalid UpdateAddSpendAccountInclude call");
-			return Json(accountData.AccountIncludeViewModels, JsonRequestBehavior.AllowGet);
-		}
-
-		[JsonErrorHandling]
-		[HttpPost]
 		public ActionResult AddSpendCurrency(AddSpendDataModel addSpendDataModel)
 		{
 			var authToken = GetUserToken();

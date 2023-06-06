@@ -477,11 +477,6 @@ namespace EFDataAccess.Repositories
 			return viewModels;
 		}
 
-		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string userId)
-		{
-			throw new NotImplementedException();
-		}
-
 		public void UpdateAccount(string userId, ClientEditAccount clientEditAccount)
 		{
 			throw new NotImplementedException();

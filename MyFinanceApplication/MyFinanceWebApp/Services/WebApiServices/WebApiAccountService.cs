@@ -29,22 +29,6 @@ namespace MyFinanceWebApp.Services.WebApiServices
 			return accounts;
 		}
 
-		public async Task<IEnumerable<SupportedAccountIncludeViewModel>> GetSupportedAccountIncludeViewModelAsync(
-			IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string token)
-		{
-			if (listUpdates == null || !listUpdates.Any())
-				return new List<SupportedAccountIncludeViewModel>();
-			var parameters = new Dictionary<string, object>
-			{
-				{"listUpdates", listUpdates}
-			};
-			var url = CreateMethodUrl("supportedAccountInclude", parameters);
-			var request = new WebApiRequest(url, HttpMethod.Get, token);
-
-			var accountIncludeList = await GetResponseAsAsync<IEnumerable<SupportedAccountIncludeViewModel>>(request);
-			return accountIncludeList;
-		}
-
 		public async Task<IEnumerable<AccountFinanceViewModel>> GetSimpleAccountFinanceViewModelAsync(IEnumerable<ClientAccountFinanceViewModel> accountPeriods, string token)
 		{
 

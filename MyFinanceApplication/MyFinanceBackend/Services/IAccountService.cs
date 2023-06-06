@@ -22,7 +22,5 @@ namespace MyFinanceBackend.Services
 	    Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId);
         void AddAccount(string userId, ClientAddAccount clientAddAccount);
         void DeleteAccount(string userId, int accountId);
-	    IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
-		    IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string userId);
 	}
 }
