@@ -49,16 +49,6 @@ namespace MyFinanceWebApiCore.Controllers
 			_accountService.AddAccount(userId, clientAddAccount);
 		}
 
-		[Route("supportedAccountInclude")]
-		[HttpGet]
-		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
-			[FromQuery] ClientAddSpendAccountIncludeUpdate[] listUpdates)
-		{
-			var userId = GetUserId();
-			var supportedAccountIncludeViewModelList = _accountService.GetSupportedAccountIncludeViewModel(listUpdates, userId);
-			return supportedAccountIncludeViewModelList;
-		}
-
 		[Route("finance")]
 		[HttpPost]
 		//[IncludeRestrictObjectHeader]
@@ -140,10 +130,10 @@ namespace MyFinanceWebApiCore.Controllers
 		}
 
 		[HttpPatch]
-		public void UpdateAccount([FromBody] ClientEditAccount clientEditAccount)
+		public async Task UpdateAccount([FromBody] ClientEditAccount clientEditAccount)
 		{
 			var userId = GetUserId();
-			_accountService.UpdateAccount(userId, clientEditAccount);
+			await _accountService.UpdateAccountAsync(userId, clientEditAccount);
 		}
 
 		#endregion

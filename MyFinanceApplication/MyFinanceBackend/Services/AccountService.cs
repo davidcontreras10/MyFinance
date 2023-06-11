@@ -71,9 +71,9 @@ namespace MyFinanceBackend.Services
 		    return _accountRepository.UpdateAccountPositions(userId, accountPositions);
 	    }
 
-		public void UpdateAccount(string userId, ClientEditAccount clientEditAccount)
+		public async Task UpdateAccountAsync(string userId, ClientEditAccount clientEditAccount)
 		{
-			_accountRepository.UpdateAccount(userId, clientEditAccount);
+			await _accountRepository.UpdateAccountAsync(userId, clientEditAccount);
 		}
 
 		public IEnumerable<AccountIncludeViewModel> GetAccountIncludeViewModel(string userId, int currencyId)

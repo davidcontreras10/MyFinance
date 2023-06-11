@@ -60,7 +60,7 @@ namespace MyFinanceBackend.Data
 			return result;
 		}
 
-		public void UpdateAccount(string userId, ClientEditAccount clientEditAccount)
+		public Task UpdateAccountAsync(string userId, ClientEditAccount clientEditAccount)
 		{
 			if (!clientEditAccount.EditAccountFields.Any())
 			{
@@ -86,6 +86,7 @@ namespace MyFinanceBackend.Data
 			};
 
 			ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNT_EDIT, parameters);
+			return Task.CompletedTask;
 		}
 
 		public IEnumerable<ItemModified> UpdateAccountPositions(string userId,

@@ -1,4 +1,5 @@
-﻿using EFDataAccess.Models;
+﻿using EFDataAccess.Extensions;
+using EFDataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyFinanceBackend.Data;
@@ -477,9 +478,102 @@ namespace EFDataAccess.Repositories
 			return viewModels;
 		}
 
-		public void UpdateAccount(string userId, ClientEditAccount clientEditAccount)
+		public async Task UpdateAccountAsync(string userId, ClientEditAccount clientEditAccount)
 		{
-			throw new NotImplementedException();
+			if (!clientEditAccount.EditAccountFields.Any())
+			{
+				throw new Exception("No values to update");
+			}
+
+			var query = Context.Account.Where(acc => acc.AccountId == clientEditAccount.AccountId);
+			if (clientEditAccount.Contains(AccountFiedlds.AccountIncludes))
+			{
+				query.Include(acc => acc.AccountIncludeAccount);
+
+            }
+			if (clientEditAccount.Contains(AccountFiedlds.FinancialEntityId))
+			{
+				query.Include(acc => acc.AccountIncludeAccount)
+						.ThenInclude(acci => acci.Account);
+			}
+
+			var account = await query.FirstOrDefaultAsync();
+			if (account == null)
+			{
+				throw new Exception("Account does not exist");
+			}
+			if (clientEditAccount.Contains(AccountFiedlds.AccountName))
+			{
+				account.Name = clientEditAccount.AccountName;
+			}
+			if (clientEditAccount.Contains(AccountFiedlds.BaseBudget))
+			{
+				account.BaseBudget = clientEditAccount.BaseBudget;
+				var latestAccountPeriod = await Context.AccountPeriod
+					.Where(accp => accp.AccountId == account.AccountId)
+					.OrderByDescending(accp => accp.EndDate)
+					.FirstOrDefaultAsync();
+				if(latestAccountPeriod != null)
+				{
+					latestAccountPeriod.Budget = clientEditAccount.BaseBudget;
+				}
+			}
+
+			if (clientEditAccount.Contains(AccountFiedlds.HeaderColor))
+			{
+				account.HeaderColor = CreateFrontStyleDataJson(clientEditAccount.HeaderColor);
+			}
+
+			if (clientEditAccount.Contains(AccountFiedlds.AccountTypeId))
+			{
+				account.AccountTypeId = (int)clientEditAccount.AccountTypeId;
+			}
+			if (clientEditAccount.Contains(AccountFiedlds.SpendTypeId))
+			{
+				account.DefaultSpendTypeId = clientEditAccount.SpendTypeId;
+			}
+			if (clientEditAccount.Contains(AccountFiedlds.AccountGroupId))
+			{
+				account.AccountGroupId = clientEditAccount.AccountGroupId;
+			}
+			if (clientEditAccount.Contains(AccountFiedlds.FinancialEntityId))
+			{
+				account.FinancialEntityId = clientEditAccount.FinancialEntityId;
+				if (account.AccountIncludeAccount.Any())
+				{
+                    var currencyConverterMethods = await Context.CurrencyConverterMethod
+						.Include(ccm => ccm.CurrencyConverter)
+						.Where(ccm =>
+							ccm.CurrencyConverter.CurrencyIdOne == account.CurrencyId
+							&& ccm.FinancialEntityId == clientEditAccount.FinancialEntityId)
+						.ToListAsync();
+					foreach (var accountIncluded in account.AccountIncludeAccount)
+					{
+						var selectCcm = currencyConverterMethods
+							.FirstOrDefault(ccm => ccm.CurrencyConverter.CurrencyIdTwo == accountIncluded.Account.CurrencyId);
+						if (selectCcm != null)
+						{
+							accountIncluded.CurrencyConverterMethodId = selectCcm.CurrencyConverterMethodId;
+						}
+					}
+                }
+			}
+
+			if (clientEditAccount.Contains(AccountFiedlds.AccountIncludes))
+			{
+				account.AccountIncludeAccount.Clear();
+				foreach (var clientAcountInclude in clientEditAccount.AccountIncludes)
+				{
+					account.AccountIncludeAccount.Add(new AccountInclude
+					{
+						AccountId = clientAcountInclude.AccountId,
+						AccountIncludeId = clientAcountInclude.AccountIncludeId,
+						CurrencyConverterMethodId = clientAcountInclude.CurrencyConverterMethodId
+					});
+				}
+			}
+
+			await CommitChangesAsync();
 		}
 
 		public IEnumerable<ItemModified> UpdateAccountPositions(string userId, IEnumerable<ClientAccountPosition> accountPositions)

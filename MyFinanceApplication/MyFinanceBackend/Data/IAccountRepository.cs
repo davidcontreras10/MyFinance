@@ -26,7 +26,7 @@ namespace MyFinanceBackend.Data
 		IEnumerable<ItemModified> UpdateAccountPositions(string userId,
 			IEnumerable<ClientAccountPosition> accountPositions);
 
-		void UpdateAccount(string userId, ClientEditAccount clientEditAccount);
+		Task UpdateAccountAsync(string userId, ClientEditAccount clientEditAccount);
 		IEnumerable<AccountIncludeViewModel> GetAccountIncludeViewModel(string userId, int currencyId);
 		IEnumerable<AccountDetailsInfoViewModel> GetAccountDetailsViewModel(IEnumerable<int> accountIds, string userId);
 	}

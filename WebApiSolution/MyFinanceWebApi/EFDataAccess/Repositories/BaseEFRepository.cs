@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EFDataAccess.Repositories
 {
@@ -19,5 +20,10 @@ namespace EFDataAccess.Repositories
 		{
 			Context.SaveChanges();
 		}
-	}
+
+        protected async Task CommitChangesAsync()
+        {
+            await Context.SaveChangesAsync();
+        }
+    }
 }
