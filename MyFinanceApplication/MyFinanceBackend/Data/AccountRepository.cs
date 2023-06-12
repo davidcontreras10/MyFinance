@@ -89,7 +89,7 @@ namespace MyFinanceBackend.Data
 			return Task.CompletedTask;
 		}
 
-		public IEnumerable<ItemModified> UpdateAccountPositions(string userId,
+		public Task<IEnumerable<ItemModified>> UpdateAccountPositionsAsync(string userId,
 			IEnumerable<ClientAccountPosition> accountPositions)
 		{
 			var parameters = new[]
@@ -101,7 +101,7 @@ namespace MyFinanceBackend.Data
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNT_POSITION_UPDATE, parameters);
 			var result = ServicesUtils.CreateAccountAffected(dataSet);
-			return result;
+			return Task.FromResult(result);
 		}
 
 		public Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId)
@@ -284,7 +284,7 @@ namespace MyFinanceBackend.Data
 			return result;
 		}
 
-		public AccountMainViewModel GetAccountDetailsViewModel(string userId, int? accountGroupId)
+		public Task<AccountMainViewModel> GetAccountDetailsViewModelAsync(string userId, int? accountGroupId)
 		{
 			var parameters = new[]
 			{
@@ -303,11 +303,11 @@ namespace MyFinanceBackend.Data
 			var accountDetailsViewModel = CreateAccountDetailsViewModel(resultSets);
 			var accountGroupViewModels = ServicesUtils.CreateGenericList(dataSet.Tables[1],
 				ServicesUtils.CreateAccountGroupViewModel);
-			return new AccountMainViewModel
+			return Task.FromResult(new AccountMainViewModel
 			{
 				AccountDetailsViewModels = accountDetailsViewModel,
 				AccountGroupViewModels = accountGroupViewModels
-			};
+			});
 		}
 
 		public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsPeriodViewModelAsync(string userId, DateTime dateTime)

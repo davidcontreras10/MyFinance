@@ -68,10 +68,10 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("accounts")]
 		[HttpGet]
-		public IEnumerable<AccountDetailsViewModel> GetSupportedLoanAccount()
+		public async Task<IEnumerable<AccountDetailsViewModel>> GetSupportedLoanAccount()
 		{
 			var userId = GetUserId();
-			var result = _loanService.GetSupportedLoanAccount(userId);
+			var result = await _loanService.GetSupportedLoanAccountAsync(userId);
 			return result;
 		}
 

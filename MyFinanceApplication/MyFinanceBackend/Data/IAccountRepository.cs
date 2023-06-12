@@ -18,12 +18,12 @@ namespace MyFinanceBackend.Data
 		IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds);
 		AccountPeriodBasicInfo GetAccountPeriodInfoByAccountIdDateTime(int accountId, DateTime dateTime);
 		IEnumerable<AccountBasicPeriodInfo> GetAccountBasicInfoByAccountId(IEnumerable<int> accountIds);
-		AccountMainViewModel GetAccountDetailsViewModel(string userId, int? accountGroupId);
+		Task<AccountMainViewModel> GetAccountDetailsViewModelAsync(string userId, int? accountGroupId);
 		UserAccountsViewModel GetAccountsByUserId(string userId);
 		void DeleteAccount(string userId, int accountId);
 		void AddAccount(string userId, ClientAddAccount clientAddAccount);
 		Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId);
-		IEnumerable<ItemModified> UpdateAccountPositions(string userId,
+		Task<IEnumerable<ItemModified>> UpdateAccountPositionsAsync(string userId,
 			IEnumerable<ClientAccountPosition> accountPositions);
 
 		Task UpdateAccountAsync(string userId, ClientEditAccount clientEditAccount);

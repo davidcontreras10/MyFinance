@@ -60,15 +60,15 @@ namespace MyFinanceBackend.Services
 			return await _accountRepository.GetAddAccountViewModelAsync(userId);
 		}
 
-	    public AccountMainViewModel GetAccountDetailsViewModel(string userId, int? accountGroupId)
+	    public async Task<AccountMainViewModel> GetAccountDetailsViewModelAsync(string userId, int? accountGroupId)
 	    {
-	        return _accountRepository.GetAccountDetailsViewModel(userId, accountGroupId);
+	        return await _accountRepository.GetAccountDetailsViewModelAsync(userId, accountGroupId);
 	    }
 
-	    public IEnumerable<ItemModified> UpdateAccountPositions(string userId,
+	    public async Task<IEnumerable<ItemModified>> UpdateAccountPositionsAsync(string userId,
 			IEnumerable<ClientAccountPosition> accountPositions)
 	    {
-		    return _accountRepository.UpdateAccountPositions(userId, accountPositions);
+		    return await _accountRepository.UpdateAccountPositionsAsync(userId, accountPositions);
 	    }
 
 		public async Task UpdateAccountAsync(string userId, ClientEditAccount clientEditAccount)

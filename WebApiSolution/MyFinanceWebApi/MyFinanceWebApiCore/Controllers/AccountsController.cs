@@ -87,10 +87,10 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("{accountGroupId}")]
 		[HttpGet]
-		public AccountMainViewModel GetAccountDetailsViewModel(int? accountGroupId = null)
+		public async Task<AccountMainViewModel> GetAccountDetailsViewModelAsync(int? accountGroupId = null)
 		{
 			var userId = GetUserId();
-			var result = _accountService.GetAccountDetailsViewModel(userId, accountGroupId);
+			var result = await _accountService.GetAccountDetailsViewModelAsync(userId, accountGroupId);
 			return result;
 		}
 
@@ -122,10 +122,10 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("positions")]
 		[HttpPut]
-		public IEnumerable<ItemModified> UpdateAccountPositions([FromBody] IEnumerable<ClientAccountPosition> accountPositions)
+		public async Task<IEnumerable<ItemModified>> UpdateAccountPositions([FromBody] IEnumerable<ClientAccountPosition> accountPositions)
 		{
 			var userId = GetUserId();
-			var result = _accountService.UpdateAccountPositions(userId, accountPositions);
+			var result = await _accountService.UpdateAccountPositionsAsync(userId, accountPositions);
 			return result;
 		}
 

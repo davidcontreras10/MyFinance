@@ -20,7 +20,7 @@ namespace MyFinanceBackend.Services
         IEnumerable<LoanReportViewModel> GetLoanDetailRecordsByCriteriaId(string userId, int loanRecordStatusId, LoanQueryCriteria criteriaId = LoanQueryCriteria.Invalid,
             IEnumerable<int> accountPeriodIds = null, IEnumerable<int> accountIds = null);
         AddLoanSpendViewModel GetAddLoanSpendViewModel(int loanRecordId, string userId);
-        IEnumerable<AccountDetailsViewModel> GetSupportedLoanAccount(string userId);
+        Task<IEnumerable<AccountDetailsViewModel>> GetSupportedLoanAccountAsync(string userId);
         Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountId, DateTime dateTime,
             string userId, int currencyId);
         IEnumerable<ItemModified> DeleteLoan(int loanRecordId, string userId);
@@ -161,14 +161,14 @@ namespace MyFinanceBackend.Services
             return result;
         }
 
-        public IEnumerable<AccountDetailsViewModel> GetSupportedLoanAccount(string userId)
+        public async Task<IEnumerable<AccountDetailsViewModel>> GetSupportedLoanAccountAsync(string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            var accountMainViewModel = _accountRepository.GetAccountDetailsViewModel(userId, null);
+            var accountMainViewModel = await _accountRepository.GetAccountDetailsViewModelAsync(userId, null);
             return accountMainViewModel.AccountDetailsViewModels;
         }
 
