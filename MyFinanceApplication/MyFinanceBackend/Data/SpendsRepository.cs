@@ -242,13 +242,14 @@ namespace MyFinanceBackend.Data
 
 		public IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel)
 		{
-			ValidateSpendCurrencyConvertibleValues(clientAddSpendModel);
-			SetAmountType(clientAddSpendModel, false);
 			if (clientAddSpendModel == null)
 				throw new ArgumentNullException(nameof(clientAddSpendModel));
-
 			if (clientAddSpendModel.OriginalAccountData == null)
 				throw new ArgumentException(@"OriginalAccountData is null", nameof(clientAddSpendModel));
+
+			ValidateSpendCurrencyConvertibleValues(clientAddSpendModel);
+			SetAmountType(clientAddSpendModel, false);
+
 
 			var databaseValues = CreateAddSpendDbValues(clientAddSpendModel);
 			var parameters = new List<SqlParameter>
@@ -976,38 +977,14 @@ namespace MyFinanceBackend.Data
 				throw new ArgumentNullException(nameof(spendCurrencyConvertible));
 			var accountData =
 				spendCurrencyConvertible.IncludedAccounts.Select(
-					item => CreateClientAddSpendCurrencyData(item, spendCurrencyConvertible.CurrencyId));
+					item => SpendsDataHelper.CreateClientAddSpendCurrencyData(item, spendCurrencyConvertible.CurrencyId));
 			var dataTable = CreateClientAddSpendCurrencyDataDataTable(accountData);
 			var clientAddSpendValidationResultSet = GetClientAddSpendValidationResultSet(dataTable);
 			var invalids = clientAddSpendValidationResultSet.Where(item => !item.IsSuccess);
 			if (!invalids.Any())
 				return;
-			var invalidAccounts = invalids.Select(CreateAccountCurrencyConverterData);
+			var invalidAccounts = invalids.Select(SpendsDataHelper.CreateAccountCurrencyConverterData);
 			throw new InvalidAddSpendCurrencyException(invalidAccounts);
-		}
-
-		private static AccountCurrencyConverterData CreateAccountCurrencyConverterData(
-			ClientAddSpendValidationResultSet clientAddSpendValidationResultSet)
-		{
-			if (clientAddSpendValidationResultSet == null)
-				throw new ArgumentNullException(nameof(clientAddSpendValidationResultSet));
-			return new AccountCurrencyConverterData
-			{
-				AccountId = clientAddSpendValidationResultSet.AccountId,
-				AccountCurrencyId = clientAddSpendValidationResultSet.AmountCurrencyId,
-				AmountCurrencyId = clientAddSpendValidationResultSet.AmountCurrencyId,
-				AccountName = clientAddSpendValidationResultSet.AccountName
-			};
-		}
-
-		private static ClientAddSpendCurrencyData CreateClientAddSpendCurrencyData(ClientAddSpendAccount clientAddSpendAccount, int amountCurrencyId)
-		{
-			return new ClientAddSpendCurrencyData
-			{
-				AmountCurrencyId = amountCurrencyId,
-				AccountId = clientAddSpendAccount.AccountId,
-				CurrencyConverterMethodId = clientAddSpendAccount.ConvertionMethodId
-			};
 		}
 
 		private static DataTable CreateClientAddSpendCurrencyDataDataTable(

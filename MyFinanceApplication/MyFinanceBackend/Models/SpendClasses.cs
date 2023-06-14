@@ -8,7 +8,7 @@ using MyFinanceModel.ClientViewModel;
 
 namespace MyFinanceBackend.Models
 {
-    internal class ClientAddSpendCurrencyData
+    public class ClientAddSpendCurrencyData
     {
         public int AmountCurrencyId { get; set; }
         public int AccountId { get; set; }
