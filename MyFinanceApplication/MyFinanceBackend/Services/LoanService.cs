@@ -13,8 +13,8 @@ namespace MyFinanceBackend.Services
 {
     public interface ILoanService
     {
-        IEnumerable<SpendItemModified> CreateLoan(ClientLoanViewModel clientLoanViewModel);
-        IEnumerable<SpendItemModified> AddLoanSpend(ClientLoanSpendViewModel clientLoanSpendViewModel);
+        Task<IEnumerable<SpendItemModified>> CreateLoanAsync(ClientLoanViewModel clientLoanViewModel);
+        Task<IEnumerable<SpendItemModified>> AddLoanSpendAsync(ClientLoanSpendViewModel clientLoanSpendViewModel);
         AddLoanRecordViewModel GetAddLoanRecordViewModel(DateTime dateTime, int accountId, string userId);
         IEnumerable<LoanReportViewModel> GetLoanDetailRecordsByIds(IEnumerable<int> loanRecordIds);
         IEnumerable<LoanReportViewModel> GetLoanDetailRecordsByCriteriaId(string userId, int loanRecordStatusId, LoanQueryCriteria criteriaId = LoanQueryCriteria.Invalid,
@@ -62,7 +62,7 @@ namespace MyFinanceBackend.Services
             return result;
         }
 
-        public IEnumerable<SpendItemModified> CreateLoan(ClientLoanViewModel clientLoanViewModel)
+        public async Task<IEnumerable<SpendItemModified>> CreateLoanAsync(ClientLoanViewModel clientLoanViewModel)
         {
             if(clientLoanViewModel == null)
             {
@@ -81,9 +81,9 @@ namespace MyFinanceBackend.Services
             {
                 _loanRepository.BeginTransaction();
 
-                var sourceAddSpendResponse = _spendsRepository.AddSpend(clientLoanViewModel, accountPeriod.AccountPeriodId);
+                var sourceAddSpendResponse = await _spendsRepository.AddSpendAsync(clientLoanViewModel, accountPeriod.AccountPeriodId);
                 var sourceAddSpendId = sourceAddSpendResponse.First().SpendId;
-                var destinationAddSpendResponse = _spendsRepository.AddSpend(destinationSpendRecord, destinationAccountPeriod.AccountPeriodId);
+                var destinationAddSpendResponse = await _spendsRepository.AddSpendAsync(destinationSpendRecord, destinationAccountPeriod.AccountPeriodId);
                 var destinationAddSpendId = destinationAddSpendResponse.First().SpendId;
                 _spendsRepository.AddSpendDependency(sourceAddSpendId, destinationAddSpendId);
                 _loanRepository.AddLoanRecord(clientLoanViewModel.UserId, sourceAddSpendId, clientLoanViewModel.LoanName);
@@ -100,7 +100,7 @@ namespace MyFinanceBackend.Services
             }
         }
 
-        public IEnumerable<SpendItemModified> AddLoanSpend(ClientLoanSpendViewModel clientLoanSpendViewModel)
+        public async Task<IEnumerable<SpendItemModified>> AddLoanSpendAsync(ClientLoanSpendViewModel clientLoanSpendViewModel)
         {
             if (clientLoanSpendViewModel == null)
             {
@@ -126,9 +126,9 @@ namespace MyFinanceBackend.Services
             try
             {
                 _loanRepository.BeginTransaction();
-                var sourceSpendResponse = _spendsRepository.AddSpend(sourceSpend, accountPeriod.AccountPeriodId);
+                var sourceSpendResponse = await _spendsRepository.AddSpendAsync(sourceSpend, accountPeriod.AccountPeriodId);
                 var sourceSpendId = sourceSpendResponse.First().SpendId;
-                var addSpendResponse = _spendsRepository.AddSpend(clientLoanSpendViewModel, accountPeriod.AccountPeriodId).ToList();
+                var addSpendResponse = await _spendsRepository.AddSpendAsync(clientLoanSpendViewModel, accountPeriod.AccountPeriodId);
                 var spendId = addSpendResponse.First().SpendId;
                 _spendsRepository.AddSpendDependency(sourceSpendId, spendId);
                 _loanRepository.AddLoanSpend(clientLoanSpendViewModel.UserId, spendId, clientLoanSpendViewModel.LoanRecordId);

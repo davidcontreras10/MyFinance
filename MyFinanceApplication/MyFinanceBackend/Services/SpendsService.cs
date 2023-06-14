@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MyFinanceBackend.Data;
 using MyFinanceBackend.Models;
 using MyFinanceBackend.ServicesExceptions;
@@ -66,7 +67,7 @@ namespace MyFinanceBackend.Services
 			return _spendsRepository.GetSavedSpends(spendId);
 		}
 
-		public IEnumerable<SpendItemModified> AddBasicTransaction(ClientBasicTrxByPeriod clientBasicTrxByPeriod, TransactionTypeIds transactionTypeId)
+		public async Task<IEnumerable<SpendItemModified>> AddBasicTransactionAsync(ClientBasicTrxByPeriod clientBasicTrxByPeriod, TransactionTypeIds transactionTypeId)
 		{
 			if (clientBasicTrxByPeriod.Amount <= 0)
 				throw new InvalidAmountException();
@@ -79,26 +80,28 @@ namespace MyFinanceBackend.Services
 			var clientAddSpendModel =
 				_spendsRepository.CreateClientAddSpendModel(clientBasicTrxByPeriod,
 					clientBasicTrxByPeriod.AccountPeriodId);
-			return transactionTypeId == TransactionTypeIds.Saving ? AddIncome(clientAddSpendModel) : AddSpend(clientAddSpendModel);
+			return transactionTypeId == TransactionTypeIds.Saving 
+				? await AddIncomeAsync(clientAddSpendModel) 
+				: await AddSpendAsync(clientAddSpendModel);
 		}
 
-		public IEnumerable<SpendItemModified> AddIncome(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<SpendItemModified>> AddIncomeAsync(ClientAddSpendModel clientAddSpendModel)
 		{
 			if (clientAddSpendModel.Amount <= 0)
 				throw new InvalidAmountException();
 			clientAddSpendModel.AmountTypeId = TransactionTypeIds.Saving;
-			var result = _spendsRepository.AddSpend(clientAddSpendModel);
+			var result = await _spendsRepository.AddSpendAsync(clientAddSpendModel);
 			return result;
 		}
 
-		public IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel)
 		{
 			if (clientAddSpendModel == null)
 				throw new ArgumentNullException(nameof(clientAddSpendModel));
 			if (clientAddSpendModel.Amount <= 0)
 				throw new ArgumentException("Amount must be greater than zero");
 			clientAddSpendModel.AmountTypeId = TransactionTypeIds.Spend;
-			var result = _spendsRepository.AddSpend(clientAddSpendModel);
+			var result = await _spendsRepository.AddSpendAsync(clientAddSpendModel);
 			return result;
 		}
 

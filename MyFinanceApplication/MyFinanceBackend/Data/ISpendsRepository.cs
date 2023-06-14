@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceBackend.Models;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -17,9 +18,9 @@ namespace MyFinanceBackend.Data
         DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId);
         IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model);
         IEnumerable<AccountCurrencyPair> GetAccountsCurrency(IEnumerable<int> accountIdsArray);
-        IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel);
-        IEnumerable<SpendItemModified> AddSpend(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
-        IEnumerable<SavedSpend> GetSavedSpends(int spendId);
+        Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel);
+        Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
+		IEnumerable<SavedSpend> GetSavedSpends(int spendId);
         IEnumerable<SpendItemModified> EditSpend(FinanceSpend financeSpend);
         IEnumerable<ClientAddSpendAccount> GetAccountMethodConversionInfo(int? accountId, int? accountPeriodId,
             string userId, int currencyId);

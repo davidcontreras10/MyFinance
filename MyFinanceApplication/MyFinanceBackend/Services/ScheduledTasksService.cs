@@ -289,7 +289,7 @@ namespace MyFinanceBackend.Services
 				UserId = currentAccountPeriod.UserId
 			};
 
-			_spendsService.AddBasicTransaction(basicTrxCreate, basicTrxCreate.AmountTypeId);
+			_spendsService.AddBasicTransactionAsync(basicTrxCreate, basicTrxCreate.AmountTypeId);
 			return TaskExecutedResult.Success(basicScheduledTaskVm.Id.ToString());
 		}
 

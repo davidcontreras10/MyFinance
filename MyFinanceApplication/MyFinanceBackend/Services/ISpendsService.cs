@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceBackend.Models;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -9,8 +10,8 @@ namespace MyFinanceBackend.Services
 {
     public interface ISpendsService
     {
-        IEnumerable<SpendItemModified> AddIncome(ClientAddSpendModel clientAddSpendModel);
-        IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel);
+        Task<IEnumerable<SpendItemModified>> AddIncomeAsync(ClientAddSpendModel clientAddSpendModel);
+        Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel);
         IEnumerable<SpendItemModified> DeleteSpend(string userId, int spendId);
         DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId);
         IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model);
@@ -20,7 +21,7 @@ namespace MyFinanceBackend.Services
         SpendActionResult GetSpendActionResult(int spendId, ResourceActionNames actionType, ApplicationModules applicationModule);
 	    IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId);
 	    IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId);
-	    IEnumerable<SpendItemModified> AddBasicTransaction(ClientBasicTrxByPeriod clientBasicTrxByPeriod,
+	    Task<IEnumerable<SpendItemModified>> AddBasicTransactionAsync(ClientBasicTrxByPeriod clientBasicTrxByPeriod,
 		    TransactionTypeIds transactionTypeId);
     }
 }

@@ -21,12 +21,12 @@ namespace EFDataAccess.Repositories
 
 		#region Publics
 
-		public IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel)
+		public Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel)
 		{
 			throw new NotImplementedException();
 		}
 
-		public IEnumerable<SpendItemModified> AddSpend(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
+		public Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
 		{
 			throw new NotImplementedException();
 		}

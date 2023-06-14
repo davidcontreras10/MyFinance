@@ -6,6 +6,7 @@ using MyFinanceModel;
 using System.Collections.Generic;
 using System;
 using MyFinanceWebApiCore.Authentication;
+using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore.Controllers
 {
@@ -78,34 +79,34 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("basic")]
 		[HttpPost]
-		public IEnumerable<ItemModified> AddBasicSpend([FromBody] ClientBasicTrxByPeriod clientBasicTrxByPeriod)
+		public async Task<IEnumerable<ItemModified>> AddBasicSpend([FromBody] ClientBasicTrxByPeriod clientBasicTrxByPeriod)
 		{
 			clientBasicTrxByPeriod.UserId = GetUserId();
-			return _spendsService.AddBasicTransaction(clientBasicTrxByPeriod, TransactionTypeIds.Spend);
+			return await _spendsService.AddBasicTransactionAsync(clientBasicTrxByPeriod, TransactionTypeIds.Spend);
 		}
 
 		[Route("basic/income")]
 		[HttpPost]
-		public IEnumerable<ItemModified> AddBasicIncome([FromBody] ClientBasicTrxByPeriod clientBasicTrxByPeriod)
+		public async Task<IEnumerable<ItemModified>> AddBasicIncome([FromBody] ClientBasicTrxByPeriod clientBasicTrxByPeriod)
 		{
 			clientBasicTrxByPeriod.UserId = GetUserId();
-			return _spendsService.AddBasicTransaction(clientBasicTrxByPeriod, TransactionTypeIds.Saving);
+			return await _spendsService.AddBasicTransactionAsync(clientBasicTrxByPeriod, TransactionTypeIds.Saving);
 		}
 
 		[HttpPost]
-		public IEnumerable<ItemModified> AddSpendCurrency(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<ItemModified>> AddSpendCurrency(ClientAddSpendModel clientAddSpendModel)
 		{
 			clientAddSpendModel.UserId = GetUserId();
-			var result = _spendsService.AddSpend(clientAddSpendModel);
+			var result = await _spendsService.AddSpendAsync(clientAddSpendModel);
 			return result;
 		}
 
 		[Route("income")]
 		[HttpPost]
-		public IEnumerable<ItemModified> AddIncome(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<ItemModified>> AddIncome(ClientAddSpendModel clientAddSpendModel)
 		{
 			clientAddSpendModel.UserId = GetUserId();
-			var result = _spendsService.AddIncome(clientAddSpendModel);
+			var result = await _spendsService.AddIncomeAsync(clientAddSpendModel);
 			return result;
 		}
 

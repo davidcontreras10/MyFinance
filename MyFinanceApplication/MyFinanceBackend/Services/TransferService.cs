@@ -114,8 +114,8 @@ namespace MyFinanceBackend.Services
 			try
 			{
 				_transferRepository.BeginTransaction();
-				itemsModified.AddRange(_spendsService.AddSpend(response.SpendModel));
-				itemsModified.AddRange(_spendsService.AddIncome(response.IncomeModel));
+				itemsModified.AddRange(await _spendsService.AddSpendAsync(response.SpendModel));
+				itemsModified.AddRange(await _spendsService.AddIncomeAsync(response.IncomeModel));
 				if (itemsModified.Any())
 				{
 					var spendIds = itemsModified.GroupBy(i => i.SpendId).Select(gr => gr.First()).Select(i => i.SpendId);

@@ -13,6 +13,7 @@ using System.Configuration;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyFinanceBackend.Data
 {
@@ -240,7 +241,7 @@ namespace MyFinanceBackend.Data
 			return dataSet.Tables[0].Rows.Cast<DataRow>().Select(ServicesUtils.CreateAccountCurrencyPair);
 		}
 
-		public IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel)
+		public Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel)
 		{
 			if (clientAddSpendModel == null)
 				throw new ArgumentNullException(nameof(clientAddSpendModel));
@@ -269,13 +270,13 @@ namespace MyFinanceBackend.Data
 			};
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_ADD_BY_ACCOUNT, parameters);
-			return ServicesUtils.CreateSpendAccountAffected(dataSet);
+			return Task.FromResult(ServicesUtils.CreateSpendAccountAffected(dataSet));
 		}
 
-		public IEnumerable<SpendItemModified> AddSpend(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
+		public async Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
 		{
 			var clientAddSpendModel = CreateClientAddSpendModel(clientBasicAddSpend, accountPeriodId);
-			var result = AddSpend(clientAddSpendModel);
+			var result = await AddSpendAsync(clientAddSpendModel);
 			return result;
 		}
 
