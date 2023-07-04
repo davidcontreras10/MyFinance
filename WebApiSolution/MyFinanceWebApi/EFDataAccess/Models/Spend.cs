@@ -31,5 +31,36 @@ namespace EFDataAccess.Models
         public virtual SpendType SpendType { get; set; }
         public virtual LoanRecord LoanRecord { get; set; }
         public virtual ICollection<SpendOnPeriod> SpendOnPeriod { get; set; }
+
+        private static Dictionary<int, int> AmountSign = new Dictionary<int, int>
+        {
+            {1, 1 },
+            {2, -1 }
+        };
+
+        private int GetAmountSign(bool ignore)
+        {
+            if (ignore)
+            {
+                return 1;
+            }
+
+            return AmountSign[AmountTypeId];
+        }
+
+        public double GetAmount(bool withSign)
+        {
+            if (OriginalAmount == null)
+            {
+                return 0;
+            }
+
+            if (Denominator == null || Numerator == null || Denominator == 0 || Numerator == 0)
+            {
+                return OriginalAmount.Value * GetAmountSign(!withSign);
+            }
+
+            return (OriginalAmount.Value * Numerator.Value * GetAmountSign(!withSign)) / Denominator.Value;
+        }
     }
 }

@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFinanceWebApi", "MyFinanceWebApi\MyFinanceWebApi.csproj", "{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFinanceWebApiCore", "MyFinanceWebApiCore\MyFinanceWebApiCore.csproj", "{67DBC269-E916-48ED-9529-AD5118792613}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFDataAccess", "EFDataAccess\EFDataAccess.csproj", "{FC8D8B72-33BB-4521-86ED-6C85B79D45F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFDataAccessTest", "EFDataAccessTest\EFDataAccessTest.csproj", "{85AE0C85-6AC0-4461-B148-F50D5FF436DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFDataAccessTest", "EFDataAccessTest\EFDataAccessTest.csproj", "{85AE0C85-6AC0-4461-B148-F50D5FF436DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,18 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.AzureProd|Any CPU.ActiveCfg = AzureProd|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.AzureProd|Any CPU.Build.0 = AzureProd|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.DevTest|Any CPU.ActiveCfg = Debug|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.DevTest|Any CPU.Build.0 = Debug|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.PreProd|Any CPU.ActiveCfg = PreProd|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.PreProd|Any CPU.Build.0 = PreProd|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Prod|Any CPU.ActiveCfg = Debug|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Prod|Any CPU.Build.0 = Debug|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D98D2F59-8D55-4C05-BF1D-B4D6ECC1AD21}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67DBC269-E916-48ED-9529-AD5118792613}.AzureProd|Any CPU.ActiveCfg = Debug|Any CPU
 		{67DBC269-E916-48ED-9529-AD5118792613}.AzureProd|Any CPU.Build.0 = Debug|Any CPU
 		{67DBC269-E916-48ED-9529-AD5118792613}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

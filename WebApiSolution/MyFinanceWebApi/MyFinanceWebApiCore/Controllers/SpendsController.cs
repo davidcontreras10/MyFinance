@@ -3,6 +3,7 @@ using MyFinanceBackend.Services;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using MyFinanceModel;
+
 using System.Collections.Generic;
 using System;
 using MyFinanceWebApiCore.Authentication;
@@ -43,7 +44,7 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("confirmation")]
 		[HttpPut]
-		public IEnumerable<SpendItemModified> ConfirmPendingSpend([FromQuery] int spendId, [FromBody] DateTimeModel newDateTime)
+		public async Task<IEnumerable<SpendItemModified>> ConfirmPendingSpend([FromQuery] int spendId, [FromBody] DateTimeModel newDateTime)
 		{
 			if (spendId == 0)
 			{
@@ -55,7 +56,7 @@ namespace MyFinanceWebApiCore.Controllers
 				throw new ArgumentNullException(nameof(newDateTime));
 			}
 
-			var modifiedItems = _spendsService.ConfirmPendingSpend(spendId, newDateTime.NewDateTime);
+			var modifiedItems = await _spendsService.ConfirmPendingSpendAsync(spendId, newDateTime.NewDateTime);
 			return modifiedItems;
 		}
 

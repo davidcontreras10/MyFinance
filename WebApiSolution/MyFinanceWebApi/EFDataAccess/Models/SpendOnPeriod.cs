@@ -20,5 +20,16 @@ namespace EFDataAccess.Models
         public virtual AccountPeriod AccountPeriod { get; set; }
         public virtual CurrencyConverterMethod CurrencyConverterMethod { get; set; }
         public virtual Spend Spend { get; set; }
+
+        public double GetAmount()
+        {
+            var spendAmount = Spend.GetAmount(true);
+            if (Denominator == null || Numerator == null || Denominator == 0 || Numerator == 0)
+            {
+                return spendAmount;
+            }
+
+            return (spendAmount * Numerator.Value) / Denominator.Value;
+        }
     }
 }

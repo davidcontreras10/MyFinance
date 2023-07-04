@@ -22,9 +22,9 @@ namespace MyFinanceBackend.Services
 
 		#region Publics
 
-		public IEnumerable<AccountFinanceViewModel> GetAccountFinanceViewModel(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId)
+		public async Task<IEnumerable<AccountFinanceViewModel>> GetAccountFinanceViewModelAsync(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId)
 		{
-			return _spendsRepository.GetAccountFinanceViewModel(requestItems, userId);
+			return await _spendsRepository.GetAccountFinanceViewModelAsync(requestItems, userId);
 		}
 
 		public async Task<IEnumerable<BankAccountSummary>> GetAccountFinanceSummaryViewModelAsync(string userId, DateTime? dateTime = null)
@@ -36,7 +36,7 @@ namespace MyFinanceBackend.Services
 			}
 
 			var requestItems = bankAccounts.Select(acc => CreateBankAccountClientAccountFinanceRequest(acc.AccountPeriodId));
-			var financeInfoAccounts = GetAccountFinanceViewModel(requestItems, userId);
+			var financeInfoAccounts = await GetAccountFinanceViewModelAsync(requestItems, userId);
 			return financeInfoAccounts.Select(fa => CreateBankAccountSummary(fa, bankAccounts));
 		}
 

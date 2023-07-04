@@ -1,4 +1,5 @@
 ﻿using EFDataAccess.Extensions;
+using EFDataAccess.Helpers;
 using EFDataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -57,7 +58,7 @@ namespace EFDataAccess.Repositories
 				Context.AccountInclude.AddRange(efAccoountIncludes);
 			}
 
-			CommitChanges();
+			Context.SaveChanges();
 		}
 
 		public void DeleteAccount(string userId, int accountId)
@@ -76,7 +77,7 @@ namespace EFDataAccess.Repositories
 
 			Context.AccountInclude.RemoveWhere(x => x.AccountIncludeId == accountId || x.AccountId == accountId);
 			Context.Account.RemoveWhere(x => x.AccountId == accountId);
-			CommitChanges();
+			Context.SaveChanges();
 		}
 
 		public IEnumerable<AccountBasicPeriodInfo> GetAccountBasicInfoByAccountId(IEnumerable<int> accountIds)
@@ -321,7 +322,7 @@ namespace EFDataAccess.Repositories
 				.Where(acc => acc.UserId == userGuid)
 				.ToList();
 			UpdateCurrentCurrentAccountPeriods(userAccounts, dateTime);
-			CommitChanges();
+			Context.SaveChanges();
 			var accountGroupViewModels = new List<AccountGroupMainViewViewModel>();
 			foreach (var acc in userAccounts)
 			{
@@ -357,7 +358,7 @@ namespace EFDataAccess.Repositories
 					AccountName = acc.Name,
 					CurrencyId = acc.CurrencyId ?? 0,
 					CurrencyName = acc.Currency.Name,
-					CurrentPeriodId = GetCurrentAccountPeriod(dateTime, acc)?.AccountPeriodId ?? 0,
+					CurrentPeriodId = AccountHelpers.GetCurrentAccountPeriod(dateTime, acc)?.AccountPeriodId ?? 0,
 					FrontStyle = CreateFrontStyleData(acc.HeaderColor),
 					Type = (FullAccountInfoViewModel.AccountType)acc.AccountTypeId,
 					Position = acc.Position ?? 0
@@ -462,7 +463,7 @@ namespace EFDataAccess.Repositories
 					.ThenInclude(acc => acc.AccountPeriod)
 				.ToListAsync();
 			var currentAccountPeriods = userBankAccounts
-				.Select(bacc => GetCurrentAccountPeriod(dateTime, bacc.Account.AccountPeriod))
+				.Select(bacc => AccountHelpers.GetCurrentAccountPeriod(dateTime, bacc.Account.AccountPeriod))
 				.Where(p => p != null).ToList();
 
 			return userBankAccounts.Select(bacc => new BankAccountPeriodBasicId
@@ -591,7 +592,7 @@ namespace EFDataAccess.Repositories
 					});
 				}
 			}
-			await CommitChangesAsync();
+			await Context.SaveChangesAsync();
 		}
 
 		public async Task<IEnumerable<ItemModified>> UpdateAccountPositionsAsync(string userId, IEnumerable<ClientAccountPosition> accountPositions)
@@ -605,7 +606,7 @@ namespace EFDataAccess.Repositories
 					var clientAccount = accountPositions.First(ap => ap.AccountId == acc.AccountId);
 					acc.Position = clientAccount.Position;
 				}
-				await CommitChangesAsync();
+				await Context.SaveChangesAsync();
 				return accounts.Select(acc => new ItemModified
 				{
 					AccountId = acc.AccountId,
@@ -663,7 +664,7 @@ namespace EFDataAccess.Repositories
 				currentDate = DateTime.UtcNow;
 			}
 
-			var nonCurretPeriodAccounts = userAccounts.Where(acc => GetCurrentAccountPeriod(currentDate, acc.AccountPeriod) == null);
+			var nonCurretPeriodAccounts = userAccounts.Where(acc => AccountHelpers.GetCurrentAccountPeriod(currentDate, acc.AccountPeriod) == null);
 			var nonCurretPeriodAccountsCount = nonCurretPeriodAccounts.Count();
 			var newAccountPeriods = new List<AccountPeriod>();
 			_logger.LogInformation($"Updating {nonCurretPeriodAccountsCount} accounts");
@@ -680,31 +681,6 @@ namespace EFDataAccess.Repositories
 			}
 
 			Context.AccountPeriod.AddRange(newAccountPeriods);
-		}
-
-		private static AccountPeriod GetCurrentAccountPeriod(DateTime? dateTime, ICollection<AccountPeriod> accountPeriods)
-		{
-			if (dateTime == null)
-			{
-				dateTime = DateTime.UtcNow;
-			}
-
-			if (accountPeriods == null || !accountPeriods.Any())
-			{
-				return null;
-			}
-
-			return accountPeriods.FirstOrDefault(accp => InAccountPeriod(accp, dateTime.Value));
-		}
-
-		private static AccountPeriod GetCurrentAccountPeriod(DateTime? dateTime, Account account)
-		{
-			return GetCurrentAccountPeriod(dateTime, account.AccountPeriod);
-		}
-
-		private static bool InAccountPeriod(AccountPeriod accountPeriod, DateTime dateTime)
-		{
-			return dateTime >= accountPeriod.InitialDate.Value.Date && dateTime < accountPeriod.EndDate.Value.Date;
 		}
 
 		private static IEnumerable<AccountIncludeViewModel> GetPossibleAccountIncludes(

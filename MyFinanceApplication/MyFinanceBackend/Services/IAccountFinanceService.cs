@@ -8,7 +8,7 @@ namespace MyFinanceBackend.Services
 {
 	public interface IAccountFinanceService
 	{
-		IEnumerable<AccountFinanceViewModel> GetAccountFinanceViewModel(
+		Task<IEnumerable<AccountFinanceViewModel>> GetAccountFinanceViewModelAsync(
 			IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId);
         Task<IEnumerable<BankAccountSummary>> GetAccountFinanceSummaryViewModelAsync(string userId, DateTime? dateTime = null);
     }

@@ -3,9 +3,7 @@ using EFDataAccess.Models;
 using EFDataAccess.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,12 +18,7 @@ using MyFinanceWebApiCore.Authentication;
 using MyFinanceWebApiCore.Config;
 using MyFinanceWebApiCore.FilterAttributes;
 using MyFinanceWebApiCore.Services;
-using OfficeOpenXml.FormulaParsing.Logging;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore
 {
@@ -128,7 +121,7 @@ namespace MyFinanceWebApiCore
 
 		private void RegisterServices(IServiceCollection services)
 		{
-			var loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
+			var loggerFactory = LoggerFactory.Create(builder =>
 			{
 				builder.AddDebug();
 			});
@@ -145,6 +138,7 @@ namespace MyFinanceWebApiCore
 			services.AddScoped<IConnectionConfig, SqlServerConfig>();
 			services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+			services.AddScoped<ITrxExchangeService, TrxExchangeService>();
 			services.AddScoped<ITransferService, TransferService>();
 			services.AddScoped<IUsersService, UsersService>();
 			services.AddScoped<ISpendsService, SpendsService>();
@@ -156,7 +150,7 @@ namespace MyFinanceWebApiCore
 			services.AddScoped<IAccountGroupService, AccountGroupService>();
 			services.AddScoped<ISpendTypeRepository, SpendTypeRepository>();
 			services.AddScoped<IUserRespository, UserRepository>();
-			services.AddScoped<ISpendsRepository, SpendsRepository>();
+			services.AddScoped<ISpendsRepository, EFSpendsRepository>();
 			services.AddScoped<IEmailService, EmailService>();
 			services.AddScoped<IAuthorizationService, AuthorizationService>();
 			services.AddScoped<IUserAuthorizeService, UserAuthorizeService>();

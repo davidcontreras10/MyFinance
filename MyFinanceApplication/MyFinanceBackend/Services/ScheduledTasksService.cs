@@ -247,7 +247,7 @@ namespace MyFinanceBackend.Services
 				DestinationAccount = transferScheduledTask.ToAccountId
 			};
 
-			_transferService.SubmitTransferAsync(transferRequest);
+			await _transferService.SubmitTransferAsync(transferRequest);
 			return TaskExecutedResult.Success(transferScheduledTask.Id.ToString());
 		}
 
@@ -289,7 +289,7 @@ namespace MyFinanceBackend.Services
 				UserId = currentAccountPeriod.UserId
 			};
 
-			_spendsService.AddBasicTransactionAsync(basicTrxCreate, basicTrxCreate.AmountTypeId);
+			await _spendsService.AddBasicTransactionAsync(basicTrxCreate, basicTrxCreate.AmountTypeId);
 			return TaskExecutedResult.Success(basicScheduledTaskVm.Id.ToString());
 		}
 

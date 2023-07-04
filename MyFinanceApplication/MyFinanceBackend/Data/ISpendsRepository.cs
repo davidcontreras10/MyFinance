@@ -12,19 +12,19 @@ namespace MyFinanceBackend.Data
     {
 	    IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId);
 	    IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId);
-		AccountFinanceViewModel GetAccountFinanceViewModel(int accountPeriodId, string userId);
-		IEnumerable<AccountFinanceViewModel> GetAccountFinanceViewModel(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId);
+		Task<AccountFinanceViewModel> GetAccountFinanceViewModelAsync(int accountPeriodId, string userId);
+		Task<IEnumerable<AccountFinanceViewModel>> GetAccountFinanceViewModelAsync(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId);
 		IEnumerable<SpendItemModified> DeleteSpend(string userId, int spendId);
         DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId);
         IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model);
-        IEnumerable<AccountCurrencyPair> GetAccountsCurrency(IEnumerable<int> accountIdsArray);
+        Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray);
         Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel);
         Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
 		IEnumerable<SavedSpend> GetSavedSpends(int spendId);
-        IEnumerable<SpendItemModified> EditSpend(FinanceSpend financeSpend);
+        Task<IEnumerable<SpendItemModified>> EditSpendAsync(FinanceSpend financeSpend);
         IEnumerable<ClientAddSpendAccount> GetAccountMethodConversionInfo(int? accountId, int? accountPeriodId,
             string userId, int currencyId);
-        ClientAddSpendModel CreateClientAddSpendModel(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
+        Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
         IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId);
         void AddSpendDependency(int spendId, int dependencySpendId);
         SpendActionAttributes GetSpendAttributes(int spendId);

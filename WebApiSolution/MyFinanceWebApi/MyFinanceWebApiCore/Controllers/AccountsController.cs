@@ -52,10 +52,10 @@ namespace MyFinanceWebApiCore.Controllers
 		[Route("finance")]
 		[HttpPost]
 		//[IncludeRestrictObjectHeader]
-		public IEnumerable<AccountFinanceViewModel> GetAccountFinanceViewModel([FromBody] ClientAccountFinanceViewModel[] accountPeriods)
+		public async Task<IEnumerable<AccountFinanceViewModel>> GetAccountFinanceViewModel([FromBody] ClientAccountFinanceViewModel[] accountPeriods)
 		{
 			var userId = GetUserId();
-			var accountFinanceViewModelList = _accountFinanceService.GetAccountFinanceViewModel(accountPeriods, userId);
+			var accountFinanceViewModelList = await _accountFinanceService.GetAccountFinanceViewModelAsync(accountPeriods, userId);
 			return accountFinanceViewModelList;
 		}
 

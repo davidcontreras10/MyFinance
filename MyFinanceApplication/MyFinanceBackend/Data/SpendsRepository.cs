@@ -9,7 +9,6 @@ using MyFinanceModel.Utilities;
 using MyFinanceModel.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Linq;
@@ -19,25 +18,13 @@ namespace MyFinanceBackend.Data
 {
 	public class SpendsRepository : SqlServerBaseService, ISpendsRepository
 	{
-		#region Constructor
+		private readonly ITrxExchangeService _trxExchangeService;
 
-		public SpendsRepository(IConnectionConfig connectionConfig, ICurrencyService currencyService)
+		public SpendsRepository(IConnectionConfig connectionConfig, ITrxExchangeService trxExchangeService)
 			: base(connectionConfig)
 		{
-			_currencyService = currencyService;
-			_savingAmountTypeName = "Saving";
-			_spendAmountTypeName = "Spend";
+			_trxExchangeService = trxExchangeService;
 		}
-
-		#endregion
-
-		#region Attributes
-
-		private readonly ICurrencyService _currencyService;
-		private readonly string _savingAmountTypeName;
-		private readonly string _spendAmountTypeName;
-
-		#endregion
 
 		#region Public Methods
 
@@ -76,7 +63,7 @@ namespace MyFinanceBackend.Data
 			return result;
 		}
 
-		public AccountFinanceViewModel GetAccountFinanceViewModel(int accountPeriodId, string userId)
+		public Task<AccountFinanceViewModel> GetAccountFinanceViewModelAsync(int accountPeriodId, string userId)
 		{
 			if (accountPeriodId == 0)
 				throw new ArgumentException(@"Value cannot be zero", nameof(accountPeriodId));
@@ -87,10 +74,11 @@ namespace MyFinanceBackend.Data
 			};
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_TRANSFER_ACCOUNT_INFO, parameters);
-			return dataSet.Tables.Count > 0 ? CreateAccountFinanceViewModel(dataSet.Tables[0]) : null;
+			var res = dataSet.Tables.Count > 0 ? CreateAccountFinanceViewModel(dataSet.Tables[0]) : null;
+			return Task.FromResult(res);
 		}
 
-		public IEnumerable<AccountFinanceViewModel> GetAccountFinanceViewModel(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId)
+		public Task<IEnumerable<AccountFinanceViewModel>> GetAccountFinanceViewModelAsync(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId)
 		{
 			requestItems = RemoveDuplicated(requestItems.ToList());
 			var accountPeriodIds = CreateAccountPeriodOptionParametersTable(requestItems);
@@ -99,10 +87,13 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_FINANCE_SPEND_BY_ACCOUNT_LIST,
 				accountPeriodIdsParameter, userIdParameter);
 			if (dataSet == null || dataSet.Tables.Count == 0)
-				return new List<AccountFinanceViewModel>();
+			{
+				var res = (IEnumerable<AccountFinanceViewModel>)Array.Empty<AccountFinanceViewModel>();
+				return Task.FromResult(res);
+			}
 			var accountFinanceResultSet = ServicesUtils.CreateAccountFinanceResultSet(dataSet.Tables[0]);
 			var accountFinanceViewModelList = CreateAccountFinanceViewModel(accountFinanceResultSet);
-			return accountFinanceViewModelList;
+			return Task.FromResult(accountFinanceViewModelList);
 		}
 
 		public SpendActionAttributes GetSpendAttributes(int spendId)
@@ -117,7 +108,7 @@ namespace MyFinanceBackend.Data
 			var result = ServicesUtils.CreateSpendAttributes(dataSet.Tables[0].Rows[0]);
 			return result;
 		}
-
+		GetAccountFinanceSummaryViewModelAsync
 		public void AddSpendDependency(int spendId, int dependencySpendId)
 		{
 			var parameters = new[]
@@ -129,9 +120,9 @@ namespace MyFinanceBackend.Data
 			ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_DEPENDENCY_ADD, parameters);
 		}
 
-		public ClientAddSpendModel CreateClientAddSpendModel(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
+		public async Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
 		{
-			var accountInfo = GetAccountFinanceViewModel(accountPeriodId, clientBasicAddSpend.UserId);
+			var accountInfo = await GetAccountFinanceViewModelAsync(accountPeriodId, clientBasicAddSpend.UserId);
 			var accountCurrencyInfo = GetAccountMethodConversionInfo(accountInfo.AccountId, null,
 				clientBasicAddSpend.UserId, clientBasicAddSpend.CurrencyId);
 			var originalAccountData = accountCurrencyInfo.FirstOrDefault(a => a.AccountId == accountInfo.AccountId);
@@ -200,7 +191,7 @@ namespace MyFinanceBackend.Data
 			if (model == null || model.SpendId == 0 || string.IsNullOrEmpty(model.UserId) || !model.ModifyList.Any() ||
 				model.ModifyList.Any(i => i == 0) || model.ModifyList.Any(i => !((int)i).TryParseEnum<ClientEditSpendModel.Field>(out _)))
 				throw new Exception("Invalid parameters");
-			SetAmountType(model, model.ModifyList.Any(i => i == ClientEditSpendModel.Field.AmountType));
+			SpendsDataHelper.SetAmountType(model, model.ModifyList.Any(i => i == ClientEditSpendModel.Field.AmountType));
 			var modifyList = ServicesUtils.CreateStringCharSeparated(model.ModifyList.Select(ml => (int)ml));
 			//var databaseValues = CreateAddSpendDbValues(model);
 			//var accountsTable = ServicesUtils.ClientAddSpendAccountDataTable(databaseValues.IncludedAccounts);
@@ -223,7 +214,7 @@ namespace MyFinanceBackend.Data
 			return ServicesUtils.CreateSpendAccountAffected(dataSet);
 		}
 
-		public IEnumerable<AccountCurrencyPair> GetAccountsCurrency(IEnumerable<int> accountIdsArray)
+		public Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray)
 		{
 			if (accountIdsArray == null || !accountIdsArray.Any())
 				throw new ArgumentException(@"Cannot be null or empty", nameof(accountIdsArray));
@@ -238,10 +229,10 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNTS_CURRENCIES_LIST, parameters);
 			if (dataSet == null || dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0)
 				throw new Exception("Empty result set for " + DatabaseConstants.SP_ACCOUNTS_CURRENCIES_LIST);
-			return dataSet.Tables[0].Rows.Cast<DataRow>().Select(ServicesUtils.CreateAccountCurrencyPair);
+			return Task.FromResult(dataSet.Tables[0].Rows.Cast<DataRow>().Select(ServicesUtils.CreateAccountCurrencyPair));
 		}
 
-		public Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel)
 		{
 			if (clientAddSpendModel == null)
 				throw new ArgumentNullException(nameof(clientAddSpendModel));
@@ -249,10 +240,8 @@ namespace MyFinanceBackend.Data
 				throw new ArgumentException(@"OriginalAccountData is null", nameof(clientAddSpendModel));
 
 			ValidateSpendCurrencyConvertibleValues(clientAddSpendModel);
-			SetAmountType(clientAddSpendModel, false);
-
-
-			var databaseValues = CreateAddSpendDbValues(clientAddSpendModel);
+			SpendsDataHelper.SetAmountType(clientAddSpendModel, false);
+			var databaseValues = await CreateAddSpendDbValuesAsync(clientAddSpendModel);
 			var parameters = new List<SqlParameter>
 			{
 				new SqlParameter(DatabaseConstants.PAR_USER_ID, databaseValues.UserId),
@@ -270,23 +259,25 @@ namespace MyFinanceBackend.Data
 			};
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_ADD_BY_ACCOUNT, parameters);
-			return Task.FromResult(ServicesUtils.CreateSpendAccountAffected(dataSet));
+			return ServicesUtils.CreateSpendAccountAffected(dataSet);
 		}
 
 		public async Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
 		{
-			var clientAddSpendModel = CreateClientAddSpendModel(clientBasicAddSpend, accountPeriodId);
+			var clientAddSpendModel = await CreateClientAddSpendModelAsync(clientBasicAddSpend, accountPeriodId);
 			var result = await AddSpendAsync(clientAddSpendModel);
 			return result;
 		}
 
-		public IEnumerable<SpendItemModified> EditSpend(FinanceSpend financeSpend)
+		public async Task<IEnumerable<SpendItemModified>> EditSpendAsync(FinanceSpend financeSpend)
 		{
 			ValidateSpendCurrencyConvertibleValues(financeSpend);
 			if (financeSpend.OriginalAccountData == null)
 				throw new ArgumentException(@"OriginalAccountData is null", nameof(financeSpend));
 
-			var accountIncludes = ConvertSpendCurrencyToDbValuesList(financeSpend);
+			var accountIds = SpendsDataHelper.GetInvolvedAccountIds(financeSpend);
+			var accountCurrencyPairList = await GetAccountsCurrencyAsync(accountIds);
+			var accountIncludes = await _trxExchangeService.ConvertTrxCurrencyAsync(financeSpend, accountCurrencyPairList.ToList());
 			var parameters = new List<SqlParameter>
 			{
 				new SqlParameter(DatabaseConstants.PAR_USER_ID, financeSpend.UserId),
@@ -875,32 +866,6 @@ namespace MyFinanceBackend.Data
 			};
 		}
 		
-		private void SetAmountType(ClientBasicAddSpend clientAddSpendModel, bool acceptDefault)
-		{
-			if (clientAddSpendModel.AmountTypeId == TransactionTypeIds.Invalid)
-			{
-				if (acceptDefault)
-				{
-					return;
-				}
-				throw new InvalidSpendAmountType();
-			}
-
-			if (clientAddSpendModel.AmountTypeId == TransactionTypeIds.Ignore)
-				return;
-
-			if (clientAddSpendModel.AmountTypeId == TransactionTypeIds.Spend)
-			{
-				clientAddSpendModel.AmountType = _spendAmountTypeName;
-				return;
-			}
-
-			if (clientAddSpendModel.AmountTypeId == TransactionTypeIds.Saving)
-			{
-				clientAddSpendModel.AmountType = _savingAmountTypeName;
-			}
-		}
-
 		private IEnumerable<SavedSpend> CreateSavedSpendList(IEnumerable<SavedSpendResultSet> resultSets)
 		{
 			if (resultSets == null || !resultSets.Any())
@@ -1002,10 +967,12 @@ namespace MyFinanceBackend.Data
 			return dataTable;
 		}
 
-		private AddSpendDbValues CreateAddSpendDbValues(ClientAddSpendModel clientAddSpendModel)
+		private async Task<AddSpendDbValues> CreateAddSpendDbValuesAsync(ClientAddSpendModel clientAddSpendModel)
 		{
 			if (clientAddSpendModel == null)
 				throw new ArgumentNullException(nameof(clientAddSpendModel));
+			var accountIds = SpendsDataHelper.GetInvolvedAccountIds(clientAddSpendModel);
+			var accountCurrencyPairList = await GetAccountsCurrencyAsync(accountIds);
 			var addSpendDbValues = new AddSpendDbValues
 			{
 				Amount = clientAddSpendModel.Amount,
@@ -1013,108 +980,11 @@ namespace MyFinanceBackend.Data
 				SpendDate = clientAddSpendModel.SpendDate,
 				SpendTypeId = clientAddSpendModel.SpendTypeId,
 				UserId = clientAddSpendModel.UserId,
-				IncludedAccounts = ConvertSpendCurrencyToDbValuesList(clientAddSpendModel),
+				IncludedAccounts = await _trxExchangeService.ConvertTrxCurrencyAsync(clientAddSpendModel, accountCurrencyPairList.ToList()),
 				AmountDenominator = clientAddSpendModel.AmountDenominator,
 				AmountNumerator = clientAddSpendModel.AmountNumerator
 			};
 			return addSpendDbValues;
-		}
-
-		private IEnumerable<AddSpendAccountDbValues> ConvertSpendCurrencyToDbValuesList(
-			ISpendCurrencyConvertible spendCurrencyConvertible)
-		{
-			if (spendCurrencyConvertible == null)
-				throw new ArgumentNullException(nameof(spendCurrencyConvertible));
-			var accountIds = new List<int> { spendCurrencyConvertible.OriginalAccountData.AccountId };
-			accountIds.AddRange(spendCurrencyConvertible.IncludedAccounts.Select(item => item.AccountId));
-			var accountCurrencyPairList = GetAccountsCurrency(accountIds);
-			var accountModelCurrencyList = CreateAccountModelCurrency(spendCurrencyConvertible, accountCurrencyPairList);
-			var addSpendAccountDbValues = ConvertSpendCurrencyToDbValuesList(spendCurrencyConvertible.PaymentDate,
-																			spendCurrencyConvertible.CurrencyId,
-																			accountModelCurrencyList);
-			foreach (var value in addSpendAccountDbValues)
-			{
-				value.IsOriginal = value.AccountId == spendCurrencyConvertible.OriginalAccountData.AccountId;
-			}
-
-			return addSpendAccountDbValues;
-		}
-
-		private IEnumerable<AccountModelCurrency> CreateAccountModelCurrency(ISpendCurrencyConvertible spendCurrencyConvertible,
-																			 IEnumerable<AccountCurrencyPair> pairs)
-		{
-			if (spendCurrencyConvertible == null)
-				throw new ArgumentNullException(nameof(spendCurrencyConvertible));
-			if (pairs == null || !pairs.Any())
-				throw new ArgumentException(@"Value cannot be null or empty", nameof(pairs));
-			var accountModelCurrencyList = new List<AccountModelCurrency>
-				{
-					new AccountModelCurrency
-						{
-							AccountInfo = spendCurrencyConvertible.OriginalAccountData,
-							AccountOriginalCurrencyId =
-								pairs.First(item => item.AccountId == spendCurrencyConvertible.OriginalAccountData.AccountId)
-									 .CurrencyId
-						}
-				};
-			accountModelCurrencyList.AddRange(
-				spendCurrencyConvertible.IncludedAccounts.Select(clientAddSpendAccount => new AccountModelCurrency
-				{
-					AccountInfo = clientAddSpendAccount,
-					AccountOriginalCurrencyId =
-							pairs.First(item => item.AccountId == clientAddSpendAccount.AccountId).CurrencyId
-				}));
-			return accountModelCurrencyList;
-		}
-
-		private IEnumerable<AddSpendAccountDbValues> ConvertSpendCurrencyToDbValuesList(DateTime dateTime, int amountCurrency,
-																					   IEnumerable<AccountModelCurrency>
-																						   accountModelCurrencies)
-		{
-			var dbValues = new List<AddSpendAccountDbValues>();
-			dbValues.AddRange(
-				accountModelCurrencies.Where(item => item.AccountOriginalCurrencyId == amountCurrency)
-									  .Select(
-										  item2 =>
-										  CreateAddSpendAccountDbValues(item2,
-																		ExchangeRateResult
-																			.CreateDefaultExchangeRateResult())));
-			var methodIds =
-				accountModelCurrencies.Where(
-					item => dbValues.All(item2 => item2.AccountId != item.AccountInfo.AccountId))
-									  .Select(item3 => item3.AccountInfo.ConvertionMethodId);//TODO validate methodId not to be repeated
-			if (!methodIds.Any())
-				return dbValues;
-			var exchangeRateResultList = _currencyService.GetExchangeRateResult(methodIds, dateTime);
-			dbValues.AddRange(
-				accountModelCurrencies.Where(
-					item => dbValues.All(item2 => item2.AccountId != item.AccountInfo.AccountId))
-					.Select(
-						item3 =>
-							CreateAddSpendAccountDbValues(item3,
-								exchangeRateResultList.First(
-									item4 =>
-										item4.MethodId ==
-										item3.AccountInfo.ConvertionMethodId)))
-				);
-			return dbValues;
-		}
-
-		private static AddSpendAccountDbValues CreateAddSpendAccountDbValues(AccountModelCurrency accountModelCurrency,
-																			 ExchangeRateResult exchangeRateResult)
-		{
-			if (accountModelCurrency == null)
-				throw new ArgumentNullException(nameof(accountModelCurrency));
-			if (exchangeRateResult == null || !exchangeRateResult.Success)
-				throw new InvalidExchangeRateCreationException("Cannot create value with invalid exchangeRateResult");
-			return new AddSpendAccountDbValues
-			{
-				AccountId = accountModelCurrency.AccountInfo.AccountId,
-				PendingUpdate = exchangeRateResult.ResultTypeValue == ExchangeRateResult.ResultType.PendingUpdate,
-				Numerator = exchangeRateResult.Numerator,
-				Denominator = exchangeRateResult.Denominator,
-				CurrencyConverterMethodId = accountModelCurrency.AccountInfo.ConvertionMethodId
-			};
 		}
 
 		private static AccountFinanceViewModel CreateAccountFinanceViewModel(DataTable dataTable)

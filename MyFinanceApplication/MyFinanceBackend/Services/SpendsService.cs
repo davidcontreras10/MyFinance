@@ -77,8 +77,8 @@ namespace MyFinanceBackend.Services
 				throw new ArgumentException($"{nameof(transactionTypeId)} cannot be invalid");
 			}
 
-			var clientAddSpendModel =
-				_spendsRepository.CreateClientAddSpendModel(clientBasicTrxByPeriod,
+			var clientAddSpendModel = await
+				_spendsRepository.CreateClientAddSpendModelAsync(clientBasicTrxByPeriod,
 					clientBasicTrxByPeriod.AccountPeriodId);
 			return transactionTypeId == TransactionTypeIds.Saving 
 				? await AddIncomeAsync(clientAddSpendModel) 
@@ -122,13 +122,13 @@ namespace MyFinanceBackend.Services
 			return _spendsRepository.EditSpend(model);
 		}
 
-		public IEnumerable<AccountCurrencyPair> GetAccountsCurrency(IEnumerable<int> accountIdsArray)
+		public async Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray)
 		{
-			var result = _spendsRepository.GetAccountsCurrency(accountIdsArray);
+			var result = await _spendsRepository.GetAccountsCurrencyAsync(accountIdsArray);
 			return result;
 		}
 
-		public IEnumerable<SpendItemModified> ConfirmPendingSpend(int spendId, DateTime newPaymentDate)
+		public async Task<IEnumerable<SpendItemModified>> ConfirmPendingSpendAsync(int spendId, DateTime newPaymentDate)
 		{
 			var spends = _spendsRepository.GetSavedSpends(spendId);
 			if (spends == null || !spends.Any())
@@ -148,7 +148,7 @@ namespace MyFinanceBackend.Services
 						throw new SpendNotPendingException(financeSpend.SpendId);
 					}
 
-					var modifiedItems = _spendsRepository.EditSpend(financeSpend);
+					var modifiedItems = await _spendsRepository.EditSpendAsync(financeSpend);
 					modifiedList.AddRange(modifiedItems);
 				}
 				_spendsRepository.Commit();

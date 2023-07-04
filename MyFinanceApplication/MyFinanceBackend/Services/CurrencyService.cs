@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using MyFinanceBackend.Models;
 using MyFinanceModel;
 using MyFinanceModel.WebMethodsModel;
@@ -13,8 +13,8 @@ namespace MyFinanceBackend.Services
 {
 	public interface ICurrencyService
 	{
-		ExchangeRateResult GetExchangeRateResult(int methodId, DateTime dateTime);
-		IEnumerable<ExchangeRateResult> GetExchangeRateResult(IEnumerable<int> methodIds, DateTime dateTime);
+		Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime);
+		Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultAsync(IEnumerable<int> methodIds, DateTime dateTime);
 	}
 
 	public class CurrencyService : WebApiBaseService, ICurrencyService
@@ -41,45 +41,45 @@ namespace MyFinanceBackend.Services
 
 		#region Public Methods
 
-		public ExchangeRateResult GetExchangeRateResult(int methodId, DateTime dateTime)
+		public async Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime)
 		{
-			return GetExchangeRateResultService(methodId, dateTime);
+			return await GetExchangeRateResultServiceAsync(methodId, dateTime);
 		}
 
-		public IEnumerable<ExchangeRateResult> GetExchangeRateResult(IEnumerable<int> methodIds, DateTime dateTime)
+		public async Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultAsync(IEnumerable<int> methodIds, DateTime dateTime)
 		{
 			return methodIds == null || !methodIds.Any()
 				? new List<ExchangeRateResult>()
-				: GetExchangeRateResultService(methodIds, dateTime);
+				: await GetExchangeRateResultServiceAsync(methodIds, dateTime);
 		}
 
 		#endregion
 
 		#region Private Methods
 
-		private ExchangeRateResult GetExchangeRateResultService(int methodId, DateTime dateTime)
+		private async Task<ExchangeRateResult> GetExchangeRateResultServiceAsync(int methodId, DateTime dateTime)
 		{
 			var requestDateTime = dateTime.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 			var parameters = new Dictionary<string, object> { { "methodId", methodId }, { "dateTime", requestDateTime } };
 			var methodUrl = CreateMethodUrl(CONVERT_METHOD_NAME, parameters);
 			var request = new WebApiRequest(methodUrl, HttpMethod.Get);
-			return GetResponseAs<ExchangeRateResult>(request);
+			return await GetResponseAsAsync<ExchangeRateResult>(request);
 		}
 
-		private IEnumerable<ExchangeRateResult> GetExchangeRateResultService(IEnumerable<int> methodIds, DateTime dateTime)
+		private async Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultServiceAsync(IEnumerable<int> methodIds, DateTime dateTime)
 		{
 			var methodUrl = CreateMethodUrl(CONVERT_METHOD_BY_LIST_NAME);
 			var exchangeRateResultModel = new ExchangeRateResultModel
-				{
-					DateTime = dateTime,
-					MethodIds = methodIds
-				};
+			{
+				DateTime = dateTime,
+				MethodIds = methodIds
+			};
 			var request = new WebApiRequest(methodUrl, HttpMethod.Post)
 			{
 				Model = exchangeRateResultModel
 			};
 
-			return GetResponseAs<IEnumerable<ExchangeRateResult>>(request);
+			return await GetResponseAsAsync<IEnumerable<ExchangeRateResult>>(request);
 		}
 
 		protected override string GetApiBaseDomain()

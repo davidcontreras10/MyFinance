@@ -15,15 +15,5 @@ namespace EFDataAccess.Repositories
 		{
 			Context = context;
 		}
-
-		protected void CommitChanges()
-		{
-			Context.SaveChanges();
-		}
-
-        protected async Task CommitChangesAsync()
-        {
-            await Context.SaveChangesAsync();
-        }
     }
 }

@@ -59,7 +59,7 @@ namespace MyFinanceWebApp.CustomHandlers
 
             var userId = httpContext.User.Identity.Name;
             var cookie = httpContext.Request.Cookies[Constants.AuthorizationCookieName];
-			var tokenCookie = cookie.Values[Constants.AuthTokenCookieName];
+			var tokenCookie = cookie?.Values[Constants.AuthTokenCookieName];
 			return !string.IsNullOrWhiteSpace(userId) && !string.IsNullOrWhiteSpace(tokenCookie);
 	    }
 
