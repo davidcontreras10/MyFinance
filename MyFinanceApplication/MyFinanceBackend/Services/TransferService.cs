@@ -196,7 +196,7 @@ namespace MyFinanceBackend.Services
 			if (currencyConversionResult == null ||
 				currencyConversionResult.ResultTypeValue != ExchangeRateResult.ResultType.Success)
 				throw new Exception("Invalid currency conversion method result.");
-			var accountCurrencyInfo = _spendsRepository.GetAccountMethodConversionInfo(destinationAccountInfo.AccountId, null,
+			var accountCurrencyInfo = await _spendsRepository.GetAccountMethodConversionInfoAsync(destinationAccountInfo.AccountId, null,
 				transferClientViewModel.UserId, destinationAccountInfo.CurrencyId);
 			var includeAccountData = accountCurrencyInfo.Where(a => a.AccountId != destinationAccountInfo.AccountId);
 			var originalAccountData = accountCurrencyInfo.FirstOrDefault(a => a.AccountId == destinationAccountInfo.AccountId);

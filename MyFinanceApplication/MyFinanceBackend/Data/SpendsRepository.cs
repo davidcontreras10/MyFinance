@@ -108,7 +108,7 @@ namespace MyFinanceBackend.Data
 			var result = ServicesUtils.CreateSpendAttributes(dataSet.Tables[0].Rows[0]);
 			return result;
 		}
-		GetAccountFinanceSummaryViewModelAsync
+		
 		public void AddSpendDependency(int spendId, int dependencySpendId)
 		{
 			var parameters = new[]
@@ -123,7 +123,7 @@ namespace MyFinanceBackend.Data
 		public async Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
 		{
 			var accountInfo = await GetAccountFinanceViewModelAsync(accountPeriodId, clientBasicAddSpend.UserId);
-			var accountCurrencyInfo = GetAccountMethodConversionInfo(accountInfo.AccountId, null,
+			var accountCurrencyInfo = await GetAccountMethodConversionInfoAsync(accountInfo.AccountId, null,
 				clientBasicAddSpend.UserId, clientBasicAddSpend.CurrencyId);
 			var originalAccountData = accountCurrencyInfo.FirstOrDefault(a => a.AccountId == accountInfo.AccountId);
 			var includeAccountData = accountCurrencyInfo.Where(a => a.AccountId != accountInfo.AccountId);
@@ -306,7 +306,7 @@ namespace MyFinanceBackend.Data
 			return saveSpends;
 		}
 
-		public IEnumerable<ClientAddSpendAccount> GetAccountMethodConversionInfo(int? accountId, int? accountPeriodId,
+		public Task<IEnumerable<ClientAddSpendAccount>> GetAccountMethodConversionInfoAsync(int? accountId, int? accountPeriodId,
 			string userId, int currencyId)
 		{
 
@@ -355,7 +355,7 @@ namespace MyFinanceBackend.Data
 
 			var list = ServicesUtils.CreateGenericList(resultSet.Tables[0],
 				ServicesUtils.CreateClientAddSpendAccount);
-			return list;
+			return Task.FromResult(list);
 		}
 
 		public IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId)

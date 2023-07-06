@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyFinanceBackend.Data;
 using MyFinanceModel;
+using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -16,16 +17,23 @@ namespace MyFinanceWebApiCore.Controllers
 	public class TestsController : BaseApiController
 	{
 		private readonly IAccountRepository _accountRepository;
+		private readonly ISpendsRepository _spendsRepository;
 
-		public TestsController(IAccountRepository accountRepository)
+		public TestsController(IAccountRepository accountRepository, ISpendsRepository spendsRepository)
 		{
 			_accountRepository = accountRepository;
+			_spendsRepository = spendsRepository;
 		}
 
 		[HttpGet]
-		public async Task<IEnumerable<BankAccountPeriodBasicId>> TestGetEndpoint([FromQuery]string userId)
+		public async Task<IEnumerable<ClientAddSpendAccount>> TestGetEndpoint(
+			[FromQuery]string userId, 
+			[FromQuery] int? accountId, 
+			[FromQuery] int? accountPeriodId, 
+			[FromQuery] int currencyI
+			)
 		{
-			return await _accountRepository.GetBankSummaryAccountsPeriodByUserIdAsync(userId, DateTime.Now);
+			return await _spendsRepository.GetAccountMethodConversionInfoAsync(accountId, accountPeriodId, userId, currencyI);
 		}
 
 		[HttpPost]

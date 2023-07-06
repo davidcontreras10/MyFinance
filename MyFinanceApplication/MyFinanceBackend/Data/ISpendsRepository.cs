@@ -22,7 +22,7 @@ namespace MyFinanceBackend.Data
         Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
 		IEnumerable<SavedSpend> GetSavedSpends(int spendId);
         Task<IEnumerable<SpendItemModified>> EditSpendAsync(FinanceSpend financeSpend);
-        IEnumerable<ClientAddSpendAccount> GetAccountMethodConversionInfo(int? accountId, int? accountPeriodId,
+        Task<IEnumerable<ClientAddSpendAccount>> GetAccountMethodConversionInfoAsync(int? accountId, int? accountPeriodId,
             string userId, int currencyId);
         Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
         IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId);

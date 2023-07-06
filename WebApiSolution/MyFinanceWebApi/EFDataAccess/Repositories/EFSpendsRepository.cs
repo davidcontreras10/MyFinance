@@ -143,9 +143,125 @@ namespace EFDataAccess.Repositories
 			return res;
 		}
 
-		public IEnumerable<ClientAddSpendAccount> GetAccountMethodConversionInfo(int? accountId, int? accountPeriodId, string userId, int currencyId)
+		public async Task<IEnumerable<ClientAddSpendAccount>> GetAccountMethodConversionInfoAsync(int? accountId, int? accountPeriodId, string userId, int currencyId)
 		{
-			throw new NotImplementedException();
+			if (string.IsNullOrEmpty(userId))
+			{
+				throw new ArgumentNullException(nameof(userId));
+			}
+
+			if (currencyId == 0)
+			{
+				throw new ArgumentNullException(nameof(currencyId));
+			}
+
+			ValidateEitherOrAccountIdValues(accountId, accountPeriodId);
+			if (accountId == null || accountId == 0)
+			{
+				accountId = await Context.AccountPeriod
+					.Where(accp => accp.AccountPeriodId == accountPeriodId)
+					.Select(accp => accp.AccountId)
+					.FirstAsync();
+			}
+
+			var account = await Context.Account.AsNoTracking()
+				.Where(acc => acc.AccountId == accountId)
+				.Include(acc => acc.AccountIncludeAccount)
+					.ThenInclude(acci => acci.AccountIncludeNavigation)
+				.Include(acc => acc.AccountIncludeAccount)
+					.ThenInclude(acci => acci.CurrencyConverterMethod)
+						.ThenInclude(acci => acci.CurrencyConverter)
+				.FirstAsync();
+			var accountIncludeData = account.AccountIncludeAccount;
+			var applicableCcms = await Context.CurrencyConverterMethod.AsNoTracking()
+				.Include(ccm => ccm.CurrencyConverter)
+				.Where(ccm => ccm.CurrencyConverter.CurrencyIdOne == currencyId)
+				.ToListAsync();
+			var accountIncludeItems = accountIncludeData.Select(acci => new
+			{
+				DestinationAccount = acci.AccountIncludeNavigation,
+				CurrencyConverterMethod = acci.CurrencyConverterMethod
+			}).ToList();
+			accountIncludeItems.Add(new
+			{
+				DestinationAccount = account,
+				CurrencyConverterMethod = (CurrencyConverterMethod)null
+			});
+
+			var clientAddSpendAccounts = new List<ClientAddSpendAccount>();
+			foreach (var accItem in accountIncludeItems)
+			{
+				if (accItem.DestinationAccount.CurrencyId == currencyId)
+				{
+					var defaultccm = applicableCcms.FirstOrDefault(ccm =>
+					ccm.CurrencyConverter.CurrencyIdOne == currencyId
+					&& ccm.IsDefault != null && ccm.IsDefault.Value);
+					if (defaultccm == null)
+					{
+						throw new Exception($"Default ccm for {currencyId} does not exist");
+					}
+
+					clientAddSpendAccounts.Add(new ClientAddSpendAccount
+					{
+						AccountId = accItem.DestinationAccount.AccountId,
+						ConvertionMethodId = defaultccm.CurrencyConverterId
+					});
+
+					continue;
+				}
+
+				var currencyConverter = accItem.CurrencyConverterMethod?.CurrencyConverter;
+				if (currencyConverter != null
+					&& currencyConverter.CurrencyIdOne == currencyId
+					&& currencyConverter.CurrencyIdTwo == accItem.DestinationAccount.CurrencyId)
+				{
+					clientAddSpendAccounts.Add(new ClientAddSpendAccount
+					{
+						AccountId = accItem.DestinationAccount.AccountId,
+						ConvertionMethodId = accItem.CurrencyConverterMethod.CurrencyConverterMethodId
+					});
+
+					continue;
+				}
+
+				var itemApplicableCcms = applicableCcms.Where(ccm =>
+					ccm.CurrencyConverter.CurrencyIdTwo == accItem.DestinationAccount.CurrencyId);
+				if (!itemApplicableCcms.Any())
+				{
+					throw new Exception($"Unable to convert from ${currencyId} to {accItem.DestinationAccount.CurrencyId}");
+				}
+
+				var selectedCcm = Validation.IsNotNullOrDefault(accItem.DestinationAccount.FinancialEntityId)
+					? applicableCcms.FirstOrDefault(ccm => 
+						ccm.FinancialEntityId == accItem.DestinationAccount.FinancialEntityId
+						&& ccm.CurrencyConverter.CurrencyIdTwo == accItem.DestinationAccount.CurrencyId)
+					: null;
+				if (selectedCcm != null)
+				{
+					clientAddSpendAccounts.Add(new ClientAddSpendAccount
+					{
+						AccountId = accItem.DestinationAccount.AccountId,
+						ConvertionMethodId = selectedCcm.CurrencyConverterMethodId
+					});
+
+					continue;
+				}
+
+				selectedCcm = applicableCcms.FirstOrDefault(ccm =>
+						ccm.CurrencyConverter.CurrencyIdTwo == accItem.DestinationAccount.CurrencyId);
+				if(selectedCcm == null)
+				{
+					throw new Exception($"Unable to convert from ${currencyId} to {accItem.DestinationAccount.CurrencyId}");
+				}
+
+				clientAddSpendAccounts.Add(new ClientAddSpendAccount
+				{
+					AccountId = accItem.DestinationAccount.AccountId,
+					ConvertionMethodId = selectedCcm.CurrencyConverterMethodId
+				});
+			}
+
+			return clientAddSpendAccounts;
 		}
 
 		public async Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray)
@@ -206,6 +322,22 @@ namespace EFDataAccess.Repositories
 
 		#endregion
 
+		private void ValidateEitherOrAccountIdValues(int? id1, int? id2)
+		{
+
+			if ((id1 == null || id1 == 0) && (id2 == null || id2 == 0))
+			{
+				throw new AggregateException(new ArgumentException(@"Both parameters cannot be empty",
+					nameof(id1)));
+			}
+
+			if ((id1 != null && id1 != 0) && (id2 != null && id2 != 0))
+			{
+				throw new AggregateException(new ArgumentException(@"Only one parameters can be specified",
+					nameof(id1)));
+			}
+		}
+
 		private async Task<IReadOnlyCollection<AccountFinanceViewModel>> GetAccountFinanceViewModelAsync(
 			IReadOnlyCollection<ClientAccountFinanceViewModel> requestItems,
 			DateTime? currentDate
@@ -219,21 +351,21 @@ namespace EFDataAccess.Repositories
 			var requiresLoan = requestItems.Any(r => r.LoanSpends);
 			var accountPeriodIds = requestItems.Select(accp => accp.AccountPeriodId);
 			var infoIds = await Context.AccountPeriod.AsNoTracking()
-				.Where(acc=>accountPeriodIds.Contains(acc.AccountPeriodId))
+				.Where(acc => accountPeriodIds.Contains(acc.AccountPeriodId))
 				.Select(accp => new { accp.AccountId, accp.AccountPeriodId })
 				.ToListAsync();
 			var accountIds = infoIds.Select(acc => acc.AccountId);
 			IQueryable<Models.Account> query = Context.Account.AsNoTracking()
 				.Where(acc => accountIds.Contains(acc.AccountId))
-				.Include(acc=> acc.Currency)
+				.Include(acc => acc.Currency)
 				.Include(acc => acc.AccountPeriod)
 					.ThenInclude(accp => accp.SpendOnPeriod)
 						.ThenInclude(sop => sop.Spend)
 							.ThenInclude(sp => sp.AmountCurrency)
-                .Include(acc => acc.AccountPeriod)
-                    .ThenInclude(accp => accp.SpendOnPeriod)
-                        .ThenInclude(sop => sop.Spend)
-                            .ThenInclude(sp => sp.SpendType);
+				.Include(acc => acc.AccountPeriod)
+					.ThenInclude(accp => accp.SpendOnPeriod)
+						.ThenInclude(sop => sop.Spend)
+							.ThenInclude(sp => sp.SpendType);
 			if (requiresLoan)
 			{
 				query = query
@@ -252,7 +384,7 @@ namespace EFDataAccess.Repositories
 				var requestParams = requestItems.First(r => r.AccountPeriodId == selectedAccountPeriod.AccountPeriodId);
 
 				var currentAccountPeriod = AccountHelpers.GetCurrentAccountPeriod(currentDate, account);
-				var periodsSumResult = SumPeriods(account.AccountPeriod, requestParams, 
+				var periodsSumResult = SumPeriods(account.AccountPeriod, requestParams,
 					currentAccountPeriod?.AccountPeriodId, selectedAccountPeriod.AccountPeriodId);
 				var periodBudget = selectedAccountPeriod.Budget ?? 0;
 				var viewModel = new AccountFinanceViewModel
@@ -287,7 +419,7 @@ namespace EFDataAccess.Repositories
 			)
 		{
 			var sumResult = new AccountPeriodsSumRes();
-			if(accountPeriods == null  || !accountPeriods.Any())
+			if (accountPeriods == null || !accountPeriods.Any())
 			{
 				return sumResult;
 			}
@@ -413,7 +545,7 @@ namespace EFDataAccess.Repositories
 			public double CurrentIncludedBudgetSum { get; set; }
 
 			public TrxSumResult SelectedPeriodSum { get; set; } = new TrxSumResult();
-        }
+		}
 
 		private class TrxSumResult
 		{
