@@ -122,11 +122,12 @@ namespace MyFinanceBackend.Data
 
 		public async Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
 		{
-			var accountInfo = await GetAccountFinanceViewModelAsync(accountPeriodId, clientBasicAddSpend.UserId);
-			var accountCurrencyInfo = await GetAccountMethodConversionInfoAsync(accountInfo.AccountId, null,
+			var accounts = GetAccountPeriodBasicInfo(new[] { accountPeriodId });
+			var accountId = accounts.First().AccountId;
+			var accountCurrencyInfo = await GetAccountMethodConversionInfoAsync(accountId, null,
 				clientBasicAddSpend.UserId, clientBasicAddSpend.CurrencyId);
-			var originalAccountData = accountCurrencyInfo.FirstOrDefault(a => a.AccountId == accountInfo.AccountId);
-			var includeAccountData = accountCurrencyInfo.Where(a => a.AccountId != accountInfo.AccountId);
+			var originalAccountData = accountCurrencyInfo.FirstOrDefault(a => a.AccountId == accountId);
+			var includeAccountData = accountCurrencyInfo.Where(a => a.AccountId != accountId);
 			var clientAddSpendModel = new ClientAddSpendModel
 			{
 				Amount = clientBasicAddSpend.Amount,
@@ -145,7 +146,7 @@ namespace MyFinanceBackend.Data
 			return clientAddSpendModel;
 		}
 
-		public IEnumerable<SpendItemModified> DeleteSpend(string userId, int spendId)
+		public Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId)
 		{
 			if (string.IsNullOrEmpty(userId) || spendId == 0)
 			{
@@ -162,7 +163,8 @@ namespace MyFinanceBackend.Data
 				};
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_DELETE, parameters);
-			return ServicesUtils.CreateSpendAccountAffected(dataSet);
+			var res = ServicesUtils.CreateSpendAccountAffected(dataSet);
+			return Task.FromResult(res);
 		}
 
 		public DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId)
@@ -376,6 +378,34 @@ namespace MyFinanceBackend.Data
 			if (dataSet == null || dataSet.Tables.Count < 0)
 				return new CurrencyViewModel[] { };
 			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateCurrencyViewModel);
+		}
+
+		private IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds)
+		{
+			if (accountPeriodIds == null)
+			{
+				throw new ArgumentNullException(nameof(accountPeriodIds));
+			}
+
+			if (!accountPeriodIds.Any())
+			{
+				return new AccountPeriodBasicInfo[] { };
+			}
+
+			var idsDataTable = ServicesUtils.CreateIntDataTable(accountPeriodIds);
+			var parameters = new[]
+			{
+				new SqlParameter(DatabaseConstants.PAR_ACCOUNT_PERIOD_IDS,idsDataTable)
+			};
+
+			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_BASIC_ACCOUNT_PERIOD_LIST, parameters);
+			if (dataSet == null || dataSet.Tables.Count == 0)
+			{
+				return new AccountPeriodBasicInfo[0];
+			}
+
+			var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountPeriodBasicInfo);
+			return result;
 		}
 
 		void ITransactional.BeginTransaction()

@@ -91,9 +91,10 @@ namespace EFDataAccess.Repositories
 			return modifiedAccs;
 		}
 
-		public Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
+		public async Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
 		{
-			throw new NotImplementedException();
+			var clientAddSpendModel = await CreateClientAddSpendModelAsync(clientBasicAddSpend, accountPeriodId);
+			return await AddSpendAsync(clientAddSpendModel);
 		}
 
 		public void AddSpendDependency(int spendId, int dependencySpendId)
@@ -101,13 +102,49 @@ namespace EFDataAccess.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
+		public async Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
 		{
-			throw new NotImplementedException();
+			var accountIds = await Context.AccountPeriod
+				.Where(accp => accp.AccountPeriodId == accountPeriodId)
+				.Select(accp => accp.AccountId)
+				.ToListAsync();
+			var accountId = accountIds.First() ?? 0;
+			if(accountId == 0)
+			{
+				throw new Exception($"No account for period {accountPeriodId}");
+			}
+
+			var accountCurrencyInfo = await GetAccountMethodConversionInfoAsync(accountId, null,
+				clientBasicAddSpend.UserId, clientBasicAddSpend.CurrencyId);
+			var originalAccountData = accountCurrencyInfo.FirstOrDefault(a => a.AccountId == accountId);
+			var includeAccountData = accountCurrencyInfo.Where(a => a.AccountId != accountId);
+			var clientAddSpendModel = new ClientAddSpendModel
+			{
+				Amount = clientBasicAddSpend.Amount,
+				Description = clientBasicAddSpend.Description,
+				CurrencyId = clientBasicAddSpend.CurrencyId,
+				SpendTypeId = clientBasicAddSpend.SpendTypeId,
+				SpendDate = clientBasicAddSpend.SpendDate,
+				UserId = clientBasicAddSpend.UserId,
+				OriginalAccountData = originalAccountData,
+				IncludedAccounts = includeAccountData,
+				IsPending = clientBasicAddSpend.IsPending,
+				AmountTypeId = clientBasicAddSpend.AmountTypeId,
+				AmountType = clientBasicAddSpend.AmountType
+			};
+
+			return clientAddSpendModel;
 		}
 
-		public IEnumerable<SpendItemModified> DeleteSpend(string userId, int spendId)
+		public async Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId)
 		{
+			var existsInLoan = await Context.LoanRecord
+				.Where(lr => lr.SpendId == spendId).AnyAsync();
+			if (existsInLoan)
+			{
+				throw new Exception("Not allowed to delete loan record spend");
+			}
+
 			throw new NotImplementedException();
 		}
 

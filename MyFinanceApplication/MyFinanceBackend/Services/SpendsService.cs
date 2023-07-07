@@ -105,9 +105,9 @@ namespace MyFinanceBackend.Services
 			return result;
 		}
 
-		public IEnumerable<SpendItemModified> DeleteSpend(string userId, int spendId)
+		public async Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId)
 		{
-			var result = _spendsRepository.DeleteSpend(userId, spendId);
+			var result = await _spendsRepository.DeleteSpendAsync(userId, spendId);
 			return result;
 		}
 
