@@ -13,5 +13,7 @@ namespace EFDataAccess.Models
         public int DependencySpendId { get; set; }
 
         public virtual Spend Spend { get; set; }
-    }
+
+        public virtual Spend DependencySpend { get; set; }
+	}
 }

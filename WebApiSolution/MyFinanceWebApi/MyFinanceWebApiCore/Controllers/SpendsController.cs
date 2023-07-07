@@ -112,10 +112,10 @@ namespace MyFinanceWebApiCore.Controllers
 		}
 
 		[HttpDelete]
-		public IEnumerable<ItemModified> DeleteSpend(int spendId)
+		public async Task<IEnumerable<ItemModified>> DeleteSpend(int spendId)
 		{
 			var userId = GetUserId();
-			var itemModifiedList = _spendsService.DeleteSpend(userId, spendId);
+			var itemModifiedList = await _spendsService.DeleteSpendAsync(userId, spendId);
 			return itemModifiedList;
 		}
 
