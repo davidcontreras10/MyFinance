@@ -109,7 +109,7 @@ namespace EFDataAccess.Repositories
 				.Select(accp => accp.AccountId)
 				.ToListAsync();
 			var accountId = accountIds.First() ?? 0;
-			if(accountId == 0)
+			if (accountId == 0)
 			{
 				throw new Exception($"No account for period {accountPeriodId}");
 			}
@@ -138,12 +138,7 @@ namespace EFDataAccess.Repositories
 
 		public async Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId)
 		{
-			var existsInLoan = await Context.LoanRecord
-				.Where(lr => lr.SpendId == spendId).AnyAsync();
-			if (existsInLoan)
-			{
-				throw new Exception("Not allowed to delete loan record spend");
-			}
+			await ValidateSpendIdInLoanAsync(spendId);
 
 			throw new NotImplementedException();
 		}
@@ -269,7 +264,7 @@ namespace EFDataAccess.Repositories
 				}
 
 				var selectedCcm = Validation.IsNotNullOrDefault(accItem.DestinationAccount.FinancialEntityId)
-					? applicableCcms.FirstOrDefault(ccm => 
+					? applicableCcms.FirstOrDefault(ccm =>
 						ccm.FinancialEntityId == accItem.DestinationAccount.FinancialEntityId
 						&& ccm.CurrencyConverter.CurrencyIdTwo == accItem.DestinationAccount.CurrencyId)
 					: null;
@@ -286,7 +281,7 @@ namespace EFDataAccess.Repositories
 
 				selectedCcm = applicableCcms.FirstOrDefault(ccm =>
 						ccm.CurrencyConverter.CurrencyIdTwo == accItem.DestinationAccount.CurrencyId);
-				if(selectedCcm == null)
+				if (selectedCcm == null)
 				{
 					throw new Exception($"Unable to convert from ${currencyId} to {accItem.DestinationAccount.CurrencyId}");
 				}
@@ -358,6 +353,24 @@ namespace EFDataAccess.Repositories
 		}
 
 		#endregion
+
+		private async Task ValidateSpendIdInLoanAsync(int spendId)
+		{
+			var existsInLoan = await Context.LoanRecord
+				.Where(lr => lr.SpendId == spendId).AnyAsync();
+			if (existsInLoan)
+			{
+				throw new Exception("Not allowed to delete loan record spend");
+			}
+
+			if (await Context.SpendDependencies
+				.Include(spd => spd.Spend)
+					.ThenInclude(sp => sp.LoanRecord)
+				.AnyAsync(spd => spd.DependencySpendId == spendId && spd.Spend.LoanRecord != null))
+			{
+				throw new Exception("Not allowed to delete loan record spend");
+			}
+		}
 
 		private void ValidateEitherOrAccountIdValues(int? id1, int? id2)
 		{
