@@ -692,7 +692,7 @@ namespace EFDataAccess.Models
 
 			modelBuilder.Entity<TransferRecord>(entity =>
 			{
-				entity.HasNoKey();
+				entity.HasKey(e => new { e.TransferRecordId, e.SpendId });
 
 				entity.HasIndex(e => new { e.TransferRecordId, e.SpendId })
 					.HasName("ClusteredIndex-20210912-192222")

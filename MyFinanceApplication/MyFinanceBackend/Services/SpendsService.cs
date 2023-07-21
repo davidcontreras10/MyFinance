@@ -43,7 +43,7 @@ namespace MyFinanceBackend.Services
 			{
 				throw new ArgumentException(nameof(applicationModule));
 			}
-
+				
 			var spendAttributes = _spendsRepository.GetSpendAttributes(spendId);
 			var applicationResource = ApplicationResources.Spends;
 			var resourcesAccessResponse = _resourceAccessRepository.GetResourceAccessReport(applicationResourceId: (int)applicationResource,

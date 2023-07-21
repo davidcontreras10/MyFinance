@@ -11,8 +11,10 @@ using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Spend = EFDataAccess.Models.Spend;
 
 namespace EFDataAccess.Repositories
 {
@@ -138,9 +140,45 @@ namespace EFDataAccess.Repositories
 
 		public async Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId)
 		{
-			await ValidateSpendIdInLoanAsync(spendId);
+			try
+			{
+				await ValidateSpendIdInLoanAsync(spendId);
+				var spendsToDelete = new List<Spend>
+			{
+				await Context.Spend.Where(sp => sp.SpendId == spendId).FirstAsync()
+			};
 
-			throw new NotImplementedException();
+				var spendDependencies = await GetSpendDependenciesAsync(spendId);
+				var spendIds = new List<int>()
+			{
+				spendId
+			};
+
+				spendIds.AddRange(spendDependencies.Select(sp => sp.SpendId));
+				var affectedAccounts = await Context.SpendOnPeriod.AsNoTracking()
+					.Where(sop => spendIds.Contains(sop.SpendId))
+					.Include(sop => sop.AccountPeriod)
+					.Select(sop => new SpendItemModified
+					{
+						SpendId = sop.SpendId,
+						AccountId = sop.AccountPeriod.AccountId ?? 0,
+						IsModified = true
+					})
+					.ToArrayAsync();
+				Context.LoanSpend.RemoveWhere(x => spendIds.Contains(x.SpendId));
+				Context.SpendDependencies.RemoveWhere(x => spendIds.Contains(x.SpendId));
+				Context.TransferRecord.RemoveWhere(x => spendIds.Contains(x.SpendId));
+				Context.SpendOnPeriod.RemoveWhere(x => spendIds.Contains(x.SpendId));
+				Context.Spend.RemoveWhere(x => spendIds.Contains(x.SpendId));
+				await Context.SaveChangesAsync();
+				return affectedAccounts;
+			}
+			catch(Exception ex)
+			{
+				Debug.WriteLine(ex);
+				throw;
+			}
+
 		}
 
 		public IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model)
@@ -353,6 +391,74 @@ namespace EFDataAccess.Repositories
 		}
 
 		#endregion
+
+		private async Task<IReadOnlyCollection<Spend>> GetSpendDependenciesAsync(int spendId)
+		{
+			var dependencies = new List<Spend>();
+			var trasnferId = await Context.TransferRecord.AsNoTracking()
+				.Where(tr => tr.SpendId == spendId)
+				.Select(tr => tr.TransferRecordId)
+				.FirstOrDefaultAsync();
+			if (trasnferId > 0)
+			{
+				dependencies.AddRange(
+					await Context.TransferRecord.AsNoTracking()
+						.Where(t => t.TransferRecordId == trasnferId)
+						.Select(t => t.Spend)
+						.Where(sp => sp.SpendId != spendId)
+						.ToListAsync()
+					);
+			}
+
+			var loanId = await Context.LoanRecord.AsNoTracking()
+				.Where(lr => lr.SpendId == spendId)
+				.Select(lr => lr.LoanRecordId)
+				.FirstOrDefaultAsync();
+			if (loanId > 0)
+			{
+				var loanTrxs = await Context.LoanSpend.AsNoTracking()
+					.Where(ls => ls.LoanRecordId == loanId)
+					.Include(ls => ls.Spend)
+					.Select(ls => ls.Spend)
+					.ToListAsync();
+				dependencies.AddRange(loanTrxs);
+			}
+
+			var allEvaluate = await Context.Spend.AsNoTracking()
+				.Where(sp => sp.SpendId == spendId)
+				.ToListAsync();
+			allEvaluate.AddRange(dependencies);
+			dependencies.AddRange(await GetDependenciesRecursivleyAsync(allEvaluate));
+			return dependencies;
+		}
+
+		private async Task<IReadOnlyCollection<Spend>> GetDependenciesRecursivleyAsync(IReadOnlyCollection<Spend> spends)
+		{
+			var resultList = new List<Spend>();
+			var evaluateList = spends.ToList();
+			while (evaluateList.Any())
+			{
+				var evaluateElement = evaluateList.First();
+				evaluateList.Remove(evaluateElement);
+				var firstLevelDeps = await GetFirstLevelDependenciesAsync(evaluateElement.SpendId);
+				if (firstLevelDeps != null && firstLevelDeps.Any())
+				{
+					evaluateList.AddRange(firstLevelDeps);
+					resultList.AddRange(firstLevelDeps);
+				}
+			}
+
+			return resultList;
+		}
+
+		private async Task<IReadOnlyCollection<Spend>> GetFirstLevelDependenciesAsync(int spendId)
+		{
+			return await Context.SpendDependencies.AsNoTracking()
+				.Where(sd => sd.SpendId == spendId)
+				.Include(sd => sd.DependencySpend)
+				.Select(sd => sd.DependencySpend)
+				.ToListAsync();
+		}
 
 		private async Task ValidateSpendIdInLoanAsync(int spendId)
 		{

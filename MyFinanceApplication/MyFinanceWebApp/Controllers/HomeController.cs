@@ -319,11 +319,11 @@ namespace MyFinanceWebApp.Controllers
 				throw new ArgumentException("spendId");
 			}
 
-			var actionResult = GetDeleteSpendActionResult(spendId);
-			if(actionResult.Result != SpendActionAttributes.ActionResult.Valid)
-			{
-				throw new Exception("Unable to delete transaction");
-			}
+			//var actionResult = GetDeleteSpendActionResult(spendId);
+			//if(actionResult.Result != SpendActionAttributes.ActionResult.Valid)
+			//{
+			//	throw new Exception("Unable to delete transaction");
+			//}
 
             var authToken = GetUserToken();
 			var itemsModified = SpendService.DeleteSpend(authToken, spendId);
