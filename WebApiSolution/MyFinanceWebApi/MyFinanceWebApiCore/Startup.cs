@@ -36,9 +36,9 @@ namespace MyFinanceWebApiCore
 		{
 			services.AddCors(options =>
 			{
-				options.AddDefaultPolicy(builder =>
+				options.AddPolicy("CorsPolicy", builder =>
 				{
-					builder.AllowAnyOrigin()
+					builder.WithOrigins("https://icy-sea-0f0fb8a10.2.azurestaticapps.net", "http://localhost:4350", "https://localhost:4350")
 						   .AllowAnyHeader()
 						   .AllowAnyMethod()
 						   .AllowCredentials()
@@ -98,7 +98,7 @@ namespace MyFinanceWebApiCore
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
-			app.UseCors();
+			app.UseCors("CorsPolicy");
 
 			app.UseMiddleware<AuthenticationMiddleware>();
 
