@@ -85,7 +85,7 @@ namespace MyFinanceBackend.Services
 				var sourceAddSpendId = sourceAddSpendResponse.First().SpendId;
 				var destinationAddSpendResponse = await _spendsRepository.AddSpendAsync(destinationSpendRecord, destinationAccountPeriod.AccountPeriodId);
 				var destinationAddSpendId = destinationAddSpendResponse.First().SpendId;
-				_spendsRepository.AddSpendDependency(sourceAddSpendId, destinationAddSpendId);
+				await _spendsRepository.AddSpendDependencyAsync(sourceAddSpendId, destinationAddSpendId);
 				_loanRepository.AddLoanRecord(clientLoanViewModel.UserId, sourceAddSpendId, clientLoanViewModel.LoanName);
 				var contcatedModifiedItems = ServicesUtils.SmartConcat(sourceAddSpendResponse, destinationAddSpendResponse);
 
@@ -130,7 +130,7 @@ namespace MyFinanceBackend.Services
 				var sourceSpendId = sourceSpendResponse.First().SpendId;
 				var addSpendResponse = await _spendsRepository.AddSpendAsync(clientLoanSpendViewModel, accountPeriod.AccountPeriodId);
 				var spendId = addSpendResponse.First().SpendId;
-				_spendsRepository.AddSpendDependency(sourceSpendId, spendId);
+				_spendsRepository.AddSpendDependencyAsync(sourceSpendId, spendId);
 				_loanRepository.AddLoanSpend(clientLoanSpendViewModel.UserId, spendId, clientLoanSpendViewModel.LoanRecordId);
 				if (clientLoanSpendViewModel.FullPayment)
 				{

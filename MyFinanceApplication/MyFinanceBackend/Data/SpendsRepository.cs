@@ -109,7 +109,7 @@ namespace MyFinanceBackend.Data
 			return result;
 		}
 		
-		public void AddSpendDependency(int spendId, int dependencySpendId)
+		public Task AddSpendDependencyAsync(int spendId, int dependencySpendId)
 		{
 			var parameters = new[]
 {
@@ -118,6 +118,7 @@ namespace MyFinanceBackend.Data
 			};
 
 			ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_DEPENDENCY_ADD, parameters);
+			return Task.CompletedTask;
 		}
 
 		public async Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
@@ -188,7 +189,7 @@ namespace MyFinanceBackend.Data
 					   : null;
 		}
 
-		public IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model)
+		public Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model)
 		{
 			if (model == null || model.SpendId == 0 || string.IsNullOrEmpty(model.UserId) || !model.ModifyList.Any() ||
 				model.ModifyList.Any(i => i == 0) || model.ModifyList.Any(i => !((int)i).TryParseEnum<ClientEditSpendModel.Field>(out _)))
@@ -213,7 +214,8 @@ namespace MyFinanceBackend.Data
 			};
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_EDIT, parameters);
-			return ServicesUtils.CreateSpendAccountAffected(dataSet);
+			var result = ServicesUtils.CreateSpendAccountAffected(dataSet);
+			return Task.FromResult(result);
 		}
 
 		public Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray)

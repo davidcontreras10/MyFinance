@@ -8,6 +8,7 @@ using MyFinanceBackend.Services;
 using MyFinanceBackend.ServicesExceptions;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
+using MyFinanceModel.Utilities;
 using MyFinanceModel.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -99,9 +100,9 @@ namespace EFDataAccess.Repositories
 			return await AddSpendAsync(clientAddSpendModel);
 		}
 
-		public void AddSpendDependency(int spendId, int dependencySpendId)
+		public async Task AddSpendDependencyAsync(int spendId, int dependencySpendId)
 		{
-			throw new NotImplementedException();
+			await AddSpendDependencyAsync(spendId, dependencySpendId);
 		}
 
 		public async Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId)
@@ -173,7 +174,7 @@ namespace EFDataAccess.Repositories
 				await Context.SaveChangesAsync();
 				return affectedAccounts;
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				Debug.WriteLine(ex);
 				throw;
@@ -181,9 +182,58 @@ namespace EFDataAccess.Repositories
 
 		}
 
-		public IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model)
+		public async Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model)
 		{
-			throw new NotImplementedException();
+			if (model == null || model.SpendId == 0 || string.IsNullOrEmpty(model.UserId) || !model.ModifyList.Any() ||
+				model.ModifyList.Any(i => i == 0) || model.ModifyList.Any(i => !((int)i).TryParseEnum<ClientEditSpendModel.Field>(out _)))
+				throw new Exception("Invalid parameters");
+			SpendsDataHelper.SetAmountType(model, model.ModifyList.Any(i => i == ClientEditSpendModel.Field.AmountType));
+			var spendIds = new List<int>
+			{
+				model.SpendId
+			};
+
+			var transferRecordId = await Context.TransferRecord
+				.Where(tr => tr.SpendId == model.SpendId)
+				.Select(tr => tr.TransferRecordId)
+				.FirstOrDefaultAsync();
+			if(transferRecordId > 0)
+			{
+				var transferSpendIds = await Context.TransferRecord
+					.Where(tr => tr.TransferRecordId == transferRecordId)
+					.Select(tr => tr.SpendId)
+					.ToListAsync();
+				spendIds.AddRange(transferSpendIds);
+			}
+
+			var modifySpends = await Context.Spend
+				.Where(sp => spendIds.Contains(sp.SpendId))
+				.Include(sp => sp.SpendOnPeriod)
+					.ThenInclude(sop => sop.AccountPeriod)
+				.ToListAsync();
+			var modifyList = new List<SpendItemModified>();
+			foreach (var spend in modifySpends)
+			{
+				if (model.ModifyList.Any(m => m == ClientEditSpendModel.Field.Description))
+				{
+					spend.Description = model.Description;
+				}
+
+				if (model.ModifyList.Any(m => m == ClientEditSpendModel.Field.SpendType))
+				{
+					spend.SpendTypeId = model.SpendTypeId;
+				}
+
+				modifyList.AddRange(spend.SpendOnPeriod.Select(sop => new SpendItemModified
+				{
+					AccountId = sop.AccountPeriod.AccountId ?? 0,
+					IsModified = true,
+					SpendId = sop.SpendId
+				}));
+			}
+
+			await Context.SaveChangesAsync();
+			return modifyList;
 		}
 
 		public Task<IEnumerable<SpendItemModified>> EditSpendAsync(FinanceSpend financeSpend)
@@ -391,6 +441,30 @@ namespace EFDataAccess.Repositories
 		}
 
 		#endregion
+
+		private async Task AddSpendDependencyAsync(int spendId, int dependencySpendId, bool twoWay)
+		{
+			var addItems = new List<SpendDependencies>
+			{
+				new SpendDependencies
+				{
+					DependencySpendId = dependencySpendId,
+					SpendId = spendId
+				}
+			};
+
+			if (twoWay)
+			{
+				addItems.Add(new SpendDependencies
+				{
+					DependencySpendId = spendId,
+					SpendId = dependencySpendId
+				});
+			}
+
+			await Context.SpendDependencies.AddRangeAsync(addItems);
+			await Context.SaveChangesAsync();
+		}
 
 		private async Task<IReadOnlyCollection<Spend>> GetSpendDependenciesAsync(int spendId)
 		{

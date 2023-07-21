@@ -16,7 +16,7 @@ namespace MyFinanceBackend.Data
 		Task<IEnumerable<AccountFinanceViewModel>> GetAccountFinanceViewModelAsync(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId);
 		Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId);
         DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId);
-        IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model);
+        Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model);
         Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray);
         Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel);
         Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
@@ -26,7 +26,7 @@ namespace MyFinanceBackend.Data
             string userId, int currencyId);
         Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
         IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId);
-        void AddSpendDependency(int spendId, int dependencySpendId);
+        Task AddSpendDependencyAsync(int spendId, int dependencySpendId);
         SpendActionAttributes GetSpendAttributes(int spendId);
     }
 }

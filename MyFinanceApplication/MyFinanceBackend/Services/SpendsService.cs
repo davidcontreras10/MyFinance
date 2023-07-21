@@ -117,9 +117,9 @@ namespace MyFinanceBackend.Services
 			return result;
 		}
 
-		public IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model)
+		public async Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model)
 		{
-			return _spendsRepository.EditSpend(model);
+			return await _spendsRepository.EditSpendAsync(model);
 		}
 
 		public async Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray)

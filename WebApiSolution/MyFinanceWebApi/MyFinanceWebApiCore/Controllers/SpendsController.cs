@@ -61,7 +61,7 @@ namespace MyFinanceWebApiCore.Controllers
 		}
 
 		[HttpPatch]
-		public IEnumerable<SpendItemModified> EditSpend([FromQuery] int spendId, [FromBody] ClientEditSpendModel model)
+		public async Task<IEnumerable<SpendItemModified>> EditSpend([FromQuery] int spendId, [FromBody] ClientEditSpendModel model)
 		{
 			if(spendId < 0)
 			{
@@ -75,7 +75,7 @@ namespace MyFinanceWebApiCore.Controllers
 
 			model.SpendId = spendId;
 			model.UserId = GetUserId();
-			return _spendsService.EditSpend(model);
+			return await _spendsService.EditSpendAsync(model);
 		}
 
 		[Route("basic")]
