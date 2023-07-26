@@ -197,7 +197,7 @@ namespace EFDataAccess.Repositories
 				.Where(tr => tr.SpendId == model.SpendId)
 				.Select(tr => tr.TransferRecordId)
 				.FirstOrDefaultAsync();
-			if(transferRecordId > 0)
+			if (transferRecordId > 0)
 			{
 				var transferSpendIds = await Context.TransferRecord
 					.Where(tr => tr.TransferRecordId == transferRecordId)
@@ -236,9 +236,63 @@ namespace EFDataAccess.Repositories
 			return modifyList;
 		}
 
-		public Task<IEnumerable<SpendItemModified>> EditSpendAsync(FinanceSpend financeSpend)
+		public async Task<IEnumerable<SpendItemModified>> EditSpendAsync(FinanceSpend financeSpend)
 		{
-			throw new NotImplementedException();
+			await ValidateSpendCurrencyConvertibleValuesAsync(financeSpend);
+			if (financeSpend.OriginalAccountData == null)
+				throw new ArgumentException(@"OriginalAccountData is null", nameof(financeSpend));
+			var accountIds = SpendsDataHelper.GetInvolvedAccountIds(financeSpend);
+			var accountPeriods = Context.AccountPeriod.AsNoTracking()
+				.Where(accp => accountIds.Contains(accp.Account.AccountId)
+					&& financeSpend.SpendDate >= accp.InitialDate
+					&& financeSpend.SpendDate < accp.EndDate)
+				.Include(accp => accp.Account);
+			var accountCurrencyPairList = accountPeriods.Select(accp => new AccountCurrencyPair
+			{
+				AccountId = accp.Account.AccountId,
+				CurrencyId = accp.Account.CurrencyId ?? 0
+			});
+			var accountIncludes = await _trxExchangeService.ConvertTrxCurrencyAsync(financeSpend, accountCurrencyPairList.ToList());
+			var spend = await Context.Spend.Where(sp => sp.SpendId == financeSpend.SpendId).FirstOrDefaultAsync();
+			spend.SetPaymentDate = financeSpend.SetPaymentDate;
+			spend.SpendDate = financeSpend.SpendDate;
+			spend.IsPending = financeSpend.IsPending;
+			try
+			{
+				Context.SpendOnPeriod.RemoveWhere(sop => sop.SpendId == financeSpend.SpendId);
+
+			}
+			catch(Exception ex)
+			{
+
+			}
+			var spendOnPeriods = new List<SpendOnPeriod>();
+			var affected = new List<SpendItemModified>();
+			foreach (var accountInclude in accountIncludes)
+			{
+				var accountPeriod = accountPeriods.Single(accp => accp.Account.AccountId == accountInclude.AccountId);
+				spendOnPeriods.Add(new SpendOnPeriod
+				{
+					AccountPeriodId = accountPeriod.AccountPeriodId,
+					CurrencyConverterMethodId = accountInclude.CurrencyConverterMethodId,
+					Denominator = accountInclude.Denominator,
+					Numerator = accountInclude.Numerator,
+					IsOriginal = accountInclude.IsOriginal,
+					SpendId = spend.SpendId,
+					PendingUpdate = accountInclude.PendingUpdate
+				});
+
+				affected.Add(new SpendItemModified
+				{
+					AccountId = accountInclude.AccountId,
+					IsModified = true,
+					SpendId = spend.SpendId
+				});
+			}
+
+			await Context.SpendOnPeriod.AddRangeAsync(spendOnPeriods);
+			await Context.SaveChangesAsync();
+			return affected;
 		}
 
 		public async Task<AccountFinanceViewModel> GetAccountFinanceViewModelAsync(int accountPeriodId, string userId)
@@ -415,9 +469,36 @@ namespace EFDataAccess.Repositories
 			throw new NotImplementedException();
 		}
 
-		public IEnumerable<SavedSpend> GetSavedSpends(int spendId)
+		public async Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId)
 		{
-			throw new NotImplementedException();
+			var spends = new List<Spend>()
+			{
+				await Context.Spend.AsNoTracking()
+					.Where(sp=>sp.SpendId == spendId)
+					.Include(sp=>sp.SpendOnPeriod)
+						.ThenInclude(sop => sop.AccountPeriod)
+					.FirstAsync()
+			};
+			var trasnferId = await Context.TransferRecord.AsNoTracking()
+				.Where(tr => tr.SpendId == spendId)
+				.Select(tr => tr.TransferRecordId)
+				.FirstOrDefaultAsync();
+			if (trasnferId > 0)
+			{
+				spends.AddRange(
+					await Context.TransferRecord.AsNoTracking()
+						.Where(t => t.TransferRecordId == trasnferId)
+						.Include(t => t.Spend)
+							.ThenInclude(sp => sp.SpendOnPeriod)
+								.ThenInclude(sop => sop.AccountPeriod)
+						.Select(t => t.Spend)
+						.Where(sp => sp.SpendId != spendId)
+						.ToListAsync()
+					);
+			}
+
+			var saveSpends = spends.Select(CreateSavedSpend);
+			return saveSpends;
 		}
 
 		public SpendActionAttributes GetSpendAttributes(int spendId)
@@ -441,6 +522,45 @@ namespace EFDataAccess.Repositories
 		}
 
 		#endregion
+
+		private static SavedSpend CreateSavedSpend(Spend spend)
+		{
+			var saveSpend = new SavedSpend
+			{
+				Amount = IntExt.ToFloat(spend.OriginalAmount),
+				AmountDenominator = IntExt.ToNullFloat(spend.Denominator),
+				AmountNumerator = IntExt.ToNullFloat(spend.Numerator),
+				AmountTypeId = (TransactionTypeIds)spend.AmountTypeId,
+				CurrencyId = spend.AmountCurrencyId ?? 0,
+				Description = spend.Description,
+				IsPending = spend.IsPending,
+				SpendId = spend.SpendId,
+				IncludedAccounts = new List<ClientAddSpendAccount>(),
+				SpendDate = spend.SpendDate ?? new DateTime(),
+				SpendTypeId = spend.SpendTypeId ?? 0,
+
+			};
+
+			foreach (var spendOnPeriod in spend.SpendOnPeriod)
+			{
+				var addSpendAccount = new ClientAddSpendAccount
+				{
+					AccountId = spendOnPeriod.AccountPeriod.AccountId ?? 0,
+					ConvertionMethodId = spendOnPeriod.CurrencyConverterMethodId ?? 0
+				};
+
+				if (spendOnPeriod.IsOriginal != null && spendOnPeriod.IsOriginal.Value)
+				{
+					saveSpend.OriginalAccountData = addSpendAccount;
+				}
+				else
+				{
+					((IList<ClientAddSpendAccount>)saveSpend.IncludedAccounts).Add(addSpendAccount);
+				}
+			}
+
+			return saveSpend;
+		}
 
 		private async Task AddSpendDependencyAsync(int spendId, int dependencySpendId, bool twoWay)
 		{
@@ -764,6 +884,19 @@ namespace EFDataAccess.Repositories
 			}
 
 			return results;
+		}
+
+		private static class IntExt
+		{
+			public static float ToFloat(double? value)
+			{
+				return value != null ? (float)value.Value : 0f;
+			}
+
+			public static float? ToNullFloat(double? value)
+			{
+				return value != null ? (float)value.Value : (float?)null;
+			}
 		}
 
 		private class AccountPeriodsSumRes

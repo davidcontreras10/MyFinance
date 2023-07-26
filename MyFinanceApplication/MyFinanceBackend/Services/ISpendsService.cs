@@ -16,7 +16,7 @@ namespace MyFinanceBackend.Services
         DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId);
         Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model);
         Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray);
-        IEnumerable<SavedSpend> GetSavedSpends(int spendId);
+        Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId);
         Task<IEnumerable<SpendItemModified>> ConfirmPendingSpendAsync(int spendId, DateTime newPaymentDate);
         SpendActionResult GetSpendActionResult(int spendId, ResourceActionNames actionType, ApplicationModules applicationModule);
 	    IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId);

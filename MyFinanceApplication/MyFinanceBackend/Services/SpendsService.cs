@@ -62,9 +62,9 @@ namespace MyFinanceBackend.Services
 			return _spendsRepository.GetEditSpendViewModel(accountPeriodId, spendId, userId);
 		}
 
-		public IEnumerable<SavedSpend> GetSavedSpends(int spendId)
+		public async Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId)
 		{
-			return _spendsRepository.GetSavedSpends(spendId);
+			return await _spendsRepository.GetSavedSpendsAsync(spendId);
 		}
 
 		public async Task<IEnumerable<SpendItemModified>> AddBasicTransactionAsync(ClientBasicTrxByPeriod clientBasicTrxByPeriod, TransactionTypeIds transactionTypeId)
@@ -130,7 +130,7 @@ namespace MyFinanceBackend.Services
 
 		public async Task<IEnumerable<SpendItemModified>> ConfirmPendingSpendAsync(int spendId, DateTime newPaymentDate)
 		{
-			var spends = _spendsRepository.GetSavedSpends(spendId);
+			var spends = await _spendsRepository.GetSavedSpendsAsync(spendId);
 			if (spends == null || !spends.Any())
 			{
 				return new SpendItemModified[0];

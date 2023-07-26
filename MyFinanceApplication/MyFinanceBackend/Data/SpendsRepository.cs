@@ -301,13 +301,13 @@ namespace MyFinanceBackend.Data
 			return ServicesUtils.CreateSpendAccountAffected(dataSet);
 		}
 
-		public IEnumerable<SavedSpend> GetSavedSpends(int spendId)
+		public Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId)
 		{
 			var spendIdParameter = new SqlParameter(DatabaseConstants.PAR_SPEND_ID, spendId);
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPENDS_SAVED_LIST, spendIdParameter);
 			var resultSets = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateSavedSpend);
 			var saveSpends = CreateSavedSpendList(resultSets);
-			return saveSpends;
+			return Task.FromResult(saveSpends);
 		}
 
 		public Task<IEnumerable<ClientAddSpendAccount>> GetAccountMethodConversionInfoAsync(int? accountId, int? accountPeriodId,
