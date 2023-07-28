@@ -79,7 +79,7 @@ namespace EFDataAccess.Repositories
 
 				modifiedAccs.Add(new SpendItemModified
 				{
-					AccountId = accountPeriod.AccountPeriodId,
+					AccountId = accountPeriod.AccountId ?? 0,
 					IsModified = true
 				});
 				accountPeriod.SpendOnPeriod.Add(spendOnPeriod);
@@ -449,9 +449,45 @@ namespace EFDataAccess.Repositories
 				}).ToListAsync();
 		}
 
-		public IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId)
+		public async Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModelAsync(IEnumerable<int> accountPeriodIds, string userId)
 		{
-			throw new NotImplementedException();
+			var accountPeriods = await Context.AccountPeriod.AsNoTracking()
+				.Where(accp => accountPeriodIds.Contains(accp.AccountPeriodId))
+				.Include(accp => accp.Account)
+					.ThenInclude(acc => acc.AccountIncludeAccount)
+				.ToListAsync();
+			var userGuid = new Guid(userId);
+			var spendTypes = await Context.UserSpendType.AsNoTracking()
+				.Where(uspt => uspt.UserId == userGuid)
+				.Include(uspt => uspt.SpendType)
+				.Select(uspt => uspt.SpendType)
+				.ToListAsync();
+			var currencyConverterMethods = await Context.CurrencyConverterMethod.AsNoTracking()
+				.Include(ccm => ccm.CurrencyConverter)
+					.ThenInclude(cc => cc.CurrencyOne)
+				.ToListAsync();
+			var accountViewModels = new List<AddSpendViewModel>();
+			foreach (var accountPeriod in accountPeriods) 
+			{
+				var addSpendViewModel = new AddSpendViewModel
+				{
+					AccountId = accountPeriod.Account.AccountId,
+					AccountName = accountPeriod.Account.Name,
+					AccountPeriodId = accountPeriod.AccountPeriodId,
+					CurrencyId = accountPeriod.Account.CurrencyId ?? 0,
+					EndDate = accountPeriod.EndDate ?? new DateTime(),
+					GlobalOrder = accountPeriod.Account.Position ?? 0,
+					InitialDate = accountPeriod.InitialDate ?? new DateTime(),
+					SpendTypeViewModels = spendTypes.Select(spt => spt.ToSpendTypeViewModel(accountPeriod.Account.DefaultSpendTypeId))
+				};
+				var currencyMethods = currencyConverterMethods
+					.Where(ccm => ccm.CurrencyConverter.CurrencyIdTwo == accountPeriod.Account.CurrencyId);
+				addSpendViewModel.SupportedCurrencies = CreateCurrencyViewModelFromMethods(currencyConverterMethods, accountPeriod.Account);
+
+				accountViewModels.Add(addSpendViewModel);
+			}
+
+			return accountViewModels;
 		}
 
 		public DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId)
@@ -522,6 +558,40 @@ namespace EFDataAccess.Repositories
 		}
 
 		#endregion
+
+		private static IEnumerable<CurrencyViewModel> CreateCurrencyViewModelFromMethods(IEnumerable<CurrencyConverterMethod> currencyConverterMethods, Account account)
+		{
+			var currencies = new List<CurrencyViewModel>();
+			foreach (var ccm in currencyConverterMethods)
+			{
+				var ccmCurrency = ccm.CurrencyConverter.CurrencyOne;
+				var currency = currencies.FirstOrDefault(c => c.CurrencyId == ccm.CurrencyConverter.CurrencyIdOne);
+				if(currency == null)
+				{
+					currency = new CurrencyViewModel
+					{
+						CurrencyId = ccmCurrency.CurrencyId,
+						AccountId = account.AccountId,
+						CurrencyName = ccmCurrency.Name,
+						MethodIds = new List<MethodId>(),
+						Symbol = ccmCurrency.Symbol,
+						Isdefault = ccmCurrency.CurrencyId == account.CurrencyId
+					};
+
+					currencies.Add(currency);
+				}
+
+				var methodsList = (List<MethodId>)currency.MethodIds;
+				methodsList.Add(new MethodId
+				{
+					Id = ccm.CurrencyConverterMethodId,
+					IsDefault = ccm.IsDefault ?? false,
+					Name = ccm.Name
+				});
+			}
+
+			return currencies;
+		}
 
 		private static SavedSpend CreateSavedSpend(Spend spend)
 		{

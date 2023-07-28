@@ -178,7 +178,7 @@ namespace EFDataAccess.Repositories
 				AccountId = acc.AccountId,
 				SpendTypeViewModels = Context.UserSpendType.Where(ust => ust.UserId == userGuid)
 					.Include(x => x.SpendType)
-					.Select(x => ToSpendTypeViewModel(x.SpendType, acc.DefaultSpendTypeId)),
+					.Select(x => x.SpendType.ToSpendTypeViewModel(acc.DefaultSpendTypeId)),
 				AccountTypeViewModels = efAccountTypes.Select(acct => new AccountTypeViewModel
 				{
 					AccountTypeId = acct.AccountTypeId,
@@ -753,17 +753,6 @@ namespace EFDataAccess.Repositories
 		private int GetAccountNextId()
 		{
 			return Context.Account.Max(x => x.AccountId) + 1;
-		}
-
-		private static SpendTypeViewModel ToSpendTypeViewModel(SpendType spendType, int? defaultSpendTypeId)
-		{
-			return new SpendTypeViewModel
-			{
-				Description = spendType.Description,
-				IsDefault = defaultSpendTypeId != null && defaultSpendTypeId.Value == spendType.SpendTypeId,
-				SpendTypeId = spendType.SpendTypeId,
-				SpendTypeName = spendType.Name
-			};
 		}
 
 		private static FrontStyleData CreateFrontStyleData(string json)

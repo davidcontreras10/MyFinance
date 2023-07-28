@@ -28,7 +28,7 @@ namespace MyFinanceBackend.Data
 
 		#region Public Methods
 
-		public IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId)
+		public Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModelAsync(IEnumerable<int> accountPeriodIds, string userId)
 		{
 			var accountPeriodIdsString = ServicesUtils.CreateStringCharSeparated(accountPeriodIds);
 			var accountPeriodIdsParameter = new SqlParameter(DatabaseConstants.PAR_ACCOUNT_PERIOD_IDS, accountPeriodIdsString);
@@ -36,7 +36,8 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ADD_SPEND_VIEW_MODEL_LIST,
 				accountPeriodIdsParameter, userIdParameter);
 			var addSpendViewModel = ServicesUtils.CreateAddSpendViewModelDb(dataSet);
-			return CreateAddSpendViewModelList(addSpendViewModel);
+			var result = CreateAddSpendViewModelList(addSpendViewModel);
+			return Task.FromResult(result);
 		}
 
 		public IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId)

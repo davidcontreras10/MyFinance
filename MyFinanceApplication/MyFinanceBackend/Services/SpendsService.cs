@@ -52,9 +52,9 @@ namespace MyFinanceBackend.Services
 			return response;
 		}
 
-		public IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId)
+		public async Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModelAsync(IEnumerable<int> accountPeriodIds, string userId)
 		{
-			return _spendsRepository.GetAddSpendViewModel(accountPeriodIds, userId);
+			return await _spendsRepository.GetAddSpendViewModelAsync(accountPeriodIds, userId);
 		}
 
 		public IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId)
