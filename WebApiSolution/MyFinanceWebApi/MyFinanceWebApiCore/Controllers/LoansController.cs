@@ -77,7 +77,7 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("add")]
 		[HttpGet]
-		public AddLoanRecordViewModel GetAddLoanRecordViewModel(int accountId, DateTime dateTime)
+		public async Task<AddLoanRecordViewModel> GetAddLoanRecordViewModel(int accountId, DateTime dateTime)
 		{
 			if (accountId == 0)
 			{
@@ -85,13 +85,13 @@ namespace MyFinanceWebApiCore.Controllers
 			}
 
 			var userId = GetUserId();
-			var response = _loanService.GetAddLoanRecordViewModel(dateTime, accountId, userId);
+			var response = await _loanService.GetAddLoanRecordViewModelAsync(dateTime, accountId, userId);
 			return response;
 		}
 
 		[Route("add/payment")]
 		[HttpGet]
-		public AddLoanSpendViewModel GetAddLoanSpendViewModel(int loanRecordId)
+		public async Task<AddLoanSpendViewModel> GetAddLoanSpendViewModel(int loanRecordId)
 		{
 			if (loanRecordId == 0)
 			{
@@ -99,7 +99,7 @@ namespace MyFinanceWebApiCore.Controllers
 			}
 
 			var userId = GetUserId();
-			var response = _loanService.GetAddLoanSpendViewModel(loanRecordId, userId);
+			var response = await _loanService.GetAddLoanSpendViewModelAsync(loanRecordId, userId);
 			return response;
 		}
 

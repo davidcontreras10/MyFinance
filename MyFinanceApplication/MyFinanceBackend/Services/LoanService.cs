@@ -15,11 +15,11 @@ namespace MyFinanceBackend.Services
 	{
 		Task<IEnumerable<SpendItemModified>> CreateLoanAsync(ClientLoanViewModel clientLoanViewModel);
 		Task<IEnumerable<SpendItemModified>> AddLoanSpendAsync(ClientLoanSpendViewModel clientLoanSpendViewModel);
-		AddLoanRecordViewModel GetAddLoanRecordViewModel(DateTime dateTime, int accountId, string userId);
+		Task<AddLoanRecordViewModel> GetAddLoanRecordViewModelAsync(DateTime dateTime, int accountId, string userId);
 		IEnumerable<LoanReportViewModel> GetLoanDetailRecordsByIds(IEnumerable<int> loanRecordIds);
 		IEnumerable<LoanReportViewModel> GetLoanDetailRecordsByCriteriaId(string userId, int loanRecordStatusId, LoanQueryCriteria criteriaId = LoanQueryCriteria.Invalid,
 			IEnumerable<int> accountPeriodIds = null, IEnumerable<int> accountIds = null);
-		AddLoanSpendViewModel GetAddLoanSpendViewModel(int loanRecordId, string userId);
+		Task<AddLoanSpendViewModel> GetAddLoanSpendViewModelAsync(int loanRecordId, string userId);
 		Task<IEnumerable<AccountDetailsViewModel>> GetSupportedLoanAccountAsync(string userId);
 		Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountId, DateTime dateTime,
 			string userId, int currencyId);
@@ -130,7 +130,7 @@ namespace MyFinanceBackend.Services
 				var sourceSpendId = sourceSpendResponse.First().SpendId;
 				var addSpendResponse = await _spendsRepository.AddSpendAsync(clientLoanSpendViewModel, accountPeriod.AccountPeriodId);
 				var spendId = addSpendResponse.First().SpendId;
-				_spendsRepository.AddSpendDependencyAsync(sourceSpendId, spendId);
+				await _spendsRepository.AddSpendDependencyAsync(sourceSpendId, spendId);
 				_loanRepository.AddLoanSpend(clientLoanSpendViewModel.UserId, spendId, clientLoanSpendViewModel.LoanRecordId);
 				if (clientLoanSpendViewModel.FullPayment)
 				{
@@ -177,7 +177,7 @@ namespace MyFinanceBackend.Services
 			return _loanRepository.GetLoanDetailRecordsByIds(loanRecordIds);
 		}
 
-		public AddLoanRecordViewModel GetAddLoanRecordViewModel(DateTime dateTime, int accountId, string userId)
+		public async Task<AddLoanRecordViewModel> GetAddLoanRecordViewModelAsync(DateTime dateTime, int accountId, string userId)
 		{
 			if (accountId == 0)
 			{
@@ -185,7 +185,7 @@ namespace MyFinanceBackend.Services
 			}
 
 			var accountPeriodInfo = _accountRepository.GetAccountPeriodInfoByAccountIdDateTime(accountId, dateTime);
-			var currencies = _spendsRepository.GetPossibleCurrencies(accountPeriodInfo.AccountId, userId);
+			var currencies = await _spendsRepository.GetPossibleCurrenciesAsync(accountPeriodInfo.AccountId, userId);
 			var result = new AddLoanRecordViewModel
 			{
 				PossibleCurrencyViewModels = currencies,
@@ -195,7 +195,7 @@ namespace MyFinanceBackend.Services
 			return result;
 		}
 
-		public AddLoanSpendViewModel GetAddLoanSpendViewModel(int loanRecordId, string userId)
+		public async Task<AddLoanSpendViewModel> GetAddLoanSpendViewModelAsync(int loanRecordId, string userId)
 		{
 			if (loanRecordId == 0)
 			{
@@ -204,7 +204,7 @@ namespace MyFinanceBackend.Services
 
 			var loanRecord = _loanRepository.GetLoanDetailRecordsByIds(new[] { loanRecordId }).First();
 			var accountInfo = _accountRepository.GetAccountBasicInfoByAccountId(new[] {loanRecord.AccountId}).First();
-			var currencies = _spendsRepository.GetPossibleCurrencies(accountInfo.AccountId, userId);
+			var currencies = await _spendsRepository.GetPossibleCurrenciesAsync(accountInfo.AccountId, userId);
 			var result = new AddLoanSpendViewModel
 			{
 				PossibleCurrencyViewModels = currencies,

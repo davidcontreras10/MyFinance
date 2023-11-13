@@ -343,7 +343,7 @@ namespace MyFinanceBackend.Data
 			return Task.FromResult(list);
 		}
 
-		public IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId)
+		public Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrenciesAsync(int accountId, string userId)
 		{
 			if (accountId == 0)
 				throw new ArgumentException(@"Value cannot be zero", nameof(accountId));
@@ -359,8 +359,12 @@ namespace MyFinanceBackend.Data
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_POSSIBLE_CURRENCIES, parameters);
 			if (dataSet == null || dataSet.Tables.Count < 0)
-				return new CurrencyViewModel[] { };
-			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateCurrencyViewModel);
+			{
+				IEnumerable<CurrencyViewModel> emptyResult = Array.Empty<CurrencyViewModel>();
+				return Task.FromResult(emptyResult);
+			}
+
+			return Task.FromResult(ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateCurrencyViewModel));
 		}
 
 		private IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds)

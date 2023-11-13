@@ -31,10 +31,10 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("possibleCurrencies")]
 		[HttpGet]
-		public IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId)
+		public async Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrencies(int accountId)
 		{
 			var userId = GetUserId();
-			return _transferService.GetPossibleCurrencies(accountId, userId);
+			return await _transferService.GetPossibleCurrenciesAsync(accountId, userId);
 		}
 
 		[Route("possibleDestination")]

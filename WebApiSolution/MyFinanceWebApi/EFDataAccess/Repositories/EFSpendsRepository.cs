@@ -560,7 +560,7 @@ namespace EFDataAccess.Repositories
 			};
 		}
 
-		public IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId)
+		public Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrenciesAsync(int accountId, string userId)
 		{
 			throw new NotImplementedException();
 		}

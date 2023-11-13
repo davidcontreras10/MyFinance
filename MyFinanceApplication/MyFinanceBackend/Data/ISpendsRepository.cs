@@ -24,7 +24,7 @@ namespace MyFinanceBackend.Data
         Task<IEnumerable<ClientAddSpendAccount>> GetAccountMethodConversionInfoAsync(int? accountId, int? accountPeriodId,
             string userId, int currencyId);
         Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
-        IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId);
+        Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrenciesAsync(int accountId, string userId);
         Task AddSpendDependencyAsync(int spendId, int dependencySpendId);
         SpendActionAttributes GetSpendAttributes(int spendId);
     }

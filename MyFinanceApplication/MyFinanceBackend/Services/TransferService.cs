@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using MyFinanceBackend.ServicesExceptions;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -57,7 +57,7 @@ namespace MyFinanceBackend.Services
 			return accounts;
 		}
 
-		public IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId)
+		public async Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrenciesAsync(int accountId, string userId)
 		{
 			if (accountId == 0)
 				throw new ArgumentException(@"Value cannot be zero", nameof(accountId));
@@ -65,7 +65,7 @@ namespace MyFinanceBackend.Services
 			if (string.IsNullOrEmpty(userId))
 				throw new ArgumentNullException(nameof(userId));
 
-			var result = _spendsRepository.GetPossibleCurrencies(accountId, userId);
+			var result = await _spendsRepository.GetPossibleCurrenciesAsync(accountId, userId);
 			return result;
 		}
 
@@ -78,7 +78,7 @@ namespace MyFinanceBackend.Services
 			}
 
 			var accountId = accountInfo.AccountId;
-			var currencies = GetPossibleCurrencies(accountId, userId);
+			var currencies = await GetPossibleCurrenciesAsync(accountId, userId);
 			var currencyId = currencies.First(c => c.Isdefault).CurrencyId;
 			var accounts = _transferRepository.GetPossibleDestinationAccount(accountPeriodId, currencyId, userId);
 			accounts = await GetOrderAccountViewModelsAsync(accounts, userId);
