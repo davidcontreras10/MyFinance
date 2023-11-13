@@ -625,9 +625,16 @@ namespace EFDataAccess.Repositories
 			return saveSpends;
 		}
 
-		public Task<SpendActionAttributes> GetSpendAttributesAsync(int spendId)
+		public async Task<SpendActionAttributes> GetSpendAttributesAsync(int spendId)
 		{
-			throw new NotImplementedException();
+			var isLoan = await IsLoanSpendDependentAsync(spendId);
+			var isTransfer = await Context.TransferRecord.AnyAsync(tr => tr.SpendId == spendId);
+			return new SpendActionAttributes
+			{
+				SpendId = spendId,
+				IsLoan = isLoan,
+				IsTransfer = isTransfer
+			};
 		}
 
 		public void RollbackTransaction()
