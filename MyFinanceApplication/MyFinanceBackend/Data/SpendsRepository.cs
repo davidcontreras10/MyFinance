@@ -98,7 +98,7 @@ namespace MyFinanceBackend.Data
 			return Task.FromResult(accountFinanceViewModelList);
 		}
 
-		public SpendActionAttributes GetSpendAttributes(int spendId)
+		public Task<SpendActionAttributes> GetSpendAttributesAsync(int spendId)
 		{
 			var parameter = new SqlParameter(DatabaseConstants.PAR_SPEND_ID, spendId);
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_ATTRIBUTES_LIST, parameter);
@@ -108,7 +108,7 @@ namespace MyFinanceBackend.Data
 			}
 
 			var result = ServicesUtils.CreateSpendAttributes(dataSet.Tables[0].Rows[0]);
-			return result;
+			return Task.FromResult(result);
 		}
 		
 		public Task AddSpendDependencyAsync(int spendId, int dependencySpendId)

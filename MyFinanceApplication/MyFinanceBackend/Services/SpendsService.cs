@@ -32,7 +32,7 @@ namespace MyFinanceBackend.Services
 
 		#region Public Methods
 
-		public SpendActionResult GetSpendActionResult(int spendId, ResourceActionNames actionType, ApplicationModules applicationModule)
+		public async Task<SpendActionResult> GetSpendActionResultAsync(int spendId, ResourceActionNames actionType, ApplicationModules applicationModule)
 		{
 			if (actionType == ResourceActionNames.Unknown)
 			{
@@ -43,8 +43,8 @@ namespace MyFinanceBackend.Services
 			{
 				throw new ArgumentException(nameof(applicationModule));
 			}
-				
-			var spendAttributes = _spendsRepository.GetSpendAttributes(spendId);
+
+			var spendAttributes = await _spendsRepository.GetSpendAttributesAsync(spendId);
 			var applicationResource = ApplicationResources.Spends;
 			var resourcesAccessResponse = _resourceAccessRepository.GetResourceAccessReport(applicationResourceId: (int)applicationResource,
 				applicationModuleId: (int)applicationModule, resourceActionId: (int)actionType, resourceAccessLevelId: null);
@@ -80,8 +80,8 @@ namespace MyFinanceBackend.Services
 			var clientAddSpendModel = await
 				_spendsRepository.CreateClientAddSpendModelAsync(clientBasicTrxByPeriod,
 					clientBasicTrxByPeriod.AccountPeriodId);
-			return transactionTypeId == TransactionTypeIds.Saving 
-				? await AddIncomeAsync(clientAddSpendModel) 
+			return transactionTypeId == TransactionTypeIds.Saving
+				? await AddIncomeAsync(clientAddSpendModel)
 				: await AddSpendAsync(clientAddSpendModel);
 		}
 
@@ -185,15 +185,15 @@ namespace MyFinanceBackend.Services
 			return result;
 		}
 
-		private static SpendActionResult CreateSpendActionResult(SpendActionAttributes spendActionAttributes, 
+		private static SpendActionResult CreateSpendActionResult(SpendActionAttributes spendActionAttributes,
 			IEnumerable<ResourceAccessReportRow> resourceAccessReportRows, ResourceActionNames resourceActionNames)
 		{
-			if(spendActionAttributes == null)
+			if (spendActionAttributes == null)
 			{
 				throw new ArgumentNullException(nameof(spendActionAttributes));
 			}
 
-			if(resourceAccessReportRows == null)
+			if (resourceAccessReportRows == null)
 			{
 				throw new ArgumentNullException(nameof(resourceAccessReportRows));
 			}
@@ -206,7 +206,7 @@ namespace MyFinanceBackend.Services
 				SpendId = spendActionAttributes.SpendId
 			};
 
-			var isValid = resourceAccessReportRows.Any(r => 
+			var isValid = resourceAccessReportRows.Any(r =>
 				spendActionAttributes.AccessLevels.Any(r2 => (int)r2 == r.ResourceAccessLevelId));
 			if (isValid)
 			{

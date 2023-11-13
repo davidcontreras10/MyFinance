@@ -625,7 +625,7 @@ namespace EFDataAccess.Repositories
 			return saveSpends;
 		}
 
-		public SpendActionAttributes GetSpendAttributes(int spendId)
+		public Task<SpendActionAttributes> GetSpendAttributesAsync(int spendId)
 		{
 			throw new NotImplementedException();
 		}

@@ -35,10 +35,10 @@ namespace MyFinanceWebApiCore.Controllers
 		[Route("actionResult")]
 		[RequiresHeaderFilter(ServiceAppHeader.ServiceAppHeaderType.ApplicationModule)]
 		[HttpGet]
-		public SpendActionResult GetSpendActionResult([FromQuery] int spendId, [FromQuery] ResourceActionNames actionType)
+		public async Task<SpendActionResult> GetSpendActionResult([FromQuery] int spendId, [FromQuery] ResourceActionNames actionType)
 		{
 			var moduleValue = GetModuleNameValue();
-			var result = _spendsService.GetSpendActionResult(spendId, actionType, moduleValue);
+			var result = await _spendsService.GetSpendActionResultAsync(spendId, actionType, moduleValue);
 			return result;
 		}
 
