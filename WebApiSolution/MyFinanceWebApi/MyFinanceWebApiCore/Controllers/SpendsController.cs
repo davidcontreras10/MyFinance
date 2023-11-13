@@ -131,10 +131,10 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("edit")]
 		[HttpGet]
-		public IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId)
+		public async Task<IEnumerable<EditSpendViewModel>> GetEditSpendViewModel(int accountPeriodId, int spendId)
 		{
 			var userId = GetUserId();
-			var editSpendViewModelList = _spendsService.GetEditSpendViewModel(accountPeriodId, spendId,
+			var editSpendViewModelList = await _spendsService.GetEditSpendViewModelAsync(accountPeriodId, spendId,
 				userId);
 			return editSpendViewModelList;
 		}

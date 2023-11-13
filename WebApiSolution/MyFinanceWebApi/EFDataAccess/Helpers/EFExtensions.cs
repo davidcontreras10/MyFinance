@@ -5,6 +5,17 @@ namespace EFDataAccess.Helpers
 {
 	internal static class EFExtensions
 	{
+		public static MethodId ToMethodId(this CurrencyConverterMethod currencyConverterMethod, bool isSelected = false, bool isDefault = false)
+		{
+			return new MethodId
+			{
+				Id = currencyConverterMethod.CurrencyConverterMethodId,
+				Name = currencyConverterMethod.Name,
+				IsSelected = isSelected,
+				IsDefault = isDefault
+			};
+		}
+
 		public static SpendTypeViewModel ToSpendTypeViewModel(this SpendType spendType, int? defaultSpendTypeId)
 		{
 			return new SpendTypeViewModel

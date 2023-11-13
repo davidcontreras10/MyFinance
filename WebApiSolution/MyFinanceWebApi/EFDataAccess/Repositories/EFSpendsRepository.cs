@@ -257,15 +257,7 @@ namespace EFDataAccess.Repositories
 			spend.SetPaymentDate = financeSpend.SetPaymentDate;
 			spend.SpendDate = financeSpend.SpendDate;
 			spend.IsPending = financeSpend.IsPending;
-			try
-			{
-				Context.SpendOnPeriod.RemoveWhere(sop => sop.SpendId == financeSpend.SpendId);
-
-			}
-			catch(Exception ex)
-			{
-
-			}
+			Context.SpendOnPeriod.RemoveWhere(sop => sop.SpendId == financeSpend.SpendId);
 			var spendOnPeriods = new List<SpendOnPeriod>();
 			var affected = new List<SpendItemModified>();
 			foreach (var accountInclude in accountIncludes)
@@ -467,7 +459,7 @@ namespace EFDataAccess.Repositories
 					.ThenInclude(cc => cc.CurrencyOne)
 				.ToListAsync();
 			var accountViewModels = new List<AddSpendViewModel>();
-			foreach (var accountPeriod in accountPeriods) 
+			foreach (var accountPeriod in accountPeriods)
 			{
 				var addSpendViewModel = new AddSpendViewModel
 				{
@@ -490,14 +482,82 @@ namespace EFDataAccess.Repositories
 			return accountViewModels;
 		}
 
-		public DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId)
+		public async Task<IEnumerable<EditSpendViewModel>> GetEditSpendViewModelAsync(int accountPeriodId, int spendId, string userId)
 		{
-			throw new NotImplementedException();
-		}
+			var userGuid = new Guid(userId);
+			var spendTypes = await Context.UserSpendType.AsNoTracking()
+				.Where(uspt => uspt.UserId == userGuid)
+				.Include(uspt => uspt.SpendType)
+				.Select(uspt => uspt.SpendType)
+				.ToListAsync();
+			var spend = await Context.Spend.AsNoTracking()
+				.Where(sp => sp.SpendId == spendId)
+				.Include(sp => sp.AmountCurrency)
+				.Include(sp => sp.SpendOnPeriod)
+					.ThenInclude(sop => sop.AccountPeriod)
+						.ThenInclude(accp => accp.Account)
+							.ThenInclude(acc => acc.Currency)
+				.Include(sp => sp.SpendOnPeriod)
+					.ThenInclude(sop => sop.CurrencyConverterMethod)
+				.FirstAsync();
+			var otherSops = spend.SpendOnPeriod.Where(sop => !sop.IsOriginal.Value);
+			var originalSop = spend.SpendOnPeriod.First(sop => sop.IsOriginal.Value);
+			var original = spend.SpendOnPeriod.First(sop => sop.IsOriginal != null && sop.IsOriginal.Value);
+			var spendViewModel = original.ToSpendSpendViewModel();
+			var accountPeriods = spend.SpendOnPeriod.Select(sp => sp.AccountPeriod);
+			var dateRange = GetDateRange(accountPeriods, spend.SpendDate);
+			var method = new MethodId
+			{
+				Id = originalSop.CurrencyConverterMethod.CurrencyConverterMethodId,
+				IsDefault = originalSop.CurrencyConverterMethod.IsDefault ?? false,
+				IsSelected = true,
+				Name = originalSop.CurrencyConverterMethod.Name
+			};
+			var currency = new CurrencyViewModel
+			{
+				AccountId = originalSop.AccountPeriod.AccountId ?? 0,
+				CurrencyId = spend.AmountCurrencyId ?? 0,
+				CurrencyName = spend.AmountCurrency.Name,
+				Symbol = spend.AmountCurrency.Symbol,
+				MethodIds = new[] { method },
+				Isdefault = true
+			};
 
-		public IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId)
-		{
-			throw new NotImplementedException();
+			var accountIncludeViewModels = otherSops.Select(sop => new AccountIncludeViewModel
+			{
+				AccountId = sop.AccountPeriod.AccountId ?? 0,
+				AccountName = sop.AccountPeriod.Account.Name,
+				Amount = new SpendAmount
+				{
+					Value = (float)sop.GetAmount(),
+					CurrencyId = sop.AccountPeriod.Account.Currency.CurrencyId,
+					CurrencyName = sop.AccountPeriod.Account.Currency.Name,
+					CurrencySymbol = sop.AccountPeriod.Account.Currency.Symbol
+				},
+				IsDefault = true,
+				IsSelected = true,
+				MethodIds = new[] { sop.CurrencyConverterMethod.ToMethodId(true, true) }
+			});
+
+			return new[]
+			{
+				new EditSpendViewModel
+				{
+					AccountId = originalSop.AccountPeriod.AccountId ?? 0,
+					CurrencyId = spend.AmountCurrencyId ?? 0,
+					AccountPeriodId = originalSop.AccountPeriodId,
+					AccountName = originalSop.AccountPeriod.Account.Name,
+					EndDate = originalSop.AccountPeriod?.EndDate ?? DateTime.MinValue,
+					InitialDate = originalSop.AccountPeriod?.InitialDate ?? DateTime.MinValue,
+					GlobalOrder = originalSop.AccountPeriod.Account.Position ?? 0,
+					PossibleDateRange = dateRange,
+					SpendInfo = spendViewModel,
+					SuggestedDate = DateTime.UtcNow,
+					SpendTypeViewModels = spendTypes.Select(sp => sp.ToSpendTypeViewModel(spend.SpendTypeId)),
+					SupportedAccountInclude = accountIncludeViewModels,
+					SupportedCurrencies = new [] {currency}
+				}
+			};
 		}
 
 		public IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId)
@@ -559,6 +619,40 @@ namespace EFDataAccess.Repositories
 
 		#endregion
 
+		private static DateRange GetDateRange(IEnumerable<Models.AccountPeriod> accountPeriods, DateTime? validateDate)
+		{
+			if (accountPeriods == null || !accountPeriods.Any())
+			{
+				throw new ArgumentException(nameof(accountPeriods));
+			}
+
+			var lowest = accountPeriods.First().InitialDate;
+			var highest = accountPeriods.First().EndDate;
+			foreach (var accountPeriod in accountPeriods)
+			{
+				if (accountPeriod.InitialDate > lowest)
+				{
+					lowest = accountPeriod.InitialDate;
+				}
+
+				if (accountPeriod.EndDate < highest)
+				{
+					highest = accountPeriod.EndDate;
+				}
+			}
+
+			return new DateRange
+			{
+				EndDate = highest,
+				StartDate = lowest,
+				IsValid = highest > lowest,
+				ActualDate = validateDate,
+				IsDateValid = validateDate != null
+					? (bool?)(validateDate.Value >= lowest && validateDate.Value < highest)
+					: null
+			};
+		}
+
 		private static IEnumerable<CurrencyViewModel> CreateCurrencyViewModelFromMethods(IEnumerable<CurrencyConverterMethod> currencyConverterMethods, Account account)
 		{
 			var currencies = new List<CurrencyViewModel>();
@@ -566,7 +660,7 @@ namespace EFDataAccess.Repositories
 			{
 				var ccmCurrency = ccm.CurrencyConverter.CurrencyOne;
 				var currency = currencies.FirstOrDefault(c => c.CurrencyId == ccm.CurrencyConverter.CurrencyIdOne);
-				if(currency == null)
+				if (currency == null)
 				{
 					currency = new CurrencyViewModel
 					{

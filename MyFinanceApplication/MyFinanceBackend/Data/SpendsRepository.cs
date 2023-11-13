@@ -40,7 +40,7 @@ namespace MyFinanceBackend.Data
 			return Task.FromResult(result);
 		}
 
-		public IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId)
+		public Task<IEnumerable<EditSpendViewModel>> GetEditSpendViewModelAsync(int accountPeriodId, int spendId, string userId)
 		{
 			var userIdParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
 			var accountPeriodIdsParameter = new SqlParameter(DatabaseConstants.PAR_ACCOUNT_PERIOD_ID, accountPeriodId);
@@ -48,7 +48,8 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_EDIT_SPEND_VIEW_MODEL_LIST,
 				accountPeriodIdsParameter, userIdParameter, spendIdParameter);
 			var resultSetModel = ServicesUtils.CreateEditSpendViewModelDb(dataSet);
-			return CreateEditSpendViewModelList(resultSetModel);
+			var result = CreateEditSpendViewModelList(resultSetModel);
+			return Task.FromResult(result);
 		}
 
 		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
@@ -167,27 +168,6 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_DELETE, parameters);
 			var res = ServicesUtils.CreateSpendAccountAffected(dataSet);
 			return Task.FromResult(res);
-		}
-
-		public DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId)
-		{
-			if (string.IsNullOrEmpty(accountIds) || string.IsNullOrEmpty(userId))
-				return null;
-			var parameters = new List<SqlParameter>
-				{
-                    //new SqlParameter(DatabaseConstants.PAR_USERNAME, username),
-                    new SqlParameter(DatabaseConstants.PAR_ACCOUNT_IDS, accountIds)
-				};
-			if (dateTime != null)
-			{
-				parameters.Add(
-					new SqlParameter(DatabaseConstants.PAR_DATE, dateTime)
-					);
-			}
-			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_DATE_RANGE_ACCOUNTS, parameters);
-			return dataSet.Tables.Count > 0 && dataSet.Tables[0].Rows.Count > 0
-					   ? ServicesUtils.CreateDateRange(dataSet.Tables[0].Rows[0])
-					   : null;
 		}
 
 		public Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model)

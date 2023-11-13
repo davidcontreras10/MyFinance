@@ -57,9 +57,9 @@ namespace MyFinanceBackend.Services
 			return await _spendsRepository.GetAddSpendViewModelAsync(accountPeriodIds, userId);
 		}
 
-		public IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId)
+		public async Task<IEnumerable<EditSpendViewModel>> GetEditSpendViewModelAsync(int accountPeriodId, int spendId, string userId)
 		{
-			return _spendsRepository.GetEditSpendViewModel(accountPeriodId, spendId, userId);
+			return await _spendsRepository.GetEditSpendViewModelAsync(accountPeriodId, spendId, userId);
 		}
 
 		public async Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId)
@@ -108,12 +108,6 @@ namespace MyFinanceBackend.Services
 		public async Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId)
 		{
 			var result = await _spendsRepository.DeleteSpendAsync(userId, spendId);
-			return result;
-		}
-
-		public DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId)
-		{
-			var result = _spendsRepository.GetDateRange(accountIds, dateTime, userId);
 			return result;
 		}
 
