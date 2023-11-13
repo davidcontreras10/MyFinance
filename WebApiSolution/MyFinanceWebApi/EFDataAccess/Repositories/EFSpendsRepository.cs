@@ -647,6 +647,15 @@ namespace EFDataAccess.Repositories
 
 		#endregion
 
+		private async Task<bool> IsLoanSpendDependentAsync(int spendId)
+		{
+			var dependencies = await GetSpendDependenciesAsync(spendId);
+			var spendIds = dependencies.Select(x=>x.SpendId).ToList();
+			spendIds.Add(spendId);
+			return await Context.LoanRecord.AnyAsync(lr => spendIds.Contains(lr.SpendId))
+				|| await Context.LoanSpend.AnyAsync(ls => spendIds.Contains(ls.SpendId));
+		}
+
 		private static DateRange GetDateRange(IEnumerable<Models.AccountPeriod> accountPeriods, DateTime? validateDate)
 		{
 			if (accountPeriods == null || !accountPeriods.Any())
