@@ -560,9 +560,37 @@ namespace EFDataAccess.Repositories
 			};
 		}
 
-		public Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrenciesAsync(int accountId, string userId)
+		public async Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrenciesAsync(int accountId, string userId)
 		{
-			throw new NotImplementedException();
+			var account = await Context.Account.AsNoTracking()
+				.FirstAsync(acc => acc.AccountId == accountId);
+			var ccms = await Context.CurrencyConverterMethod.AsNoTracking()
+				.Include(x => x.CurrencyConverter)
+					.ThenInclude(x => x.CurrencyOne)
+				.Where(x =>
+					(x.FinancialEntityId == account.FinancialEntityId || x.IsDefault.Value)
+					&& x.CurrencyConverter.CurrencyTwo.CurrencyId == account.CurrencyId)
+				.Select(x => new CurrencyViewModel
+				{
+					AccountId = account.AccountId,
+					CurrencyId = x.CurrencyConverter.CurrencyOne.CurrencyId,
+					CurrencyName = x.CurrencyConverter.CurrencyOne.Name,
+					Symbol = x.CurrencyConverter.CurrencyOne.Symbol,
+					MethodIds = new[]
+					{
+						new MethodId
+						{
+							Id = x.CurrencyConverterMethodId,
+							Name = x.Name,
+							IsDefault = x.IsDefault ?? false,
+							IsSelected = x.IsDefault ?? false
+						}
+					},
+					Isdefault = x.IsDefault ?? false,
+				})
+				.ToListAsync();
+
+			return ccms;
 		}
 
 		public async Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId)
