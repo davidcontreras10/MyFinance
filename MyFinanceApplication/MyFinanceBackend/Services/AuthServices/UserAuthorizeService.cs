@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MyFinanceBackend.Data;
 using MyFinanceModel;
 
@@ -17,7 +18,7 @@ namespace MyFinanceBackend.Services.AuthServices
             _userRepository = userRepository;
         }
 
-        public bool IsAuthorized(string authenticatedUserId, IEnumerable<string> targetUserIds,
+        public async Task<bool> IsAuthorizedAsync(string authenticatedUserId, IEnumerable<string> targetUserIds,
             IEnumerable<ResourceActionNames> actionNames)
         {
             if (actionNames == null || !actionNames.Any())
@@ -27,8 +28,8 @@ namespace MyFinanceBackend.Services.AuthServices
 
             foreach (var action in actionNames)
             {
-                var userAccessData =
-                    _authorizationDataRepository.GetUserAssignedAccess(authenticatedUserId, ApplicationResources.Users,
+                var userAccessData = await
+                    _authorizationDataRepository.GetUserAssignedAccessAsync(authenticatedUserId, ApplicationResources.Users,
                         action);
                 foreach (var assignedAccess in userAccessData)
                 {

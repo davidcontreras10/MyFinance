@@ -4,6 +4,7 @@ using DataAccess;
 using MyFinanceBackend.Constants;
 using MyFinanceBackend.Services;
 using MyFinanceModel;
+using System.Threading.Tasks;
 
 namespace MyFinanceBackend.Data
 {
@@ -19,7 +20,7 @@ namespace MyFinanceBackend.Data
 
         #region Public Methods
 
-        public IEnumerable<UserAssignedAccess> GetUserAssignedAccess(string userId,
+        public Task<IEnumerable<UserAssignedAccess>> GetUserAssignedAccessAsync(string userId,
             ApplicationResources applicationResource = ApplicationResources.Unknown, 
             ResourceActionNames actionName = ResourceActionNames.Unknown)
         {
@@ -41,7 +42,7 @@ namespace MyFinanceBackend.Data
 
             var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_ASSIGNED_ACCESS_LIST, parameters);
             var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateUserAssignedAccess);
-            return result;
+            return Task.FromResult(result);
         }
 
         #endregion
