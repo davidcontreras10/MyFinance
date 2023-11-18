@@ -11,7 +11,7 @@ namespace EFDataAccess.Repositories
 {
 	public class EFAuthorizationDataRepository : BaseEFRepository, IAuthorizationDataRepository
 	{
-		protected EFAuthorizationDataRepository(Models.MyFinanceContext context) : base(context)
+		public EFAuthorizationDataRepository(Models.MyFinanceContext context) : base(context)
 		{
 		}
 

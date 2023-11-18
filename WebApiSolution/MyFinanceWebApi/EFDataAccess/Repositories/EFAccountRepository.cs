@@ -82,7 +82,10 @@ namespace EFDataAccess.Repositories
 
 		public IEnumerable<AccountBasicPeriodInfo> GetAccountBasicInfoByAccountId(IEnumerable<int> accountIds)
 		{
-			return Context.AccountPeriod.Where(accp => accp.AccountId != null && accountIds.Contains(accp.AccountId.Value)).Include(x => x.Account).Select(accp => new AccountBasicPeriodInfo
+			return Context.AccountPeriod.AsNoTracking()
+				.Where(accp => accp.AccountId != null && accountIds.Contains(accp.AccountId.Value))
+				.Include(x => x.Account)
+				.Select(accp => new AccountBasicPeriodInfo
 			{
 				AccountId = accp.AccountId.Value,
 				AccountName = accp.Account.Name,
@@ -93,14 +96,35 @@ namespace EFDataAccess.Repositories
 
 		public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsPeriodViewModelAsync(string userId, DateTime dateTime)
 		{
-			var accounts = await Context.Account.Where(acc => new Guid(userId) == acc.UserId).Include(x => x.AccountPeriod.Where(accp => accp.InitialDate >= dateTime)).ToListAsync();
-			return accounts.Select(acc => new AccountDetailsPeriodViewModel
+			try
 			{
-				AccountGroupId = acc.AccountGroupId ?? 0,
-				AccountId = acc.AccountId,
+				var accounts = await Context.Account.AsNoTracking()
+					.Where(acc => new Guid(userId) == acc.UserId)
+					.Include(x => x.AccountPeriod)
+					.ToListAsync();
+				FilterAccountPeriodByDate(accounts, dateTime);
+				var viewModels = new List<AccountDetailsPeriodViewModel>();
+				foreach (var acc in accounts)
+				{
+					var currentPeriod = acc.AccountPeriod.FirstOrDefault();
+					viewModels.Add(new AccountDetailsPeriodViewModel
+					{
+						AccountGroupId = acc.AccountGroupId ?? 0,
+						AccountId = acc.AccountId,
+						AccountName = acc.Name,
+						AccountPeriodId = currentPeriod != null ? currentPeriod.AccountPeriodId : 0,
+						AccountPosition = acc.Position ?? 0,
+						GlobalOrder = acc.Position ?? 0
+					});
+				}
 
-			}).ToList();
-
+				return viewModels;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "GetAccountDetailsPeriodViewModelAsync");
+				throw;
+			}
 		}
 
 		public async Task<AccountMainViewModel> GetAccountDetailsViewModelAsync(string userId, int? accountGroupId)
@@ -288,10 +312,11 @@ namespace EFDataAccess.Repositories
 
 		public async Task<AccountPeriodBasicInfo> GetAccountPeriodInfoByAccountIdDateTimeAsync(int accountId, DateTime dateTime)
 		{
-			var account = await Context.Account
+			var account = await Context.Account.AsNoTracking()
 				.Where(acc => acc.AccountId == accountId)
-				.Include(acc => acc.AccountPeriod
-					.Where(accp => dateTime >= accp.InitialDate && dateTime < accp.EndDate)).FirstOrDefaultAsync();
+				.Include(acc => acc.AccountPeriod)
+				.FirstOrDefaultAsync();
+			FilterAccountPeriodByDate(new[] { account }, dateTime);
 			var accountPeriod = account?.AccountPeriod?.FirstOrDefault();
 			if (accountPeriod == null)
 			{
@@ -681,6 +706,18 @@ namespace EFDataAccess.Repositories
 			}
 
 			Context.AccountPeriod.AddRange(newAccountPeriods);
+		}
+
+		private static void FilterAccountPeriodByDate(IReadOnlyCollection<Account> accounts, DateTime dateTime)
+		{
+			foreach (var account in accounts.Where(a => a.AccountPeriod != null))
+			{
+				var currentAccountPeriod = account.AccountPeriod
+					.FirstOrDefault(accp => accp.InitialDate <= dateTime && dateTime < accp.EndDate);
+				account.AccountPeriod = currentAccountPeriod != null 
+					? new[] { currentAccountPeriod } 
+					: Array.Empty<AccountPeriod>();
+			}
 		}
 
 		private static IEnumerable<AccountIncludeViewModel> GetPossibleAccountIncludes(

@@ -1081,8 +1081,8 @@ namespace MyFinanceBackend.Services
 		public static string CreateStringCharSeparated(IEnumerable<int> ids, char separator)
 		{
 			if (ids == null)
-				return "";
-			var result = ids.Aggregate("", (current, i) => current + ("," + i.ToString(CultureInfo.InvariantCulture)));
+				return string.Empty;
+			var result = ids.Aggregate(string.Empty, (current, i) => current + ("," + i.ToString(CultureInfo.InvariantCulture)));
 			if (!string.IsNullOrEmpty(result) && result[0] == separator)
 				result = result.Remove(0, 1);
 			return result;

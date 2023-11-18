@@ -162,10 +162,10 @@ namespace MyFinanceWebApiCore
 			services.AddScoped<IEmailService, EmailService>();
 			services.AddScoped<IAuthorizationService, AuthorizationService>();
 			services.AddScoped<IUserAuthorizeService, UserAuthorizeService>();
-			services.AddScoped<IAuthorizationDataRepository, AuthorizationDataRepository>();
+			services.AddScoped<IAuthorizationDataRepository, EFAuthorizationDataRepository>();
 			services.AddScoped<IAccountRepository, EFAccountRepository>();
 			services.AddScoped<ITransferRepository, TransferRepository>();
-			services.AddScoped<IAutomaticTaskRepository, AutomaticTaskRepository>();
+			services.AddScoped<IAutomaticTaskRepository, EFAutomaticTaskRepository>();
 
 			services.AddScoped<ILoanRepository, LoanRepository>();
 			services.AddScoped<IResourceAccessRepository, ResourceAccessRepository>();
