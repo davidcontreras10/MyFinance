@@ -9,6 +9,7 @@ using MyFinanceBackend.Constants;
 using MyFinanceBackend.Services;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
+using System.Threading.Tasks;
 
 namespace MyFinanceBackend.Data
 {
@@ -26,7 +27,7 @@ namespace MyFinanceBackend.Data
 
 		#region methods
 
-		public IEnumerable<int> DeleteSpendTypeUser(string userId, int spendTypeId)
+		public Task<IEnumerable<int>> DeleteSpendTypeUserAsync(string userId, int spendTypeId)
 		{
 			var parameters = new[]
 			{
@@ -37,15 +38,16 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_TYPE_USER_DELETE, parameters);
 			if (dataSet == null || dataSet.Tables.Count < 0 || dataSet.Tables[0].Rows.Count == 0)
 			{
-				return new int[] { };
+				IEnumerable<int> emptyResult = Array.Empty<int>();
+				return Task.FromResult(emptyResult);
 			}
 
 			var result =
 				dataSet.Tables[0].Rows.Cast<DataRow>().Select(dataRow => dataRow.ToInt(DatabaseConstants.COL_SPEND_TYPE_ID));
-			return result;
+			return Task.FromResult(result);
 		}
 
-		public IEnumerable<int> AddSpendTypeUser(string userId, int spendTypeId)
+		public Task<IEnumerable<int>> AddSpendTypeUserAsync(string userId, int spendTypeId)
 		{
 			var parameters = new[]
 			{
@@ -56,15 +58,16 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_TYPE_USER_ADD, parameters);
 			if (dataSet == null || dataSet.Tables.Count < 0 || dataSet.Tables[0].Rows.Count == 0)
 			{
-				return new int[] { };
+				IEnumerable<int> emptyResult = Array.Empty<int>();
+				return Task.FromResult(emptyResult);
 			}
 
 			var result =
 				dataSet.Tables[0].Rows.Cast<DataRow>().Select(dataRow => dataRow.ToInt(DatabaseConstants.COL_SPEND_TYPE_ID));
-			return result;
+			return Task.FromResult(result);
 		}
 
-		public IEnumerable<int> AddEditSpendTypes(string userId, ClientSpendType clientSpendType)
+		public Task<IEnumerable<int>> AddEditSpendTypesAsync(string userId, ClientSpendType clientSpendType)
 		{
 			if (clientSpendType == null)
 			{
@@ -83,15 +86,16 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_TYPE_ADD_EDIT, parameters);
 			if (dataSet == null || dataSet.Tables.Count < 0 || dataSet.Tables[0].Rows.Count == 0)
 			{
-				return new int[] {};
+				IEnumerable<int> emptyResult = Array.Empty<int>();
+				return Task.FromResult(emptyResult);
 			}
 
 			var result =
 				dataSet.Tables[0].Rows.Cast<DataRow>().Select(dataRow => dataRow.ToInt(DatabaseConstants.COL_SPEND_TYPE_ID));
-			return result;
+			return Task.FromResult(result);
 		}
 
-		public IEnumerable<SpendTypeViewModel> GetSpendTypeByAccountViewModels(string userId, int? accountId)
+		public Task<IEnumerable<SpendTypeViewModel>> GetSpendTypeByAccountViewModelsAsync(string userId, int? accountId)
 		{
 			var parameters = new[]
             {
@@ -100,12 +104,17 @@ namespace MyFinanceBackend.Data
             };
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_TYPE_BY_ACCOUNT_LIST, parameters);
-			return dataSet == null
-				? new List<SpendTypeViewModel>()
-				: ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateSpendTypeViewModel);
+			if(dataSet == null)
+			{
+				IEnumerable<SpendTypeViewModel> emptyResult = Array.Empty<SpendTypeViewModel>(); 
+				return Task.FromResult(emptyResult);
+			}
+
+			var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateSpendTypeViewModel);
+			return Task.FromResult(result);
 		}
 
-		public IEnumerable<SpendTypeViewModel> GetSpendTypes(string userId, bool includeAll = true)
+		public Task<IEnumerable<SpendTypeViewModel>> GetSpendTypesAsync(string userId, bool includeAll = true)
 		{
 			var parameters = new[]
 			{
@@ -114,12 +123,17 @@ namespace MyFinanceBackend.Data
 			};
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_TYPE_LIST, parameters);
-			return dataSet == null
-				? new List<SpendTypeViewModel>()
-				: ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateSpendTypeViewModel);
+			if(dataSet == null)
+			{
+				IEnumerable<SpendTypeViewModel> empty = Array.Empty<SpendTypeViewModel>();
+				return Task.FromResult(empty);
+			}
+
+			var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateSpendTypeViewModel);
+			return Task.FromResult(result);
 		}
 
-        public void DeleteSpendType(string userId, int spendTypeId)
+        public Task DeleteSpendTypeAsync(string userId, int spendTypeId)
         {
             var parameters = new[]
 			{
@@ -128,6 +142,7 @@ namespace MyFinanceBackend.Data
 			};
 
             ExecuteStoredProcedure(DatabaseConstants.SP_SPEND_TYPE_DELETE, parameters);
+			return Task.CompletedTask;
         }
 
 		#endregion

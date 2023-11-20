@@ -156,7 +156,7 @@ namespace MyFinanceWebApiCore
 
 			services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
 			services.AddScoped<IAccountGroupService, AccountGroupService>();
-			services.AddScoped<ISpendTypeRepository, SpendTypeRepository>();
+			services.AddScoped<ISpendTypeRepository, EFSpendTypeRepository>();
 			services.AddScoped<IUserRespository, UserRepository>();
 			services.AddScoped<ISpendsRepository, EFSpendsRepository>();
 			services.AddScoped<IEmailService, EmailService>();
@@ -167,7 +167,7 @@ namespace MyFinanceWebApiCore
 			services.AddScoped<ITransferRepository, TransferRepository>();
 			services.AddScoped<IAutomaticTaskRepository, EFAutomaticTaskRepository>();
 
-			services.AddScoped<ILoanRepository, LoanRepository>();
+			services.AddScoped<ILoanRepository, EFLoanRepository>();
 			services.AddScoped<IResourceAccessRepository, EFResourceAccessRepository>();
 			services.AddScoped<IScheduledTasksService, ScheduledTasksService>();
 

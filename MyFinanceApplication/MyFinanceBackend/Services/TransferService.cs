@@ -82,7 +82,7 @@ namespace MyFinanceBackend.Services
 			var currencyId = currencies.First(c => c.Isdefault).CurrencyId;
 			var accounts = _transferRepository.GetPossibleDestinationAccount(accountPeriodId, currencyId, userId);
 			accounts = await GetOrderAccountViewModelsAsync(accounts, userId);
-			var spendTypes = _spendTypeRepository.GetSpendTypeByAccountViewModels(userId, accountId);
+			var spendTypes = await _spendTypeRepository.GetSpendTypeByAccountViewModelsAsync(userId, accountId);
 			var transferData = CreateAccountFinanceViewModel(accountInfo, currencies, accounts, spendTypes);
 			return transferData;
 		}
