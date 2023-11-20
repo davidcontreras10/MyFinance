@@ -23,7 +23,7 @@ namespace MyFinanceBackend.Data
 
 		#region Public Methods
 
-		public IEnumerable<ResourceAccessReportRow> GetResourceAccessReport(int? applicationResourceId, int? applicationModuleId, 
+		public Task<IEnumerable<ResourceAccessReportRow>> GetResourceAccessReportAsync(int? applicationResourceId, int? applicationModuleId, 
 			int? resourceActionId, int? resourceAccessLevelId)
 		{
 			var parameters = new List<SqlParameter>();
@@ -50,11 +50,12 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_RESOURCE_ACCESS_REPORT, parameters);
 			if(dataSet == null || dataSet.Tables.Count == 0)
 			{
-				return new ResourceAccessReportRow[0];
+				IEnumerable<ResourceAccessReportRow> emptyResult = Array.Empty<ResourceAccessReportRow>();
+				return Task.FromResult(emptyResult);
 			}
 
 			var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateResourceAccessReportRow);
-			return result;
+			return Task.FromResult(result);
 		}
 
 		#endregion

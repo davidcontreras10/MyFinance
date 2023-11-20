@@ -168,7 +168,7 @@ namespace MyFinanceWebApiCore
 			services.AddScoped<IAutomaticTaskRepository, EFAutomaticTaskRepository>();
 
 			services.AddScoped<ILoanRepository, LoanRepository>();
-			services.AddScoped<IResourceAccessRepository, ResourceAccessRepository>();
+			services.AddScoped<IResourceAccessRepository, EFResourceAccessRepository>();
 			services.AddScoped<IScheduledTasksService, ScheduledTasksService>();
 
 			services.AddScoped<IAccountFinanceService, AccountFinanceService>();

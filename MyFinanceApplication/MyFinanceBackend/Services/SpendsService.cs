@@ -46,7 +46,7 @@ namespace MyFinanceBackend.Services
 
 			var spendAttributes = await _spendsRepository.GetSpendAttributesAsync(spendId);
 			var applicationResource = ApplicationResources.Spends;
-			var resourcesAccessResponse = _resourceAccessRepository.GetResourceAccessReport(applicationResourceId: (int)applicationResource,
+			var resourcesAccessResponse = await _resourceAccessRepository.GetResourceAccessReportAsync(applicationResourceId: (int)applicationResource,
 				applicationModuleId: (int)applicationModule, resourceActionId: (int)actionType, resourceAccessLevelId: null);
 			var response = CreateSpendActionResult(spendAttributes, resourcesAccessResponse, actionType);
 			return response;

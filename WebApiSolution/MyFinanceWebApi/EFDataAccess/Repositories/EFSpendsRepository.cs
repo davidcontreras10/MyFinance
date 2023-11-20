@@ -187,7 +187,7 @@ namespace EFDataAccess.Repositories
 			if (model == null || model.SpendId == 0 || string.IsNullOrEmpty(model.UserId) || !model.ModifyList.Any() ||
 				model.ModifyList.Any(i => i == 0) || model.ModifyList.Any(i => !((int)i).TryParseEnum<ClientEditSpendModel.Field>(out _)))
 				throw new Exception("Invalid parameters");
-			SpendsDataHelper.SetAmountType(model, model.ModifyList.Any(i => i == ClientEditSpendModel.Field.AmountType));
+			SpendsDataHelper.SetAmountType(model, !model.ModifyList.Any(i => i == ClientEditSpendModel.Field.AmountType));
 			var spendIds = new List<int>
 			{
 				model.SpendId
