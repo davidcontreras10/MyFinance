@@ -8,13 +8,11 @@ namespace MyFinanceBackend.Data
     public interface IUserRespository : ITransactional
     {
         Task<AppUser> GetUserByUserIdAsync(string userId);
-		IEnumerable<AppUser> GetOwendUsersByUserId(string userId);
-        AppUser GetUserByUserId(string userId);
-        AppUser GetUserByUsername(string username);
-        LoginResult AttemptToLogin(string username, string encryptedPassword);
+		Task<IEnumerable<AppUser>> GetOwendUsersByUserIdAsync(string userId);
+        Task<AppUser> GetUserByUsernameAsync(string username);
         Task<LoginResult> AttemptToLoginAsync(string username, string encryptedPassword);
-		bool SetPassword(string userId, string encryptedPassword);
-        bool UpdateUser(ClientEditUser user);
-        string AddUser(ClientAddUser user);
+		Task<bool> SetPasswordAsync(string userId, string encryptedPassword);
+        Task<bool> UpdateUserAsync(ClientEditUser user);
+        Task<string> AddUserAsync(ClientAddUser user);
     }
 }

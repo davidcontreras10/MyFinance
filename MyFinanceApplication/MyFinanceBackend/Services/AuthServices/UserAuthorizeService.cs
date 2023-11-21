@@ -33,7 +33,7 @@ namespace MyFinanceBackend.Services.AuthServices
                         action);
                 foreach (var assignedAccess in userAccessData)
                 {
-                    var result = EvaluateResourceAccessLevel(assignedAccess.ResourceAccesLevel, authenticatedUserId,
+                    var result = await EvaluateResourceAccessLevelAsync(assignedAccess.ResourceAccesLevel, authenticatedUserId,
                         targetUserIds);
                     if (result)
                         return true;
@@ -43,14 +43,14 @@ namespace MyFinanceBackend.Services.AuthServices
             return false;
         }
 
-        private bool EvaluateResourceAccessLevel(ResourceAccesLevels resourceAccesLevel, string authenticatedUserId,
+        private async Task<bool> EvaluateResourceAccessLevelAsync(ResourceAccesLevels resourceAccesLevel, string authenticatedUserId,
             IEnumerable<string> targetUserIds)
         {
             switch (resourceAccesLevel)
             {
                 case ResourceAccesLevels.Any: return AnyResourceAccessLevelEvaluation();
                 case ResourceAccesLevels.Owned:
-                    return OwnedResourceAccesLevelEvaluation(authenticatedUserId, targetUserIds);
+                    return await OwnedResourceAccesLevelEvaluationAsync(authenticatedUserId, targetUserIds);
                 case ResourceAccesLevels.Self:
                     return SelfResourceAccessLevelEvaluation(authenticatedUserId, targetUserIds);
                 case ResourceAccesLevels.AddRegular:
@@ -74,9 +74,9 @@ namespace MyFinanceBackend.Services.AuthServices
             return targetUserIds.All(id => new Guid(id) == new Guid(authenticatedUserId));
         }
 
-        private bool OwnedResourceAccesLevelEvaluation(string authenticatedUserId, IEnumerable<string> targetUserIds)
+        private async Task<bool> OwnedResourceAccesLevelEvaluationAsync(string authenticatedUserId, IEnumerable<string> targetUserIds)
         {
-            var owendUsers = _userRepository.GetOwendUsersByUserId(authenticatedUserId);
+            var owendUsers = await _userRepository.GetOwendUsersByUserIdAsync(authenticatedUserId);
             return owendUsers.All(u => targetUserIds.Any(tu => new Guid(tu) == u.UserId));
         }
     }
