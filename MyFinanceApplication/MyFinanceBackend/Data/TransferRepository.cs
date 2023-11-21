@@ -6,15 +6,16 @@ using DataAccess;
 using MyFinanceBackend.Constants;
 using MyFinanceBackend.Services;
 using MyFinanceModel.ViewModel;
+using System.Threading.Tasks;
 
 namespace MyFinanceBackend.Data
 {
     public interface ITransferRepository : ITransactional
     {
-        IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountPeriodId, int currencyId, string userId);
-        int GetDefaultCurrencyConvertionMethods(int originAccountId, int amountCurrencyId, int destinationCurrencyId,
+        Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountPeriodId, int currencyId, string userId);
+        Task<int> GetDefaultCurrencyConvertionMethodsAsync(int originAccountId, int amountCurrencyId, int destinationCurrencyId,
             string userId);
-        void AddTransferRecord(IEnumerable<int> spendIds, string userId);
+        Task AddTransferRecordAsync(IEnumerable<int> spendIds, string userId);
     }
 
     public class TransferRepository : SqlServerBaseService, ITransferRepository
@@ -29,7 +30,7 @@ namespace MyFinanceBackend.Data
 
         #region Public Methods
 
-        public IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountPeriodId, int currencyId,
+        public Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccountAsync(int accountPeriodId, int currencyId,
             string userId)
         {
             if (accountPeriodId == 0)
@@ -50,11 +51,16 @@ namespace MyFinanceBackend.Data
 
             var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_TRANSFER_POSSIBLE_DESTINATION_ACCOUNTS, parameters);
             if (dataSet == null || dataSet.Tables.Count < 0)
-                return new AccountViewModel[] { };
-            return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountViewModel);
+            {
+				IEnumerable<AccountViewModel> emptyResult = Array.Empty<AccountViewModel>();
+                return Task.FromResult(emptyResult);
+            }
+                
+            var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountViewModel);
+            return Task.FromResult(result);
         }
 
-        public int GetDefaultCurrencyConvertionMethods(int originAccountId,
+        public Task<int> GetDefaultCurrencyConvertionMethodsAsync(int originAccountId,
             int amountCurrencyId, int destinationCurrencyId, string userId)
         {
 
@@ -68,15 +74,15 @@ namespace MyFinanceBackend.Data
 
             var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNT_DEFAULT_CURRENCY_VALUES_LIST, parameters);
             if (dataSet == null || dataSet.Tables.Count == 0)
-                return 0;
-            return DContre.MyFinance.StUtilities.DataRowConvert.ToInt(dataSet.Tables[0].Rows[0],
-                DatabaseConstants.COL_ACCOUNT_CURRENCY_CONVERTER_METHOD_ID);
+                return Task.FromResult(0);
+            return Task.FromResult(DContre.MyFinance.StUtilities.DataRowConvert.ToInt(dataSet.Tables[0].Rows[0],
+                DatabaseConstants.COL_ACCOUNT_CURRENCY_CONVERTER_METHOD_ID));
         }
 
-        public void AddTransferRecord(IEnumerable<int> spendIds, string userId)
+        public Task AddTransferRecordAsync(IEnumerable<int> spendIds, string userId)
         {
             if (spendIds == null || !spendIds.Any())
-                return;
+                return Task.CompletedTask;
 
             var strSpendIds = ServicesUtils.CreateStringCharSeparated(spendIds);
             var parameters = new List<SqlParameter>
@@ -86,7 +92,8 @@ namespace MyFinanceBackend.Data
             };
 
             ExecuteStoredProcedure(DatabaseConstants.SP_TRANSFER_RECORD_ADD, parameters);
-        }
+			return Task.CompletedTask;
+		}
 
         #endregion
 

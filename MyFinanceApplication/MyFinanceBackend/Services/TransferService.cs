@@ -52,7 +52,7 @@ namespace MyFinanceBackend.Services
 				currencyId = accountInfo.CurrencyId;
 			}
 
-			var accounts = _transferRepository.GetPossibleDestinationAccount(accountPeriodId, currencyId, userId);
+			var accounts = await _transferRepository.GetPossibleDestinationAccountAsync(accountPeriodId, currencyId, userId);
 			accounts = await GetOrderAccountViewModelsAsync(accounts, userId);
 			return accounts;
 		}
@@ -80,7 +80,7 @@ namespace MyFinanceBackend.Services
 			var accountId = accountInfo.AccountId;
 			var currencies = await GetPossibleCurrenciesAsync(accountId, userId);
 			var currencyId = currencies.First(c => c.Isdefault).CurrencyId;
-			var accounts = _transferRepository.GetPossibleDestinationAccount(accountPeriodId, currencyId, userId);
+			var accounts = await _transferRepository.GetPossibleDestinationAccountAsync(accountPeriodId, currencyId, userId);
 			accounts = await GetOrderAccountViewModelsAsync(accounts, userId);
 			var spendTypes = await _spendTypeRepository.GetSpendTypeByAccountViewModelsAsync(userId, accountId);
 			var transferData = CreateAccountFinanceViewModel(accountInfo, currencies, accounts, spendTypes);
@@ -119,7 +119,7 @@ namespace MyFinanceBackend.Services
 				if (itemsModified.Any())
 				{
 					var spendIds = itemsModified.GroupBy(i => i.SpendId).Select(gr => gr.First()).Select(i => i.SpendId);
-					_transferRepository.AddTransferRecord(spendIds, transferClientViewModel.UserId);
+					await _transferRepository.AddTransferRecordAsync(spendIds, transferClientViewModel.UserId);
 				}
 			}
 			catch (Exception)
@@ -188,7 +188,7 @@ namespace MyFinanceBackend.Services
 
 			var destinationAccountInfo =(await _spendsService.GetAccountsCurrencyAsync(new[] { transferClientViewModel.DestinationAccount }))
 					.First(a => a.AccountId == transferClientViewModel.DestinationAccount);
-			var destinationCurrencyConverterMethodId = _transferRepository.GetDefaultCurrencyConvertionMethods(originalAccountId,
+			var destinationCurrencyConverterMethodId = await _transferRepository.GetDefaultCurrencyConvertionMethodsAsync(originalAccountId,
 				transferClientViewModel.CurrencyId, destinationAccountInfo.CurrencyId,
 				transferClientViewModel.UserId);
 			var currencyConversionResult = await _currencyService.GetExchangeRateResultAsync(destinationCurrencyConverterMethodId,

@@ -67,6 +67,8 @@ namespace EFDataAccess.Models
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			modelBuilder.Entity<AccountIdName>().HasNoKey().ToView(null);
+
 			modelBuilder.Entity<Account>(entity =>
 			{
 				entity.Property(e => e.AccountTypeId).HasDefaultValueSql("((1))");
