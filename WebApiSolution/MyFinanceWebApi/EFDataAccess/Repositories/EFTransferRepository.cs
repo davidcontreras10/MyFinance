@@ -87,7 +87,7 @@ namespace EFDataAccess.Repositories
 			{
 				var storedProcedureCall = $"EXEC {DatabaseConstants.SP_TRANSFER_POSSIBLE_DESTINATION_ACCOUNTS} @pAccountPeriodId, @pCurrencyId, @pUserId";
 
-				var accountIdNameItems = await Context.Set<AccountIdName>().FromSqlRaw(storedProcedureCall,
+				var accountIdNameItems = await Context.Set<EFAccountIdName>().FromSqlRaw(storedProcedureCall,
 					parameters: new object[]
 				{
 					new SqlParameter(DatabaseConstants.PAR_ACCOUNT_PERIOD_ID, accountPeriodId),

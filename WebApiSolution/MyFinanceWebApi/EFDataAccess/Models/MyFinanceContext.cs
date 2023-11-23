@@ -67,7 +67,8 @@ namespace EFDataAccess.Models
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<AccountIdName>().HasNoKey().ToView(null);
+			modelBuilder.Entity<EFAccountIdName>().HasNoKey().ToView(null);
+			modelBuilder.Entity<EFLoginResult>().HasNoKey().ToView(null);
 
 			modelBuilder.Entity<Account>(entity =>
 			{
