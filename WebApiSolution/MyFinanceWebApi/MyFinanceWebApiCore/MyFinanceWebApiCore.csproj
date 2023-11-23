@@ -25,9 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DataAccess">
-      <HintPath>..\..\..\MyFinanceApplication\DataAccess\bin\Debug\netstandard2.0\DataAccess.dll</HintPath>
-    </Reference>
     <Reference Include="DContre.MyFinance.StUtilities">
       <HintPath>..\..\..\Utilities\StUtilities\obj\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
     </Reference>

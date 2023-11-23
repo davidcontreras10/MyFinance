@@ -1,4 +1,3 @@
-using DataAccess;
 using EFDataAccess.Models;
 using EFDataAccess.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -142,35 +141,32 @@ namespace MyFinanceWebApiCore
 
 				});
 			services.AddSingleton<IBackendSettings, BackendSettings>();
-			services.AddScoped<IConnectionConfig, SqlServerConfig>();
 			services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 			services.AddScoped<ITrxExchangeService, TrxExchangeService>();
 			services.AddScoped<ITransferService, TransferService>();
 			services.AddScoped<IUsersService, UsersService>();
 			services.AddScoped<ISpendsService, SpendsService>();
-			services.AddScoped<IAccountsPeriodsService, AccountsPeriodsService>();
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<ICurrencyService, CurrencyService>();
 			services.AddScoped<ISpendTypeService, SpendTypeService>();
-
-			services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
-			services.AddScoped<IAccountGroupService, AccountGroupService>();
-			services.AddScoped<ISpendTypeRepository, EFSpendTypeRepository>();
-			services.AddScoped<IUserRespository, UserRepository>();
-			services.AddScoped<ISpendsRepository, EFSpendsRepository>();
-			services.AddScoped<IEmailService, EmailService>();
 			services.AddScoped<IAuthorizationService, AuthorizationService>();
 			services.AddScoped<IUserAuthorizeService, UserAuthorizeService>();
+			services.AddScoped<IEmailService, EmailService>();
+			services.AddScoped<IAccountGroupService, AccountGroupService>();
+
+			services.AddScoped<IAccountGroupRepository, EFAccountGroupRepository>();
+			services.AddScoped<ISpendTypeRepository, EFSpendTypeRepository>();
+			services.AddScoped<IUserRespository, EFUserRepository>();
+			services.AddScoped<ISpendsRepository, EFSpendsRepository>();
 			services.AddScoped<IAuthorizationDataRepository, EFAuthorizationDataRepository>();
 			services.AddScoped<IAccountRepository, EFAccountRepository>();
 			services.AddScoped<ITransferRepository, EFTransferRepository>();
 			services.AddScoped<IAutomaticTaskRepository, EFAutomaticTaskRepository>();
-
 			services.AddScoped<ILoanRepository, EFLoanRepository>();
 			services.AddScoped<IResourceAccessRepository, EFResourceAccessRepository>();
+			
 			services.AddScoped<IScheduledTasksService, ScheduledTasksService>();
-
 			services.AddScoped<IAccountFinanceService, AccountFinanceService>();
 			services.AddScoped<ILoanService, LoanService>();
 		}

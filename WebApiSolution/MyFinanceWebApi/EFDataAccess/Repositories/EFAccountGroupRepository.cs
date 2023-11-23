@@ -29,8 +29,7 @@ namespace EFDataAccess.Repositories
 					DisplayValue = accountGroupClientViewModel.AccountGroupDisplayValue,
 					AccountGroupPosition = accountGroupClientViewModel.AccountGroupPosition,
 					DisplayDefault = accountGroupClientViewModel.DisplayDefault,
-					UserId = userId,
-					AccountGroupId = GetNextId()
+					UserId = userId
 				};
 
 				var insertedEntity = Context.AccountGroup.Add(efAccountGroup);
@@ -112,11 +111,6 @@ namespace EFDataAccess.Repositories
 				positionAccg.AccountGroupPosition = pos++;
 				Debug.WriteLine($"Accg {positionAccg.AccountGroupName}: {positionAccg.AccountGroupPosition}");
 			}
-		}
-
-		private int GetNextId()
-		{
-			return Context.AccountGroup.Max(accg => accg.AccountGroupId);
 		}
 	}
 }

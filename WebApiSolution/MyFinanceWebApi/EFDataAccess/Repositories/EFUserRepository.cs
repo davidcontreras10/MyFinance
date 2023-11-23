@@ -15,7 +15,7 @@ namespace EFDataAccess.Repositories
 {
 	public class EFUserRepository : BaseEFRepository, IUserRespository
 	{
-		public EFUserRepository(Models.MyFinanceContext context) : base(context)
+		public EFUserRepository(MyFinanceContext context) : base(context)
 		{
 		}
 
