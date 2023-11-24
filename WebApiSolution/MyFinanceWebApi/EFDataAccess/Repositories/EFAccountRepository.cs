@@ -391,9 +391,15 @@ namespace EFDataAccess.Repositories
 
 				((List<FullAccountInfoViewModel>)accgViewModel.Accounts).Add(newAcc);
 			}
+
+			foreach (var accountGroup in accountGroupViewModels)
+			{
+				accountGroup.Accounts = accountGroup.Accounts.OrderBy(acc => acc.Position);
+			}
+
 			return new UserAccountsViewModel
 			{
-				AccountGroupMainViewViewModels = accountGroupViewModels
+				AccountGroupMainViewViewModels = accountGroupViewModels.OrderBy(g => g.AccountGroupPosition)
 			};
 		}
 

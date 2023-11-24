@@ -74,7 +74,7 @@ namespace MyFinanceWebApp.Services.WebApiServices
 		{
 			var url = CreateMethodUrl("user");
 			var request = new WebApiRequest(url, HttpMethod.Get, token);
-			var result = await GetResponseAsAsync<UserAccountsViewModel>(request);
+				var result = await GetResponseAsAsync<UserAccountsViewModel>(request);
 			return result;
 		}
 
