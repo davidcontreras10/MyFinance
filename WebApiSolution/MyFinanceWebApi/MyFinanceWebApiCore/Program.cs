@@ -24,6 +24,11 @@ namespace MyFinanceWebApiCore
 					logging.ClearProviders();
 					logging.AddConsole();
 				})
+				.ConfigureAppConfiguration((hostingContext, config) =>
+				{
+					config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+						  .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+				})
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
 					webBuilder.UseStartup<Startup>();
