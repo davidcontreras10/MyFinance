@@ -49,32 +49,22 @@ namespace MyFinanceWebApiCore.Controllers
 			_accountService.AddAccount(userId, clientAddAccount);
 		}
 
-		[Route("supportedAccountInclude")]
-		[HttpGet]
-		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
-			[FromQuery] ClientAddSpendAccountIncludeUpdate[] listUpdates)
-		{
-			var userId = GetUserId();
-			var supportedAccountIncludeViewModelList = _accountService.GetSupportedAccountIncludeViewModel(listUpdates, userId);
-			return supportedAccountIncludeViewModelList;
-		}
-
 		[Route("finance")]
 		[HttpPost]
 		//[IncludeRestrictObjectHeader]
-		public IEnumerable<AccountFinanceViewModel> GetAccountFinanceViewModel([FromBody] ClientAccountFinanceViewModel[] accountPeriods)
+		public async Task<IEnumerable<AccountFinanceViewModel>> GetAccountFinanceViewModel([FromBody] ClientAccountFinanceViewModel[] accountPeriods)
 		{
 			var userId = GetUserId();
-			var accountFinanceViewModelList = _accountFinanceService.GetAccountFinanceViewModel(accountPeriods, userId);
+			var accountFinanceViewModelList = await _accountFinanceService.GetAccountFinanceViewModelAsync(accountPeriods, userId);
 			return accountFinanceViewModelList;
 		}
 
 		[Route("finance/summary")]
 		[HttpGet]
-		public IEnumerable<BankAccountSummary> GetAccountFinanceSummaryViewModel()
+		public async Task<IEnumerable<BankAccountSummary>> GetAccountFinanceSummaryViewModel()
 		{
 			var userId = GetUserId();
-			var accounts = _accountFinanceService.GetAccountFinanceSummaryViewModel(userId);
+			var accounts = await _accountFinanceService.GetAccountFinanceSummaryViewModelAsync(userId);
 			return accounts;
 		}
 
@@ -97,10 +87,10 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("{accountGroupId}")]
 		[HttpGet]
-		public AccountMainViewModel GetAccountDetailsViewModel(int? accountGroupId = null)
+		public async Task<AccountMainViewModel> GetAccountDetailsViewModelAsync(int? accountGroupId = null)
 		{
 			var userId = GetUserId();
-			var result = _accountService.GetAccountDetailsViewModel(userId, accountGroupId);
+			var result = await _accountService.GetAccountDetailsViewModelAsync(userId, accountGroupId);
 			return result;
 		}
 
@@ -123,27 +113,27 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("add")]
 		[HttpGet]
-		public AddAccountViewModel GetAddAccountViewModel()
+		public async Task<AddAccountViewModel> GetAddAccountViewModel()
 		{
 			var userId = GetUserId();
-			var result = _accountService.GetAddAccountViewModel(userId);
+			var result = await _accountService.GetAddAccountViewModelAsync(userId);
 			return result;
 		}
 
 		[Route("positions")]
 		[HttpPut]
-		public IEnumerable<ItemModified> UpdateAccountPositions([FromBody] IEnumerable<ClientAccountPosition> accountPositions)
+		public async Task<IEnumerable<ItemModified>> UpdateAccountPositions([FromBody] IEnumerable<ClientAccountPosition> accountPositions)
 		{
 			var userId = GetUserId();
-			var result = _accountService.UpdateAccountPositions(userId, accountPositions);
+			var result = await _accountService.UpdateAccountPositionsAsync(userId, accountPositions);
 			return result;
 		}
 
 		[HttpPatch]
-		public void UpdateAccount([FromBody] ClientEditAccount clientEditAccount)
+		public async Task UpdateAccount([FromBody] ClientEditAccount clientEditAccount)
 		{
 			var userId = GetUserId();
-			_accountService.UpdateAccount(userId, clientEditAccount);
+			await _accountService.UpdateAccountAsync(userId, clientEditAccount);
 		}
 
 		#endregion

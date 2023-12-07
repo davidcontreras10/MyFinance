@@ -60,7 +60,7 @@ namespace MyFinanceBackend.Data
 			return result;
 		}
 
-		public void UpdateAccount(string userId, ClientEditAccount clientEditAccount)
+		public Task UpdateAccountAsync(string userId, ClientEditAccount clientEditAccount)
 		{
 			if (!clientEditAccount.EditAccountFields.Any())
 			{
@@ -86,9 +86,10 @@ namespace MyFinanceBackend.Data
 			};
 
 			ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNT_EDIT, parameters);
+			return Task.CompletedTask;
 		}
 
-		public IEnumerable<ItemModified> UpdateAccountPositions(string userId,
+		public Task<IEnumerable<ItemModified>> UpdateAccountPositionsAsync(string userId,
 			IEnumerable<ClientAccountPosition> accountPositions)
 		{
 			var parameters = new[]
@@ -100,10 +101,10 @@ namespace MyFinanceBackend.Data
 
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNT_POSITION_UPDATE, parameters);
 			var result = ServicesUtils.CreateAccountAffected(dataSet);
-			return result;
+			return Task.FromResult(result);
 		}
 
-		public AddAccountViewModel GetAddAccountViewModel(string userId)
+		public Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId)
 		{
 			var parameters = new[]
 			{
@@ -113,7 +114,7 @@ namespace MyFinanceBackend.Data
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNTS_CREATE_VIEW_MODEL, parameters);
 			var resultSet = ServicesUtils.CreateAccountAddViewModelResultSet(dataSet);
 			var result = CreateAddAccountViewModel(resultSet);
-			return result;
+			return Task.FromResult(result);
 		}
 
 		public void AddAccount(string userId, ClientAddAccount clientAddAccount)
@@ -154,19 +155,6 @@ namespace MyFinanceBackend.Data
 			ExecuteStoredProcedure(DatabaseConstants.SP_ACCOUNT_DELETE, parameters);
 		}
 
-		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
-			IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string userId)
-		{
-			var dataTable = CreateClientAddSpendAccountIncludeUpdateDataTable(listUpdates);
-			var dataTableParameter = new SqlParameter(DatabaseConstants.PAR_ACCOUNT_INCLUDE_UPDATE_TABLE, dataTable);
-			var userIdParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
-			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_ADD_SPEND_ACCOUNT_INCLUDE_LIST, userIdParameter,
-				dataTableParameter);
-			var supportedAccountIncludeViewModelDb = ServicesUtils.CreateSupportedAccountIncludeViewModelDb(dataSet);
-			var result = CreateSupportedAccountIncludeViewModel(supportedAccountIncludeViewModelDb);
-			return result;
-		}
-
 		public UserAccountsViewModel GetAccountsByUserId(string userId)
 		{
 			if (string.IsNullOrEmpty(userId))
@@ -177,35 +165,26 @@ namespace MyFinanceBackend.Data
 			return ServicesUtils.CreateMainViewModel(dataSet);
 		}
 
-		public IEnumerable<AccountBasicInfo> GetBankSummaryAccountsByUserId(string userId)
-		{
-			var userParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
-			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_BANK_SUMMARY_ACCOUNT_LIST, userParameter);
-			if (dataSet == null || dataSet.Tables.Count == 0)
-			{
-				return new AccountBasicInfo[0];
-			}
-
-			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountBasicInfo);
-		}
-
-		public IEnumerable<BankAccountPeriodBasicId> GetBankSummaryAccountsPeriodByUserId(string userId)
+		public Task<IEnumerable<BankAccountPeriodBasicId>> GetBankSummaryAccountsPeriodByUserIdAsync(string userId, DateTime? dateTime)
 		{
 			var userParameter = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
 			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_BANK_SUMMARY_ACCOUNT_PERIOD_LIST, userParameter);
+			IEnumerable<BankAccountPeriodBasicId> res;
 			if (dataSet == null || dataSet.Tables.Count == 0)
 			{
-				return Array.Empty<BankAccountPeriodBasicId>();
+				res = Array.Empty<BankAccountPeriodBasicId>();
+				return Task.FromResult(res);
 			}
 
-			return ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateBankAccountPeriodBasicId);
+			res = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateBankAccountPeriodBasicId);
+			return Task.FromResult(res);
 		}
 
-		public IEnumerable<AccountViewModel> GetOrderedAccountViewModelList(IEnumerable<int> accountIds, string userId)
+		public Task<IEnumerable<AccountViewModel>> GetOrderedAccountViewModelListAsync(IEnumerable<int> accountIds, string userId)
 		{
 			if (accountIds == null || !accountIds.Any())
 			{
-				return Array.Empty<AccountViewModel>();
+				return Task.FromResult((IEnumerable<AccountViewModel>)Array.Empty<AccountViewModel>());
 			}
 
 			var idsDataTable = ServicesUtils.CreateIntDataTable(accountIds);
@@ -215,11 +194,11 @@ namespace MyFinanceBackend.Data
 				accountIdsDataTable);
 			if (dataSet == null || dataSet.Tables.Count == 0)
 			{
-				return new AccountViewModel[] { };
+				return Task.FromResult((IEnumerable<AccountViewModel>)Array.Empty<AccountViewModel>());
 			}
 
 			var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateAccountViewModel);
-			return result;
+			return Task.FromResult(result);
 		}
 
 		public IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds)
@@ -305,7 +284,7 @@ namespace MyFinanceBackend.Data
 			return result;
 		}
 
-		public AccountMainViewModel GetAccountDetailsViewModel(string userId, int? accountGroupId)
+		public Task<AccountMainViewModel> GetAccountDetailsViewModelAsync(string userId, int? accountGroupId)
 		{
 			var parameters = new[]
 			{
@@ -324,11 +303,11 @@ namespace MyFinanceBackend.Data
 			var accountDetailsViewModel = CreateAccountDetailsViewModel(resultSets);
 			var accountGroupViewModels = ServicesUtils.CreateGenericList(dataSet.Tables[1],
 				ServicesUtils.CreateAccountGroupViewModel);
-			return new AccountMainViewModel
+			return Task.FromResult(new AccountMainViewModel
 			{
 				AccountDetailsViewModels = accountDetailsViewModel,
 				AccountGroupViewModels = accountGroupViewModels
-			};
+			});
 		}
 
 		public async Task<IReadOnlyCollection<AccountDetailsPeriodViewModel>> GetAccountDetailsPeriodViewModelAsync(string userId, DateTime dateTime)

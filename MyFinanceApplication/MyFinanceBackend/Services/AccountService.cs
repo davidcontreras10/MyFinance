@@ -35,12 +35,6 @@ namespace MyFinanceBackend.Services
 			return await _accountRepository.GetAccountDetailsPeriodViewModelAsync(userId, dateTime);
 		}
 
-		public IEnumerable<SupportedAccountIncludeViewModel> GetSupportedAccountIncludeViewModel(
-			IEnumerable<ClientAddSpendAccountIncludeUpdate> listUpdates, string userId)
-		{
-			return _accountRepository.GetSupportedAccountIncludeViewModel(listUpdates, userId);
-		}
-
 		public UserAccountsViewModel GetAccountsByUserId(string userId)
 		{
 			if (string.IsNullOrEmpty(userId))
@@ -61,25 +55,25 @@ namespace MyFinanceBackend.Services
 	        _accountRepository.AddAccount(userId, clientAddAccount);
         }
 
-        public AddAccountViewModel GetAddAccountViewModel(string userId)
-        {
-	        return _accountRepository.GetAddAccountViewModel(userId);
-        }
+		public async Task<AddAccountViewModel> GetAddAccountViewModelAsync(string userId)
+		{
+			return await _accountRepository.GetAddAccountViewModelAsync(userId);
+		}
 
-	    public AccountMainViewModel GetAccountDetailsViewModel(string userId, int? accountGroupId)
+	    public async Task<AccountMainViewModel> GetAccountDetailsViewModelAsync(string userId, int? accountGroupId)
 	    {
-	        return _accountRepository.GetAccountDetailsViewModel(userId, accountGroupId);
+	        return await _accountRepository.GetAccountDetailsViewModelAsync(userId, accountGroupId);
 	    }
 
-	    public IEnumerable<ItemModified> UpdateAccountPositions(string userId,
+	    public async Task<IEnumerable<ItemModified>> UpdateAccountPositionsAsync(string userId,
 			IEnumerable<ClientAccountPosition> accountPositions)
 	    {
-		    return _accountRepository.UpdateAccountPositions(userId, accountPositions);
+		    return await _accountRepository.UpdateAccountPositionsAsync(userId, accountPositions);
 	    }
 
-		public void UpdateAccount(string userId, ClientEditAccount clientEditAccount)
+		public async Task UpdateAccountAsync(string userId, ClientEditAccount clientEditAccount)
 		{
-			_accountRepository.UpdateAccount(userId, clientEditAccount);
+			await _accountRepository.UpdateAccountAsync(userId, clientEditAccount);
 		}
 
 		public IEnumerable<AccountIncludeViewModel> GetAccountIncludeViewModel(string userId, int currencyId)

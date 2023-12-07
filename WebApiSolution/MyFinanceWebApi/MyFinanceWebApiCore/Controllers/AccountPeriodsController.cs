@@ -9,6 +9,7 @@ using MyFinanceWebApiCore.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore.Controllers
 {
@@ -25,7 +26,7 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[HttpGet]
 		[Route("{accountPeriodId}/excel")]
-		public FileContentResult GetAccountPeriodExcelFileAsync([FromRoute] int accountPeriodId, [FromQuery] bool isPending = true)
+		public async Task<FileContentResult> GetAccountPeriodExcelFileAsync([FromRoute] int accountPeriodId, [FromQuery] bool isPending = true)
 		{
 			var accountPeriods = new ClientAccountFinanceViewModel
 			{
@@ -35,7 +36,7 @@ namespace MyFinanceWebApiCore.Controllers
 			};
 
 			var userId = GetUserId();
-			var accountFinanceViewModelList = _accountFinanceService.GetAccountFinanceViewModel(new[] { accountPeriods }, userId);
+			var accountFinanceViewModelList = await _accountFinanceService.GetAccountFinanceViewModelAsync(new[] { accountPeriods }, userId);
 			var bytes = ExcelFileHelper.GenerateFile(accountFinanceViewModelList.ToList());
 			return File(bytes, "application/octet-stream", ExcelFileHelper.GetFileName(accountFinanceViewModelList));
 		}

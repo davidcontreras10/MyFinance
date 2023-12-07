@@ -24,22 +24,13 @@ namespace MyFinanceBackend.Data
 
 		#endregion
 
-	    public IEnumerable<AppUser> GetOwendUsersByUserId(string userId)
+	    public Task<IEnumerable<AppUser>> GetOwendUsersByUserIdAsync(string userId)
 	    {
 	        var sqlParameterUsername = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
 	        var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USERS_OWNED_LIST, sqlParameterUsername);
 	        var result = ServicesUtils.CreateGenericList(dataSet.Tables[0], ServicesUtils.CreateUser);
-	        return result;
+			return Task.FromResult(result);
 	    }
-
-	    public AppUser GetUserByUserId(string userId)
-		{
-			var sqlParameterUsername = new SqlParameter(DatabaseConstants.PAR_USER_ID, userId);
-			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_LIST, sqlParameterUsername);
-			return dataSet == null || dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0
-					   ? null
-					   : ServicesUtils.CreateUser(dataSet.Tables[0].Rows[0]);
-		}
 
 		public async Task<AppUser> GetUserByUserIdAsync(string userId)
 		{
@@ -50,29 +41,14 @@ namespace MyFinanceBackend.Data
 					   : ServicesUtils.CreateUser(dataSet.Tables[0].Rows[0]);
 		}
 
-		public AppUser GetUserByUsername(string username)
+		public Task<AppUser> GetUserByUsernameAsync(string username)
 	    {
 	        var sqlParameterUsername = new SqlParameter(DatabaseConstants.PAR_USERNAME, username);
 	        var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_LIST, sqlParameterUsername);
-	        return dataSet == null || dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0
-	            ? null
-	            : ServicesUtils.CreateUser(dataSet.Tables[0].Rows[0]);
+			return dataSet == null || dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0
+				? Task.FromResult((AppUser)null)
+				: Task.FromResult(ServicesUtils.CreateUser(dataSet.Tables[0].Rows[0]));
         }
-
-	    public LoginResult AttemptToLogin(string username, string encryptedPassword)
-		{
-			var sqlParameterUsername = new SqlParameter(DatabaseConstants.PAR_USERNAME, username);
-			var sqlParameterPassword = new SqlParameter(DatabaseConstants.PAR_PASSWORD, encryptedPassword);
-			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_LOGIN_ATTEMPT, sqlParameterUsername,
-													 sqlParameterPassword);
-			if (dataSet == null || dataSet.Tables.Count == 0)
-				return null;
-			var dataRow = dataSet.Tables[0].Rows.Count > 0 ? dataSet.Tables[0].Rows[0] : null;
-			var userDataRow = dataSet.Tables.Count > 1 && dataSet.Tables[1].Rows.Count > 0
-									  ? dataSet.Tables[1].Rows[0]
-									  : null;
-			return ServicesUtils.CreateResultLogin(dataRow, userDataRow);
-		}
 
 		public async Task<LoginResult> AttemptToLoginAsync(string username, string encryptedPassword)
 		{
@@ -89,7 +65,7 @@ namespace MyFinanceBackend.Data
 			return ServicesUtils.CreateResultLogin(dataRow, userDataRow);
 		}
 
-		public bool SetPassword(string userId, string encryptedPassword)
+		public async Task<bool> SetPasswordAsync(string userId, string encryptedPassword)
 		{
 			var parameters = new[]
 			{
@@ -97,11 +73,11 @@ namespace MyFinanceBackend.Data
 				new SqlParameter(DatabaseConstants.PAR_PASSWORD, encryptedPassword)
 			};
 
-			var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USER_SET_PASSWORD, parameters);
+			var dataSet = await ExecuteStoredProcedureAsync(DatabaseConstants.SP_USER_SET_PASSWORD, parameters);
 			return dataSet != null && dataSet.Tables.Count > 0 && dataSet.Tables[0].Rows.Count > 0;
 		}
 
-	    public bool UpdateUser(ClientEditUser user)
+	    public Task<bool> UpdateUserAsync(ClientEditUser user)
 	    {
 	        var modifiedParameter =
 	            new SqlParameter(DatabaseConstants.PAR_OUTPUT_MODIFIED, SqlDbType.Bit)
@@ -120,10 +96,10 @@ namespace MyFinanceBackend.Data
 
 	        ExecuteStoredProcedure(DatabaseConstants.SP_USERS_EDIT, parameters);
 	        var result = (bool) modifiedParameter.Value;
-	        return result;
+			return Task.FromResult(result);
 	    }
 
-	    public string AddUser(ClientAddUser user)
+	    public Task<string> AddUserAsync(ClientAddUser user)
 	    {
 	        if (user == null)
 	        {
@@ -143,10 +119,10 @@ namespace MyFinanceBackend.Data
 	        var dataSet = ExecuteStoredProcedure(DatabaseConstants.SP_USERS_ADD, parameters);
 	        if (dataSet.Tables.Count < 1 || dataSet.Tables[0].Rows.Count < 1)
 	        {
-	            return null;   
+				return Task.FromResult(string.Empty);   
 	        }
 
-	        return dataSet.Tables[0].Rows[0].ToString(DatabaseConstants.COL_USER_ID);
+			return Task.FromResult(dataSet.Tables[0].Rows[0].ToString(DatabaseConstants.COL_USER_ID));
 	    }
 
         void ITransactional.BeginTransaction()

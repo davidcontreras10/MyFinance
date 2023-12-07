@@ -99,18 +99,21 @@ namespace MyFinanceModel.ViewModel
 
     public class FrontStyleData
     {
-	    private string _headerColor;
+        private const string defaultHeaderColor = "#ffffff";
+        private const string defaultBorderColor = "#5f9ea0";
+
+		private string _headerColor;
 	    private string _borderColor;
 
 	    public string HeaderColor
 	    {
-            get => string.IsNullOrEmpty(_headerColor) ? "#ffffff" : _headerColor;
+            get => string.IsNullOrEmpty(_headerColor) ? defaultHeaderColor : _headerColor;
 	        set => _headerColor = value;
 	    }
 
 	    public string BorderColor
 	    {
-			get => string.IsNullOrEmpty(_borderColor) ? "#5f9ea0" : _borderColor;
+			get => string.IsNullOrEmpty(_borderColor) ? defaultBorderColor : _borderColor;
 	        set => _borderColor = value;
 	    }
     }

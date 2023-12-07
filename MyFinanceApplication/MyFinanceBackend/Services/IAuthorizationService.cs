@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceBackend.Attributes;
 
 namespace MyFinanceBackend.Services
 {
     public interface IAuthorizationService
     {
-        bool IsAuthorized(string authenticatedUserId, IEnumerable<string> targetUserIds,
+        Task<bool> IsAuthorizedAsync(string authenticatedUserId, IEnumerable<string> targetUserIds,
             ResourceActionRequiredAttribute resourceActionRequiredAttribute);
     }
 }

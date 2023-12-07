@@ -73,6 +73,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Data\LoanRepository.cs" />
     <Compile Remove="Token\TokenManager.cs" />
     <Compile Remove="Token\Tokens.cs" />
   </ItemGroup>

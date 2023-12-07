@@ -3,9 +3,11 @@ using MyFinanceBackend.Services;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using MyFinanceModel;
+
 using System.Collections.Generic;
 using System;
 using MyFinanceWebApiCore.Authentication;
+using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore.Controllers
 {
@@ -33,16 +35,16 @@ namespace MyFinanceWebApiCore.Controllers
 		[Route("actionResult")]
 		[RequiresHeaderFilter(ServiceAppHeader.ServiceAppHeaderType.ApplicationModule)]
 		[HttpGet]
-		public SpendActionResult GetSpendActionResult([FromQuery] int spendId, [FromQuery] ResourceActionNames actionType)
+		public async Task<SpendActionResult> GetSpendActionResult([FromQuery] int spendId, [FromQuery] ResourceActionNames actionType)
 		{
 			var moduleValue = GetModuleNameValue();
-			var result = _spendsService.GetSpendActionResult(spendId, actionType, moduleValue);
+			var result = await _spendsService.GetSpendActionResultAsync(spendId, actionType, moduleValue);
 			return result;
 		}
 
 		[Route("confirmation")]
 		[HttpPut]
-		public IEnumerable<SpendItemModified> ConfirmPendingSpend([FromQuery] int spendId, [FromBody] DateTimeModel newDateTime)
+		public async Task<IEnumerable<SpendItemModified>> ConfirmPendingSpend([FromQuery] int spendId, [FromBody] DateTimeModel newDateTime)
 		{
 			if (spendId == 0)
 			{
@@ -54,12 +56,12 @@ namespace MyFinanceWebApiCore.Controllers
 				throw new ArgumentNullException(nameof(newDateTime));
 			}
 
-			var modifiedItems = _spendsService.ConfirmPendingSpend(spendId, newDateTime.NewDateTime);
+			var modifiedItems = await _spendsService.ConfirmPendingSpendAsync(spendId, newDateTime.NewDateTime);
 			return modifiedItems;
 		}
 
 		[HttpPatch]
-		public IEnumerable<SpendItemModified> EditSpend([FromQuery] int spendId, [FromBody] ClientEditSpendModel model)
+		public async Task<IEnumerable<SpendItemModified>> EditSpend([FromQuery] int spendId, [FromBody] ClientEditSpendModel model)
 		{
 			if(spendId < 0)
 			{
@@ -73,66 +75,66 @@ namespace MyFinanceWebApiCore.Controllers
 
 			model.SpendId = spendId;
 			model.UserId = GetUserId();
-			return _spendsService.EditSpend(model);
+			return await _spendsService.EditSpendAsync(model);
 		}
 
 		[Route("basic")]
 		[HttpPost]
-		public IEnumerable<ItemModified> AddBasicSpend([FromBody] ClientBasicTrxByPeriod clientBasicTrxByPeriod)
+		public async Task<IEnumerable<ItemModified>> AddBasicSpend([FromBody] ClientBasicTrxByPeriod clientBasicTrxByPeriod)
 		{
 			clientBasicTrxByPeriod.UserId = GetUserId();
-			return _spendsService.AddBasicTransaction(clientBasicTrxByPeriod, TransactionTypeIds.Spend);
+			return await _spendsService.AddBasicTransactionAsync(clientBasicTrxByPeriod, TransactionTypeIds.Spend);
 		}
 
 		[Route("basic/income")]
 		[HttpPost]
-		public IEnumerable<ItemModified> AddBasicIncome([FromBody] ClientBasicTrxByPeriod clientBasicTrxByPeriod)
+		public async Task<IEnumerable<ItemModified>> AddBasicIncome([FromBody] ClientBasicTrxByPeriod clientBasicTrxByPeriod)
 		{
 			clientBasicTrxByPeriod.UserId = GetUserId();
-			return _spendsService.AddBasicTransaction(clientBasicTrxByPeriod, TransactionTypeIds.Saving);
+			return await _spendsService.AddBasicTransactionAsync(clientBasicTrxByPeriod, TransactionTypeIds.Saving);
 		}
 
 		[HttpPost]
-		public IEnumerable<ItemModified> AddSpendCurrency(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<ItemModified>> AddSpendCurrency(ClientAddSpendModel clientAddSpendModel)
 		{
 			clientAddSpendModel.UserId = GetUserId();
-			var result = _spendsService.AddSpend(clientAddSpendModel);
+			var result = await _spendsService.AddSpendAsync(clientAddSpendModel);
 			return result;
 		}
 
 		[Route("income")]
 		[HttpPost]
-		public IEnumerable<ItemModified> AddIncome(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<ItemModified>> AddIncome(ClientAddSpendModel clientAddSpendModel)
 		{
 			clientAddSpendModel.UserId = GetUserId();
-			var result = _spendsService.AddIncome(clientAddSpendModel);
+			var result = await _spendsService.AddIncomeAsync(clientAddSpendModel);
 			return result;
 		}
 
 		[HttpDelete]
-		public IEnumerable<ItemModified> DeleteSpend(int spendId)
+		public async Task<IEnumerable<ItemModified>> DeleteSpend(int spendId)
 		{
 			var userId = GetUserId();
-			var itemModifiedList = _spendsService.DeleteSpend(userId, spendId);
+			var itemModifiedList = await _spendsService.DeleteSpendAsync(userId, spendId);
 			return itemModifiedList;
 		}
 
 		[Route("add")]
 		[HttpGet]
-		public IEnumerable<AddSpendViewModel> GetAddSpendViewModel([FromQuery] int[] accountPeriodIds)
+		public async Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModel([FromQuery] int[] accountPeriodIds)
 		{
 			var userId = GetUserId();
-			var addSpendViewModelList = _spendsService.GetAddSpendViewModel(accountPeriodIds, userId);
+			var addSpendViewModelList = await _spendsService.GetAddSpendViewModelAsync(accountPeriodIds, userId);
 			return addSpendViewModelList;
 		}
 
 
 		[Route("edit")]
 		[HttpGet]
-		public IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId)
+		public async Task<IEnumerable<EditSpendViewModel>> GetEditSpendViewModel(int accountPeriodId, int spendId)
 		{
 			var userId = GetUserId();
-			var editSpendViewModelList = _spendsService.GetEditSpendViewModel(accountPeriodId, spendId,
+			var editSpendViewModelList = await _spendsService.GetEditSpendViewModelAsync(accountPeriodId, spendId,
 				userId);
 			return editSpendViewModelList;
 		}

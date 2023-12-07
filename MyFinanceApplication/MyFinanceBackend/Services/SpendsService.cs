@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MyFinanceBackend.Data;
 using MyFinanceBackend.Models;
 using MyFinanceBackend.ServicesExceptions;
@@ -31,7 +32,7 @@ namespace MyFinanceBackend.Services
 
 		#region Public Methods
 
-		public SpendActionResult GetSpendActionResult(int spendId, ResourceActionNames actionType, ApplicationModules applicationModule)
+		public async Task<SpendActionResult> GetSpendActionResultAsync(int spendId, ResourceActionNames actionType, ApplicationModules applicationModule)
 		{
 			if (actionType == ResourceActionNames.Unknown)
 			{
@@ -43,30 +44,30 @@ namespace MyFinanceBackend.Services
 				throw new ArgumentException(nameof(applicationModule));
 			}
 
-			var spendAttributes = _spendsRepository.GetSpendAttributes(spendId);
+			var spendAttributes = await _spendsRepository.GetSpendAttributesAsync(spendId);
 			var applicationResource = ApplicationResources.Spends;
-			var resourcesAccessResponse = _resourceAccessRepository.GetResourceAccessReport(applicationResourceId: (int)applicationResource,
+			var resourcesAccessResponse = await _resourceAccessRepository.GetResourceAccessReportAsync(applicationResourceId: (int)applicationResource,
 				applicationModuleId: (int)applicationModule, resourceActionId: (int)actionType, resourceAccessLevelId: null);
 			var response = CreateSpendActionResult(spendAttributes, resourcesAccessResponse, actionType);
 			return response;
 		}
 
-		public IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId)
+		public async Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModelAsync(IEnumerable<int> accountPeriodIds, string userId)
 		{
-			return _spendsRepository.GetAddSpendViewModel(accountPeriodIds, userId);
+			return await _spendsRepository.GetAddSpendViewModelAsync(accountPeriodIds, userId);
 		}
 
-		public IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId)
+		public async Task<IEnumerable<EditSpendViewModel>> GetEditSpendViewModelAsync(int accountPeriodId, int spendId, string userId)
 		{
-			return _spendsRepository.GetEditSpendViewModel(accountPeriodId, spendId, userId);
+			return await _spendsRepository.GetEditSpendViewModelAsync(accountPeriodId, spendId, userId);
 		}
 
-		public IEnumerable<SavedSpend> GetSavedSpends(int spendId)
+		public async Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId)
 		{
-			return _spendsRepository.GetSavedSpends(spendId);
+			return await _spendsRepository.GetSavedSpendsAsync(spendId);
 		}
 
-		public IEnumerable<SpendItemModified> AddBasicTransaction(ClientBasicTrxByPeriod clientBasicTrxByPeriod, TransactionTypeIds transactionTypeId)
+		public async Task<IEnumerable<SpendItemModified>> AddBasicTransactionAsync(ClientBasicTrxByPeriod clientBasicTrxByPeriod, TransactionTypeIds transactionTypeId)
 		{
 			if (clientBasicTrxByPeriod.Amount <= 0)
 				throw new InvalidAmountException();
@@ -76,58 +77,54 @@ namespace MyFinanceBackend.Services
 				throw new ArgumentException($"{nameof(transactionTypeId)} cannot be invalid");
 			}
 
-			var clientAddSpendModel =
-				_spendsRepository.CreateClientAddSpendModel(clientBasicTrxByPeriod,
+			var clientAddSpendModel = await
+				_spendsRepository.CreateClientAddSpendModelAsync(clientBasicTrxByPeriod,
 					clientBasicTrxByPeriod.AccountPeriodId);
-			return transactionTypeId == TransactionTypeIds.Saving ? AddIncome(clientAddSpendModel) : AddSpend(clientAddSpendModel);
+			return transactionTypeId == TransactionTypeIds.Saving
+				? await AddIncomeAsync(clientAddSpendModel)
+				: await AddSpendAsync(clientAddSpendModel);
 		}
 
-		public IEnumerable<SpendItemModified> AddIncome(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<SpendItemModified>> AddIncomeAsync(ClientAddSpendModel clientAddSpendModel)
 		{
 			if (clientAddSpendModel.Amount <= 0)
 				throw new InvalidAmountException();
 			clientAddSpendModel.AmountTypeId = TransactionTypeIds.Saving;
-			var result = _spendsRepository.AddSpend(clientAddSpendModel);
+			var result = await _spendsRepository.AddSpendAsync(clientAddSpendModel);
 			return result;
 		}
 
-		public IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel)
+		public async Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel)
 		{
 			if (clientAddSpendModel == null)
 				throw new ArgumentNullException(nameof(clientAddSpendModel));
 			if (clientAddSpendModel.Amount <= 0)
 				throw new ArgumentException("Amount must be greater than zero");
 			clientAddSpendModel.AmountTypeId = TransactionTypeIds.Spend;
-			var result = _spendsRepository.AddSpend(clientAddSpendModel);
+			var result = await _spendsRepository.AddSpendAsync(clientAddSpendModel);
 			return result;
 		}
 
-		public IEnumerable<SpendItemModified> DeleteSpend(string userId, int spendId)
+		public async Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId)
 		{
-			var result = _spendsRepository.DeleteSpend(userId, spendId);
+			var result = await _spendsRepository.DeleteSpendAsync(userId, spendId);
 			return result;
 		}
 
-		public DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId)
+		public async Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model)
 		{
-			var result = _spendsRepository.GetDateRange(accountIds, dateTime, userId);
+			return await _spendsRepository.EditSpendAsync(model);
+		}
+
+		public async Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray)
+		{
+			var result = await _spendsRepository.GetAccountsCurrencyAsync(accountIdsArray);
 			return result;
 		}
 
-		public IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model)
+		public async Task<IEnumerable<SpendItemModified>> ConfirmPendingSpendAsync(int spendId, DateTime newPaymentDate)
 		{
-			return _spendsRepository.EditSpend(model);
-		}
-
-		public IEnumerable<AccountCurrencyPair> GetAccountsCurrency(IEnumerable<int> accountIdsArray)
-		{
-			var result = _spendsRepository.GetAccountsCurrency(accountIdsArray);
-			return result;
-		}
-
-		public IEnumerable<SpendItemModified> ConfirmPendingSpend(int spendId, DateTime newPaymentDate)
-		{
-			var spends = _spendsRepository.GetSavedSpends(spendId);
+			var spends = await _spendsRepository.GetSavedSpendsAsync(spendId);
 			if (spends == null || !spends.Any())
 			{
 				return new SpendItemModified[0];
@@ -145,7 +142,7 @@ namespace MyFinanceBackend.Services
 						throw new SpendNotPendingException(financeSpend.SpendId);
 					}
 
-					var modifiedItems = _spendsRepository.EditSpend(financeSpend);
+					var modifiedItems = await _spendsRepository.EditSpendAsync(financeSpend);
 					modifiedList.AddRange(modifiedItems);
 				}
 				_spendsRepository.Commit();
@@ -188,15 +185,15 @@ namespace MyFinanceBackend.Services
 			return result;
 		}
 
-		private static SpendActionResult CreateSpendActionResult(SpendActionAttributes spendActionAttributes, 
+		private static SpendActionResult CreateSpendActionResult(SpendActionAttributes spendActionAttributes,
 			IEnumerable<ResourceAccessReportRow> resourceAccessReportRows, ResourceActionNames resourceActionNames)
 		{
-			if(spendActionAttributes == null)
+			if (spendActionAttributes == null)
 			{
 				throw new ArgumentNullException(nameof(spendActionAttributes));
 			}
 
-			if(resourceAccessReportRows == null)
+			if (resourceAccessReportRows == null)
 			{
 				throw new ArgumentNullException(nameof(resourceAccessReportRows));
 			}
@@ -209,7 +206,7 @@ namespace MyFinanceBackend.Services
 				SpendId = spendActionAttributes.SpendId
 			};
 
-			var isValid = resourceAccessReportRows.Any(r => 
+			var isValid = resourceAccessReportRows.Any(r =>
 				spendActionAttributes.AccessLevels.Any(r2 => (int)r2 == r.ResourceAccessLevelId));
 			if (isValid)
 			{

@@ -7,6 +7,7 @@ using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using System;
+using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore.Controllers
 {
@@ -25,15 +26,15 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[ResourceActionRequired(ApplicationResources.Users, ResourceActionNames.View)]
 		[HttpGet]
-		public AppUser GetUserById([FromQuery] string targetUserId)
+		public async Task<AppUser> GetUserById([FromQuery] string targetUserId)
 		{
-			var appUser = _usersService.GetUser(targetUserId);
+			var appUser = await _usersService.GetUserAsync(targetUserId);
 			return appUser;
 		}
 
 		[ResourceActionRequired(ApplicationResources.Users, ResourceActionNames.Edit)]
 		[HttpPatch]
-		public bool UpdateUser([FromQuery] string targetUserId, [FromBody] ClientEditUser editUser)
+		public async Task<bool> UpdateUser([FromQuery] string targetUserId, [FromBody] ClientEditUser editUser)
 		{
 			if (string.IsNullOrEmpty(targetUserId))
 			{
@@ -42,40 +43,40 @@ namespace MyFinanceWebApiCore.Controllers
 
 			editUser.UserId = targetUserId;
 			var userId = GetUserId();
-			var result = _usersService.UpdateUser(userId, editUser);
+			var result = await _usersService.UpdateUserAsync(userId, editUser);
 			return result;
 		}
 
 		[AllowAnonymous]
 		[HttpPut]
 		[Route("ResetPassword")]
-		public TokenActionValidationResult UpdateUserPassword(ClientNewPasswordRequest passwordResetRequest)
+		public async Task<TokenActionValidationResult> UpdateUserPassword(ClientNewPasswordRequest passwordResetRequest)
 		{
-			var result = _usersService.UpdateUserPassword(passwordResetRequest);
+			var result = await _usersService.UpdateUserPasswordAsync(passwordResetRequest);
 			return result;
 		}
 
 		[AllowAnonymous]
 		[HttpGet]
 		[Route("ResetPassword")]
-		public ResetPasswordValidationResult GetResetPasswordValidationResult(string actionLink)
+		public async Task<ResetPasswordValidationResult> GetResetPasswordValidationResult(string actionLink)
 		{
-			var result = _usersService.ValidateResetPasswordActionResult(actionLink);
+			var result = await _usersService.ValidateResetPasswordActionResultAsync(actionLink);
 			return result;
 		}
 
 		[AllowAnonymous]
 		[HttpPost]
 		[Route("ResetPasswordEmail")]
-		public PostResetPasswordEmailResponse SendResetPasswordEmail([FromBody] ClientResetPasswordEmailRequest request)
+		public async Task<PostResetPasswordEmailResponse> SendResetPasswordEmail([FromBody] ClientResetPasswordEmailRequest request)
 		{
-			var valid = _usersService.ValidResetPasswordEmailRequest(request);
+			var valid = await _usersService.ValidResetPasswordEmailRequestAsync(request);
 			if (!valid)
 			{
 				return PostResetPasswordEmailResponse.Invalid;
 			}
 
-			var result = _usersService.SendResetPasswordEmail(request);
+			var result = await _usersService.SendResetPasswordEmailAsync(request);
 			return result;
 		}
 
@@ -90,17 +91,17 @@ namespace MyFinanceWebApiCore.Controllers
 		[AllowAnonymous]
 		[HttpGet]
 		[Route("ResultLoginAttempt")]
-		public LoginResult ResultLoginAttempt(string username, string password)
+		public async Task<LoginResult> ResultLoginAttempt(string username, string password)
 		{
-			return _usersService.AttemptToLogin(username, password);
+			return await _usersService.AttemptToLoginAsync(username, password);
 		}
 
 		[ResourceActionRequired(ApplicationResources.Users, ResourceActionNames.EditSensitive)]
 		[Route("Password")]
 		[HttpPatch]
-		public bool SetUserPassword([FromBody] SetPassword setPassword)
+		public async Task<bool> SetUserPassword([FromBody] SetPassword setPassword)
 		{
-			return _usersService.SetPassword(setPassword.UserId, setPassword.NewPassword);
+			return await _usersService.SetPasswordAsync(setPassword.UserId, setPassword.NewPassword);
 		}
 
 		#endregion

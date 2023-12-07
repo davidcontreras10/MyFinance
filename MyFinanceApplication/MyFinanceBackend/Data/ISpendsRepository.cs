@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceBackend.Models;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -9,23 +10,22 @@ namespace MyFinanceBackend.Data
 {
     public interface ISpendsRepository : ITransactional
     {
-	    IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId);
-	    IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId);
-		AccountFinanceViewModel GetAccountFinanceViewModel(int accountPeriodId, string userId);
-		IEnumerable<AccountFinanceViewModel> GetAccountFinanceViewModel(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId);
-		IEnumerable<SpendItemModified> DeleteSpend(string userId, int spendId);
-        DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId);
-        IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model);
-        IEnumerable<AccountCurrencyPair> GetAccountsCurrency(IEnumerable<int> accountIdsArray);
-        IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel);
-        IEnumerable<SpendItemModified> AddSpend(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
-        IEnumerable<SavedSpend> GetSavedSpends(int spendId);
-        IEnumerable<SpendItemModified> EditSpend(FinanceSpend financeSpend);
-        IEnumerable<ClientAddSpendAccount> GetAccountMethodConversionInfo(int? accountId, int? accountPeriodId,
+	    Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModelAsync(IEnumerable<int> accountPeriodIds, string userId);
+	    Task<IEnumerable<EditSpendViewModel>> GetEditSpendViewModelAsync(int accountPeriodId, int spendId, string userId);
+		Task<AccountFinanceViewModel> GetAccountFinanceViewModelAsync(int accountPeriodId, string userId);
+		Task<IEnumerable<AccountFinanceViewModel>> GetAccountFinanceViewModelAsync(IEnumerable<ClientAccountFinanceViewModel> requestItems, string userId);
+		Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId);
+        Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model);
+        Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray);
+        Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel);
+        Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
+		Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId);
+        Task<IEnumerable<SpendItemModified>> EditSpendAsync(FinanceSpend financeSpend);
+        Task<IEnumerable<ClientAddSpendAccount>> GetAccountMethodConversionInfoAsync(int? accountId, int? accountPeriodId,
             string userId, int currencyId);
-        ClientAddSpendModel CreateClientAddSpendModel(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
-        IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId, string userId);
-        void AddSpendDependency(int spendId, int dependencySpendId);
-        SpendActionAttributes GetSpendAttributes(int spendId);
+        Task<ClientAddSpendModel> CreateClientAddSpendModelAsync(ClientBasicAddSpend clientBasicAddSpend, int accountPeriodId);
+        Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrenciesAsync(int accountId, string userId);
+        Task AddSpendDependencyAsync(int spendId, int dependencySpendId);
+        Task<SpendActionAttributes> GetSpendAttributesAsync(int spendId);
     }
 }

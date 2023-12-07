@@ -19,8 +19,8 @@ IF OBJECT_ID('SpendType', 'U') IS NOT NULL
 	EXEC dbo.SpDropTable @ptable = 'SpendType';
 IF OBJECT_ID('CurrencyConverterMethod', 'U') IS NOT NULL
 	EXEC dbo.SpDropTable @ptable = 'CurrencyConverterMethod';
-IF OBJECT_ID('CurrencyConverter', 'U') IS NOT NULL
 	EXEC dbo.SpDropTable @ptable = 'CurrencyConverter';
+IF OBJECT_ID('CurrencyConverter', 'U') IS NOT NULL
 IF OBJECT_ID('Currency', 'U') IS NOT NULL
 	EXEC dbo.SpDropTable @ptable = 'Currency';
 END

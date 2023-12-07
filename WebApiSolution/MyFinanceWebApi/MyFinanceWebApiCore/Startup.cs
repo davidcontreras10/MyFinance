@@ -1,9 +1,9 @@
-using DataAccess;
+using EFDataAccess.Models;
+using EFDataAccess.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,10 +18,6 @@ using MyFinanceWebApiCore.Config;
 using MyFinanceWebApiCore.FilterAttributes;
 using MyFinanceWebApiCore.Services;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore
 {
@@ -129,36 +125,48 @@ namespace MyFinanceWebApiCore
 			});
 		}
 
-		private static void RegisterServices(IServiceCollection services)
+		private void RegisterServices(IServiceCollection services)
 		{
+			var loggerFactory = LoggerFactory.Create(builder =>
+			{
+				builder.AddDebug();
+			});
+
+			services.AddDbContext<MyFinanceContext>(
+				options =>
+				{
+					options.UseSqlServer(Configuration.GetConnectionString("SqlServerLocalConnection"))
+					.UseLoggerFactory(loggerFactory)  // Set the logger factory
+					.EnableSensitiveDataLogging();
+
+				});
 			services.AddSingleton<IBackendSettings, BackendSettings>();
-			services.AddScoped<IConnectionConfig, SqlServerConfig>();
 			services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+			services.AddScoped<ITrxExchangeService, TrxExchangeService>();
 			services.AddScoped<ITransferService, TransferService>();
 			services.AddScoped<IUsersService, UsersService>();
 			services.AddScoped<ISpendsService, SpendsService>();
-			services.AddScoped<IAccountsPeriodsService, AccountsPeriodsService>();
 			services.AddScoped<IAccountService, AccountService>();
 			services.AddScoped<ICurrencyService, CurrencyService>();
 			services.AddScoped<ISpendTypeService, SpendTypeService>();
-			services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
-			services.AddScoped<IAccountGroupService, AccountGroupService>();
-			services.AddScoped<ISpendTypeRepository, SpendTypeRepository>();
-			services.AddScoped<IUserRespository, UserRepository>();
-			services.AddScoped<ISpendsRepository, SpendsRepository>();
-			services.AddScoped<IEmailService, EmailService>();
 			services.AddScoped<IAuthorizationService, AuthorizationService>();
 			services.AddScoped<IUserAuthorizeService, UserAuthorizeService>();
-			services.AddScoped<IAuthorizationDataRepository, AuthorizationDataRepository>();
-			services.AddScoped<IAccountRepository, AccountRepository>();
-			services.AddScoped<ITransferRepository, TransferRepository>();
-			services.AddScoped<IAutomaticTaskRepository, AutomaticTaskRepository>();
+			services.AddScoped<IEmailService, EmailService>();
+			services.AddScoped<IAccountGroupService, AccountGroupService>();
 
-			services.AddScoped<ILoanRepository, LoanRepository>();
-			services.AddScoped<IResourceAccessRepository, ResourceAccessRepository>();
+			services.AddScoped<IAccountGroupRepository, EFAccountGroupRepository>();
+			services.AddScoped<ISpendTypeRepository, EFSpendTypeRepository>();
+			services.AddScoped<IUserRespository, EFUserRepository>();
+			services.AddScoped<ISpendsRepository, EFSpendsRepository>();
+			services.AddScoped<IAuthorizationDataRepository, EFAuthorizationDataRepository>();
+			services.AddScoped<IAccountRepository, EFAccountRepository>();
+			services.AddScoped<ITransferRepository, EFTransferRepository>();
+			services.AddScoped<IAutomaticTaskRepository, EFAutomaticTaskRepository>();
+			services.AddScoped<ILoanRepository, EFLoanRepository>();
+			services.AddScoped<IResourceAccessRepository, EFResourceAccessRepository>();
+			
 			services.AddScoped<IScheduledTasksService, ScheduledTasksService>();
-
 			services.AddScoped<IAccountFinanceService, AccountFinanceService>();
 			services.AddScoped<ILoanService, LoanService>();
 		}

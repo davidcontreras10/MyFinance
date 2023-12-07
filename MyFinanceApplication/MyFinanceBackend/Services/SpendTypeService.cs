@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceBackend.Data;
 using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
@@ -7,12 +8,12 @@ namespace MyFinanceBackend.Services
 {
     public interface ISpendTypeService
     {
-		IEnumerable<int> DeleteSpendTypeUser(string userId, int spendTypeId);
-		IEnumerable<int> AddSpendTypeUser(string userId, int spendTypeId);
-		IEnumerable<SpendTypeViewModel> GeSpendTypeByAccountViewModels(string userId, int? accountId);
-		IEnumerable<SpendTypeViewModel> GeSpendTypes(string userId, bool includeAll = true);
-        IEnumerable<int> AddEditSpendTypes(string userId, ClientSpendType clientSpendType);
-        void DeleteSpendType(string userId, int spendTypeId);
+		Task<IEnumerable<int>> DeleteSpendTypeUserAsync(string userId, int spendTypeId);
+		Task<IEnumerable<int>> AddSpendTypeUserAsync(string userId, int spendTypeId);
+		Task<IEnumerable<SpendTypeViewModel>> GeSpendTypeByAccountViewModelsAsync(string userId, int? accountId);
+		Task<IEnumerable<SpendTypeViewModel>> GeSpendTypesAsync(string userId, bool includeAll = true);
+        Task<IEnumerable<int>> AddEditSpendTypesAsync(string userId, ClientSpendType clientSpendType);
+        Task DeleteSpendTypeAsync(string userId, int spendTypeId);
     }
 
     public class SpendTypeService :  ISpendTypeService
@@ -34,37 +35,37 @@ namespace MyFinanceBackend.Services
 
 		#region Methods
 
-	    public IEnumerable<int> DeleteSpendTypeUser(string userId, int spendTypeId)
+	    public async Task<IEnumerable<int>> DeleteSpendTypeUserAsync(string userId, int spendTypeId)
 	    {
-		    return _spendTypeRepository.DeleteSpendTypeUser(userId, spendTypeId);
+		    return await _spendTypeRepository.DeleteSpendTypeUserAsync(userId, spendTypeId);
 	    }
 
-	    public IEnumerable<int> AddSpendTypeUser(string userId, int spendTypeId)
+	    public async Task<IEnumerable<int>> AddSpendTypeUserAsync(string userId, int spendTypeId)
 	    {
-		    return _spendTypeRepository.AddSpendTypeUser(userId, spendTypeId);
+		    return await _spendTypeRepository.AddSpendTypeUserAsync(userId, spendTypeId);
 	    }
 
-		public IEnumerable<SpendTypeViewModel> GeSpendTypeByAccountViewModels(string userId, int? accountId)
+		public async Task<IEnumerable<SpendTypeViewModel>> GeSpendTypeByAccountViewModelsAsync(string userId, int? accountId)
 		{
-			var result = _spendTypeRepository.GetSpendTypeByAccountViewModels(userId, accountId);
+			var result = await _spendTypeRepository.GetSpendTypeByAccountViewModelsAsync(userId, accountId);
 			return result;
 		}
 
-	    public IEnumerable<SpendTypeViewModel> GeSpendTypes(string userId, bool includeAll = true)
+	    public async Task<IEnumerable<SpendTypeViewModel>> GeSpendTypesAsync(string userId, bool includeAll = true)
 	    {
-		    var result = _spendTypeRepository.GetSpendTypes(userId, includeAll);
+		    var result = await _spendTypeRepository.GetSpendTypesAsync(userId, includeAll);
 		    return result;
 	    }
 
-        public IEnumerable<int> AddEditSpendTypes(string userId, ClientSpendType clientSpendType)
+        public async Task<IEnumerable<int>> AddEditSpendTypesAsync(string userId, ClientSpendType clientSpendType)
         {
-            var result = _spendTypeRepository.AddEditSpendTypes(userId, clientSpendType);
+            var result = await _spendTypeRepository.AddEditSpendTypesAsync(userId, clientSpendType);
             return result;
         }
 
-        public void DeleteSpendType(string userId, int spendTypeId)
+        public async Task DeleteSpendTypeAsync(string userId, int spendTypeId)
         {
-            _spendTypeRepository.DeleteSpendType(userId, spendTypeId);
+            await _spendTypeRepository.DeleteSpendTypeAsync(userId, spendTypeId);
         }
 
         #endregion

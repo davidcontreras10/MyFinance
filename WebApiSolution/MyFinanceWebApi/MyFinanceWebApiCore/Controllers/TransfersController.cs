@@ -4,6 +4,7 @@ using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using MyFinanceModel;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore.Controllers
 {
@@ -30,34 +31,34 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[Route("possibleCurrencies")]
 		[HttpGet]
-		public IEnumerable<CurrencyViewModel> GetPossibleCurrencies(int accountId)
+		public async Task<IEnumerable<CurrencyViewModel>> GetPossibleCurrencies(int accountId)
 		{
 			var userId = GetUserId();
-			return _transferService.GetPossibleCurrencies(accountId, userId);
+			return await _transferService.GetPossibleCurrenciesAsync(accountId, userId);
 		}
 
 		[Route("possibleDestination")]
 		[HttpGet]
-		public IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountPeriodId, int currencyId, BalanceTypes balanceType)
+		public async Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccount(int accountPeriodId, int currencyId, BalanceTypes balanceType)
 		{
 			var userId = GetUserId();
-			return _transferService.GetPossibleDestinationAccount(accountPeriodId, currencyId, userId,
+			return await _transferService.GetPossibleDestinationAccountAsync(accountPeriodId, currencyId, userId,
 				balanceType);
 		}
 
 		[Route("basicAccountInfo")]
 		[HttpGet]
-		public TransferAccountDataViewModel GetBasicAccountInfo(int accountPeriodId)
+		public async Task<TransferAccountDataViewModel> GetBasicAccountInfo(int accountPeriodId)
 		{
 			var userId = GetUserId();
-			return _transferService.GetBasicAccountInfo(accountPeriodId, userId);
+			return await _transferService.GetBasicAccountInfoAsync(accountPeriodId, userId);
 		}
 
 		[HttpPost]
-		public IEnumerable<ItemModified> CreateTransfer(TransferClientViewModel transferClientViewModel)
+		public async Task<IEnumerable<ItemModified>> CreateTransfer(TransferClientViewModel transferClientViewModel)
 		{
 			transferClientViewModel.UserId = GetUserId();
-			return _transferService.SubmitTransfer(transferClientViewModel);
+			return await _transferService.SubmitTransferAsync(transferClientViewModel);
 		}
 
 		#endregion

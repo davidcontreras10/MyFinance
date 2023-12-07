@@ -4,6 +4,7 @@ using MyFinanceModel.ClientViewModel;
 using MyFinanceModel.ViewModel;
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore.Controllers
 {
@@ -29,22 +30,22 @@ namespace MyFinanceWebApiCore.Controllers
 		#region Routes
 
 		[HttpGet]
-		public IEnumerable<SpendTypeViewModel> GetSpendTypes(bool includeAll = true)
+		public Task<IEnumerable<SpendTypeViewModel>> GetSpendTypes(bool includeAll = true)
 		{
 			var userId = GetUserId();
-			var result = _spendTypeService.GeSpendTypes(userId, includeAll);
+			var result = _spendTypeService.GeSpendTypesAsync(userId, includeAll);
 			return result;
 		}
 
 		[HttpDelete]
-		public void DeleteSpendType([FromBody] ClientSpendTypeId clientSpendTypeId)
+		public async Task DeleteSpendType([FromBody] ClientSpendTypeId clientSpendTypeId)
 		{
 			var userId = GetUserId();
-			_spendTypeService.DeleteSpendType(userId, clientSpendTypeId.SpendTypeId);
+			await _spendTypeService.DeleteSpendTypeAsync(userId, clientSpendTypeId.SpendTypeId);
 		}
 
 		[HttpPost]
-		public IEnumerable<int> AddSpendType(ClientAddSpendType spendType)
+		public async Task<IEnumerable<int>> AddSpendType(ClientAddSpendType spendType)
 		{
 			if (spendType == null)
 			{
@@ -53,12 +54,12 @@ namespace MyFinanceWebApiCore.Controllers
 
 			var userId = GetUserId();
 			spendType.SpendTypeId = 0;
-			var result = _spendTypeService.AddEditSpendTypes(userId, spendType);
+			var result = await _spendTypeService.AddEditSpendTypesAsync(userId, spendType);
 			return result;
 		}
 
 		[HttpPatch]
-		public IEnumerable<int> EditSpendType(ClientEditSpendType spendType)
+		public async Task<IEnumerable<int>> EditSpendType(ClientEditSpendType spendType)
 		{
 			if (spendType == null)
 			{
@@ -71,25 +72,25 @@ namespace MyFinanceWebApiCore.Controllers
 			}
 
 			var userId = GetUserId();
-			var result = _spendTypeService.AddEditSpendTypes(userId, spendType);
+			var result =  await _spendTypeService.AddEditSpendTypesAsync(userId, spendType);
 			return result;
 		}
 
 		[Route("user")]
 		[HttpPost]
-		public IEnumerable<int> AddSpendTypeUser([FromBody] ClientSpendTypeId clientSpendTypeId)
+		public async Task<IEnumerable<int>> AddSpendTypeUser([FromBody] ClientSpendTypeId clientSpendTypeId)
 		{
 			var userId = GetUserId();
-			var result = _spendTypeService.AddSpendTypeUser(userId, clientSpendTypeId.SpendTypeId);
+			var result = await _spendTypeService.AddSpendTypeUserAsync(userId, clientSpendTypeId.SpendTypeId);
 			return result;
 		}
 
 		[Route("user")]
 		[HttpDelete]
-		public IEnumerable<int> DeleteSpendTypeUser([FromBody] ClientSpendTypeId clientSpendTypeId)
+		public async Task<IEnumerable<int>> DeleteSpendTypeUser([FromBody] ClientSpendTypeId clientSpendTypeId)
 		{
 			var userId = GetUserId();
-			var result = _spendTypeService.DeleteSpendTypeUser(userId, clientSpendTypeId.SpendTypeId);
+			var result = await _spendTypeService.DeleteSpendTypeUserAsync(userId, clientSpendTypeId.SpendTypeId);
 			return result;
 		}
 

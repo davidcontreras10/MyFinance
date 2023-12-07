@@ -9,16 +9,14 @@ namespace MyFinanceBackend.Services
     {
         Task<AppUser> GetUserAsync(string userId);
 
-		AppUser GetUser(string userId);
         Task<LoginResult> AttemptToLoginAsync(string username, string password);
 
-		LoginResult AttemptToLogin(string username, string password);
-        bool SetPassword(string userId, string newPassword);
-        PostResetPasswordEmailResponse SendResetPasswordEmail(ClientResetPasswordEmailRequest request);
-        bool ValidResetPasswordEmailRequest(ClientResetPasswordEmailRequest request);
-        ResetPasswordValidationResult ValidateResetPasswordActionResult(string actionLink);
-        TokenActionValidationResult UpdateUserPassword(ClientNewPasswordRequest passwordResetRequest);
-        bool UpdateUser(string userId, ClientEditUser user);
-        bool AddUser(ClientAddUser user, string userId);
+        Task<bool> SetPasswordAsync(string userId, string newPassword);
+        Task<PostResetPasswordEmailResponse> SendResetPasswordEmailAsync(ClientResetPasswordEmailRequest request);
+        Task<bool> ValidResetPasswordEmailRequestAsync(ClientResetPasswordEmailRequest request);
+        Task<ResetPasswordValidationResult> ValidateResetPasswordActionResultAsync(string actionLink);
+        Task<TokenActionValidationResult> UpdateUserPasswordAsync(ClientNewPasswordRequest passwordResetRequest);
+        Task<bool> UpdateUserAsync(string userId, ClientEditUser user);
+        Task<bool> AddUserAsync(ClientAddUser user, string userId);
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MyFinanceBackend.Models;
 using MyFinanceModel;
 using MyFinanceModel.ClientViewModel;
@@ -9,18 +10,17 @@ namespace MyFinanceBackend.Services
 {
     public interface ISpendsService
     {
-        IEnumerable<SpendItemModified> AddIncome(ClientAddSpendModel clientAddSpendModel);
-        IEnumerable<SpendItemModified> AddSpend(ClientAddSpendModel clientAddSpendModel);
-        IEnumerable<SpendItemModified> DeleteSpend(string userId, int spendId);
-        DateRange GetDateRange(string accountIds, DateTime? dateTime, string userId);
-        IEnumerable<SpendItemModified> EditSpend(ClientEditSpendModel model);
-        IEnumerable<AccountCurrencyPair> GetAccountsCurrency(IEnumerable<int> accountIdsArray);
-        IEnumerable<SavedSpend> GetSavedSpends(int spendId);
-        IEnumerable<SpendItemModified> ConfirmPendingSpend(int spendId, DateTime newPaymentDate);
-        SpendActionResult GetSpendActionResult(int spendId, ResourceActionNames actionType, ApplicationModules applicationModule);
-	    IEnumerable<AddSpendViewModel> GetAddSpendViewModel(IEnumerable<int> accountPeriodIds, string userId);
-	    IEnumerable<EditSpendViewModel> GetEditSpendViewModel(int accountPeriodId, int spendId, string userId);
-	    IEnumerable<SpendItemModified> AddBasicTransaction(ClientBasicTrxByPeriod clientBasicTrxByPeriod,
+        Task<IEnumerable<SpendItemModified>> AddIncomeAsync(ClientAddSpendModel clientAddSpendModel);
+        Task<IEnumerable<SpendItemModified>> AddSpendAsync(ClientAddSpendModel clientAddSpendModel);
+        Task<IEnumerable<SpendItemModified>> DeleteSpendAsync(string userId, int spendId);
+        Task<IEnumerable<SpendItemModified>> EditSpendAsync(ClientEditSpendModel model);
+        Task<IEnumerable<AccountCurrencyPair>> GetAccountsCurrencyAsync(IEnumerable<int> accountIdsArray);
+        Task<IEnumerable<SavedSpend>> GetSavedSpendsAsync(int spendId);
+        Task<IEnumerable<SpendItemModified>> ConfirmPendingSpendAsync(int spendId, DateTime newPaymentDate);
+        Task<SpendActionResult> GetSpendActionResultAsync(int spendId, ResourceActionNames actionType, ApplicationModules applicationModule);
+	    Task<IEnumerable<AddSpendViewModel>> GetAddSpendViewModelAsync(IEnumerable<int> accountPeriodIds, string userId);
+	    Task<IEnumerable<EditSpendViewModel>> GetEditSpendViewModelAsync(int accountPeriodId, int spendId, string userId);
+	    Task<IEnumerable<SpendItemModified>> AddBasicTransactionAsync(ClientBasicTrxByPeriod clientBasicTrxByPeriod,
 		    TransactionTypeIds transactionTypeId);
     }
 }

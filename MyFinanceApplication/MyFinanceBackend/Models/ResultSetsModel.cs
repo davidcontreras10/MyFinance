@@ -178,7 +178,7 @@ namespace MyFinanceBackend.Models
 
     #region add spend validation
 
-    internal class ClientAddSpendValidationResultSet
+    public class ClientAddSpendValidationResultSet
     {
         public int AccountId { get; set; }
         public string AccountName { get; set; }

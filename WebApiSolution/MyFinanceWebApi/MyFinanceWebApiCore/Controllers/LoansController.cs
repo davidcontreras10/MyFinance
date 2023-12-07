@@ -6,6 +6,7 @@ using MyFinanceModel;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyFinanceWebApiCore.Controllers
 {
@@ -39,7 +40,7 @@ namespace MyFinanceWebApiCore.Controllers
 		}
 
 		[HttpPost]
-		public IEnumerable<SpendItemModified> CreateLoan(ClientLoanViewModel clientLoanViewModel)
+		public async Task<IEnumerable<SpendItemModified>> CreateLoan(ClientLoanViewModel clientLoanViewModel)
 		{
 			if (clientLoanViewModel == null)
 			{
@@ -47,13 +48,13 @@ namespace MyFinanceWebApiCore.Controllers
 			}
 
 			clientLoanViewModel.UserId = GetUserId();
-			var response = _loanService.CreateLoan(clientLoanViewModel);
+			var response = await _loanService.CreateLoanAsync(clientLoanViewModel);
 			return response;
 		}
 
 		[Route("payment")]
 		[HttpPost]
-		public IEnumerable<SpendItemModified> AddPayment(ClientLoanSpendViewModel clientLoanSpendViewModel)
+		public async Task<IEnumerable<SpendItemModified>> AddPayment(ClientLoanSpendViewModel clientLoanSpendViewModel)
 		{
 			if (clientLoanSpendViewModel == null)
 			{
@@ -61,22 +62,22 @@ namespace MyFinanceWebApiCore.Controllers
 			}
 
 			clientLoanSpendViewModel.UserId = GetUserId();
-			var response = _loanService.AddLoanSpend(clientLoanSpendViewModel);
+			var response = await _loanService.AddLoanSpendAsync(clientLoanSpendViewModel);
 			return response;
 		}
 
 		[Route("accounts")]
 		[HttpGet]
-		public IEnumerable<AccountDetailsViewModel> GetSupportedLoanAccount()
+		public async Task<IEnumerable<AccountDetailsViewModel>> GetSupportedLoanAccount()
 		{
 			var userId = GetUserId();
-			var result = _loanService.GetSupportedLoanAccount(userId);
+			var result = await _loanService.GetSupportedLoanAccountAsync(userId);
 			return result;
 		}
 
 		[Route("add")]
 		[HttpGet]
-		public AddLoanRecordViewModel GetAddLoanRecordViewModel(int accountId, DateTime dateTime)
+		public async Task<AddLoanRecordViewModel> GetAddLoanRecordViewModel(int accountId, DateTime dateTime)
 		{
 			if (accountId == 0)
 			{
@@ -84,13 +85,13 @@ namespace MyFinanceWebApiCore.Controllers
 			}
 
 			var userId = GetUserId();
-			var response = _loanService.GetAddLoanRecordViewModel(dateTime, accountId, userId);
+			var response = await _loanService.GetAddLoanRecordViewModelAsync(dateTime, accountId, userId);
 			return response;
 		}
 
 		[Route("add/payment")]
 		[HttpGet]
-		public AddLoanSpendViewModel GetAddLoanSpendViewModel(int loanRecordId)
+		public async Task<AddLoanSpendViewModel> GetAddLoanSpendViewModel(int loanRecordId)
 		{
 			if (loanRecordId == 0)
 			{
@@ -98,7 +99,7 @@ namespace MyFinanceWebApiCore.Controllers
 			}
 
 			var userId = GetUserId();
-			var response = _loanService.GetAddLoanSpendViewModel(loanRecordId, userId);
+			var response = await _loanService.GetAddLoanSpendViewModelAsync(loanRecordId, userId);
 			return response;
 		}
 
@@ -120,11 +121,11 @@ namespace MyFinanceWebApiCore.Controllers
 
 		[HttpGet]
 		[Route("destinationAccounts")]
-		public IEnumerable<AccountViewModel> GetPossibleDestinationAccount(int accountId, DateTime dateTime,
+		public async Task<IEnumerable<AccountViewModel>> GetPossibleDestinationAccount(int accountId, DateTime dateTime,
 			int currencyId)
 		{
 			var userId = GetUserId();
-			var result = _loanService.GetPossibleDestinationAccount(accountId, dateTime, userId, currencyId);
+			var result = await _loanService.GetPossibleDestinationAccountAsync(accountId, dateTime, userId, currencyId);
 			return result;
 		}
 
