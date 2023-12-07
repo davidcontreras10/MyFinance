@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 MyFinanceApplication/MyFinanceWebApp/Scripts/NgClient/
+/WebApiSolution/MyFinanceWebApi/MyFinanceWebApiCore/appsettings.Local.json
