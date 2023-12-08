@@ -169,10 +169,14 @@ namespace MyFinanceBackend.Services
 				throw new ArgumentNullException(nameof(transferClientViewModel));
 			}
 
-			var originAccountInfo = await GetBasicAccountInfoAsync(transferClientViewModel.AccountPeriodId,
-				transferClientViewModel.UserId);
 			var spend = await CreateTransferSpendClientAddSpendModelAsync(transferClientViewModel);
-			var income =  await CreateTransferIncomeClientAddSpendModelAsync(transferClientViewModel, originAccountInfo.AccountId);
+			var accounts = _accountRepository.GetAccountPeriodBasicInfo(new[] { transferClientViewModel.AccountPeriodId });
+			if(accounts == null || !accounts.Any())
+			{
+				throw new Exception($"Not account found for account period {transferClientViewModel.AccountPeriodId}");
+			}
+
+			var income = await CreateTransferIncomeClientAddSpendModelAsync(transferClientViewModel, accounts.First().AccountId);
 			return new TransferSpendsResponse
 			{
 				SpendModel = spend,
