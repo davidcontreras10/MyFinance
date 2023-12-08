@@ -271,7 +271,7 @@ namespace EFDataAccess.Repositories
 
 		public IEnumerable<AccountPeriodBasicInfo> GetAccountPeriodBasicInfo(IEnumerable<int> accountPeriodIds)
 		{
-			return Context.AccountPeriod
+			return Context.AccountPeriod.AsNoTracking()
 				.Where(accp => accountPeriodIds.Contains(accp.AccountPeriodId))
 				.Include(accp => accp.Account)
 				.Select(accp => new AccountPeriodBasicInfo
