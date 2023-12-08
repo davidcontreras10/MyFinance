@@ -501,8 +501,8 @@ namespace EFDataAccess.Repositories
 			{
 				AccountId = bacc.AccountId,
 				AccountPeriodId = currentAccountPeriods.FirstOrDefault(accp => accp.AccountId == bacc.AccountId)?.AccountPeriodId ?? 0,
-				FinancialEntityId = bacc.Account.FinancialEntityId,
-				FinancialEntityName = bacc.Account.FinancialEntity.Name
+				FinancialEntityId = bacc.Account.FinancialEntityId ?? 0,
+				FinancialEntityName = bacc.Account.FinancialEntity?.Name
 			});
 		}
 
