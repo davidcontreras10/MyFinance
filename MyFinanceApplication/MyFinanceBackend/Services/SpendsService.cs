@@ -179,7 +179,8 @@ namespace MyFinanceBackend.Services
 				SetPaymentDate = newDateTime,
 				OriginalAccountData = savedSpend.OriginalAccountData,
 				IncludedAccounts = savedSpend.IncludedAccounts,
-				IsPending = false
+				IsPending = false,
+				AmountTypeId = savedSpend.AmountTypeId
 			};
 
 			return result;

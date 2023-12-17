@@ -2,6 +2,7 @@
 using EFDataAccess.Helpers;
 using EFDataAccess.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyFinanceBackend.Data;
 using MyFinanceBackend.Models;
 using MyFinanceBackend.Services;
@@ -22,10 +23,13 @@ namespace EFDataAccess.Repositories
 	public class EFSpendsRepository : BaseEFRepository, ISpendsRepository
 	{
 		private readonly ITrxExchangeService _trxExchangeService;
+		private readonly ILogger<EFSpendsRepository> _logger;
 
-		public EFSpendsRepository(MyFinanceContext context, ITrxExchangeService trxExchangeService) : base(context)
+		public EFSpendsRepository(MyFinanceContext context, ITrxExchangeService trxExchangeService, ILogger<EFSpendsRepository> logger) : base(context)
 		{
+			context.Database.SetCommandTimeout(180);
 			_trxExchangeService = trxExchangeService;
+			_logger = logger;
 		}
 
 		#region Publics
@@ -901,6 +905,8 @@ namespace EFDataAccess.Repositories
 			DateTime? currentDate
 			)
 		{
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
 			if (requestItems == null || !requestItems.Any())
 			{
 				return Array.Empty<AccountFinanceViewModel>();
@@ -966,6 +972,8 @@ namespace EFDataAccess.Repositories
 				accViewModels.Add(viewModel);
 			}
 
+			stopwatch.Stop();
+			_logger.LogDebug($"Finance Info took {stopwatch.Elapsed:g}");
 			return accViewModels;
 		}
 

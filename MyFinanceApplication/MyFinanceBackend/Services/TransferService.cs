@@ -16,21 +16,21 @@ namespace MyFinanceBackend.Services
 
 	    private readonly ISpendsRepository _spendsRepository;
 		private readonly ISpendsService _spendsService;
-		private readonly ICurrencyService _currencyService;
 		private readonly ISpendTypeRepository _spendTypeRepository;
 		private readonly IAccountRepository _accountRepository;
 		private readonly ITransferRepository _transferRepository;
+		private readonly ITrxExchangeService _trxExchangeService;
 
 		#endregion
 
 		#region Constructor
 
-		public TransferService(ISpendsService spendsService, ICurrencyService currencyService,
+		public TransferService(ISpendsService spendsService, ITrxExchangeService trxExchangeService,
 			ISpendTypeRepository spendTypeRepository, IAccountRepository accountRepository,
 			ITransferRepository transferRepository, ISpendsRepository spendsRepository)
 		{
 			_spendsService = spendsService;
-			_currencyService = currencyService;
+			_trxExchangeService = trxExchangeService;
 			_spendTypeRepository = spendTypeRepository;
 			_accountRepository = accountRepository;
 			_transferRepository = transferRepository;
@@ -195,8 +195,8 @@ namespace MyFinanceBackend.Services
 			var destinationCurrencyConverterMethodId = await _transferRepository.GetDefaultCurrencyConvertionMethodsAsync(originalAccountId,
 				transferClientViewModel.CurrencyId, destinationAccountInfo.CurrencyId,
 				transferClientViewModel.UserId);
-			var currencyConversionResult = await _currencyService.GetExchangeRateResultAsync(destinationCurrencyConverterMethodId,
-				transferClientViewModel.SpendDate);
+			var currencyConversionResult = await _trxExchangeService.GetExchangeRateResultAsync(destinationCurrencyConverterMethodId,
+				transferClientViewModel.SpendDate, true, destinationAccountInfo.CurrencyId, transferClientViewModel.CurrencyId);
 			if (currencyConversionResult == null ||
 				currencyConversionResult.ResultTypeValue != ExchangeRateResult.ResultType.Success)
 				throw new Exception("Invalid currency conversion method result.");

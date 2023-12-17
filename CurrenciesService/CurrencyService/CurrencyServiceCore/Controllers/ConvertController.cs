@@ -23,12 +23,12 @@ namespace CurrencyServiceCore
 
 		[Route("ExchangeRateResultByMethodId")]
 		[HttpGet]
-		public async Task<ExchangeRateResult> ExchangeRateResultByMethodId(int methodId, DateTime dateTime)
+		public async Task<ExchangeRateResult> ExchangeRateResultByMethodId(int methodId, DateTime dateTime, bool isPurchase)
 		{
 			System.Diagnostics.Trace.TraceInformation("ExchangeRateResultByMethodId called Log");
 			try
 			{
-				return await GetExchangeRateResultAsync(methodId, dateTime);
+				return await GetExchangeRateResultAsync(methodId, dateTime, isPurchase);
 			}
 			catch (Exception e)
 			{
@@ -47,24 +47,22 @@ namespace CurrencyServiceCore
 				throw new ArgumentNullException(nameof(model));
 			if (model.MethodIds == null || !model.MethodIds.Any())
 				throw new ArgumentException("Cannot be null or empty", nameof(model));
-			var methodIds = model.MethodIds;
-			var dateTime = model.DateTime;
 			var list = new List<ExchangeRateResult>();
-			foreach (int i in methodIds.Where(i => !list.Exists(item => item.MethodId == i)))
+			foreach(var request in model.MethodIds)
 			{
-				list.Add(await GetExchangeRateResultAsync(i, dateTime));
+				list.Add(await GetExchangeRateResultAsync(request.Id, model.DateTime, request.IsPurchase));
 			}
 			return list;
 		}
 
-		private async Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime)
+		private async Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime, bool isPurchase)
 		{
 			if (methodId == 0)
 			{
 				throw new ArgumentException("Cannot be 0", "methodId");
 			}
 
-			var result = await _dolarColonesBccrService.GetExchangeRateResultByMethodIdAsync(methodId, dateTime);
+			var result = await _dolarColonesBccrService.GetExchangeRateResultByMethodIdAsync(methodId, isPurchase, dateTime);
 			result.MethodId = methodId;
 			return result;
 		}

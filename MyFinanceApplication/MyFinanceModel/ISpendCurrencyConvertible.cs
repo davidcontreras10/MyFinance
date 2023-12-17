@@ -13,5 +13,6 @@ namespace MyFinanceModel
         IEnumerable<ClientAddSpendAccount> IncludedAccounts { get; }
         int CurrencyId { get; }
         DateTime PaymentDate { get; }
-    }
+		TransactionTypeIds AmountTypeId { get; }
+	}
 }
