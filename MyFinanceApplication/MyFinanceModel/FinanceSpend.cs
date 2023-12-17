@@ -32,6 +32,8 @@ namespace MyFinanceModel
 
         public DateTime PaymentDate => SetPaymentDate;
 
-        #endregion
-    }
+		public TransactionTypeIds AmountTypeId { get; set; }
+
+		#endregion
+	}
 }

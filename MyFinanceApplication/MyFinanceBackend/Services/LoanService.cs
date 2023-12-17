@@ -273,7 +273,7 @@ namespace MyFinanceBackend.Services
 			{
 				var clientAddSpendModel = await _spendsRepository.CreateClientAddSpendModelAsync(clientLoanSpendViewModel, accountPeriod.AccountPeriodId);
 				var conversionResult = await _currencyService
-					.GetExchangeRateResultAsync(clientAddSpendModel.OriginalAccountData.ConvertionMethodId, clientLoanSpendViewModel.SpendDate);
+					.GetExchangeRateResultAsync(clientAddSpendModel.OriginalAccountData.ConvertionMethodId, clientLoanSpendViewModel.SpendDate, false);
 				if (!conversionResult.Success)
 				{
 					throw new Exception("Invalid conversion result");

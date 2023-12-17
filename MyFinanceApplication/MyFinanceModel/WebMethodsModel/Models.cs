@@ -10,8 +10,14 @@ namespace MyFinanceModel.WebMethodsModel
 
     public class ExchangeRateResultModel
     {
-        public IEnumerable<int> MethodIds { get; set; }
+        public IEnumerable<MethodParam> MethodIds { get; set; }
         public DateTime DateTime { get; set; }
+
+        public class MethodParam
+        {
+            public int Id { get; set; }
+            public bool IsPurchase { get; set; }
+        }
     }
 
     public class EditSpendModel : BaseMethodModel

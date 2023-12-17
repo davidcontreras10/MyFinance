@@ -1,6 +1,7 @@
 ﻿using MyFinanceBackend.Models;
 using MyFinanceBackend.ServicesExceptions;
 using MyFinanceModel;
+using MyFinanceModel.WebMethodsModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,13 @@ namespace MyFinanceBackend.Services
 	public interface ITrxExchangeService
 	{
 		Task<IEnumerable<AddSpendAccountDbValues>> ConvertTrxCurrencyAsync(ISpendCurrencyConvertible spendCurrencyConvertible, IReadOnlyCollection<AccountCurrencyPair> accountCurrencyPairList);
+		Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime, bool isIncome, int accountCurrencyId, int amountCurrencyId);
 	}
 
 	public class TrxExchangeService : ITrxExchangeService
 	{
+		private const int CountryCurrencyId = 1;
+
 		private readonly ICurrencyService _currencyService;
 
 		public TrxExchangeService(ICurrencyService currencyService)
@@ -34,13 +38,21 @@ namespace MyFinanceBackend.Services
 			var accountModelCurrencyList = CreateAccountModelCurrency(spendCurrencyConvertible, accountCurrencyPairList);
 			var addSpendAccountDbValues = await ConvertTrxCurrencyAsync(spendCurrencyConvertible.PaymentDate,
 																			spendCurrencyConvertible.CurrencyId,
-																			accountModelCurrencyList);
+																			accountModelCurrencyList,
+																			spendCurrencyConvertible.AmountTypeId == MyFinanceModel.ClientViewModel.TransactionTypeIds.Saving
+																			);
 			foreach (var value in addSpendAccountDbValues)
 			{
 				value.IsOriginal = value.AccountId == spendCurrencyConvertible.OriginalAccountData.AccountId;
 			}
 
 			return addSpendAccountDbValues;
+		}
+
+		public async Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime, bool isIncome, int accountCurrencyId, int amountCurrencyId)
+		{
+			var isPurchase = IsPurchase(isIncome, accountCurrencyId, amountCurrencyId);
+			return await _currencyService.GetExchangeRateResultAsync(methodId, dateTime, isPurchase);
 		}
 
 		private static IEnumerable<AccountModelCurrency> CreateAccountModelCurrency(ISpendCurrencyConvertible spendCurrencyConvertible,
@@ -70,9 +82,12 @@ namespace MyFinanceBackend.Services
 			return accountModelCurrencyList;
 		}
 
-		private async Task<IEnumerable<AddSpendAccountDbValues>> ConvertTrxCurrencyAsync(DateTime dateTime, int amountCurrency,
-																			   IEnumerable<AccountModelCurrency>
-																				   accountModelCurrencies)
+		private async Task<IEnumerable<AddSpendAccountDbValues>> ConvertTrxCurrencyAsync(
+			DateTime dateTime,
+			int amountCurrency,
+			IEnumerable<AccountModelCurrency> accountModelCurrencies,
+			bool isIncome
+			)
 		{
 			var dbValues = new List<AddSpendAccountDbValues>();
 			dbValues.AddRange(
@@ -85,7 +100,11 @@ namespace MyFinanceBackend.Services
 			var methodIds =
 				accountModelCurrencies.Where(
 					item => dbValues.All(item2 => item2.AccountId != item.AccountInfo.AccountId))
-									  .Select(item3 => item3.AccountInfo.ConvertionMethodId);//TODO validate methodId not to be repeated
+									  .Select(item3 => new ExchangeRateResultModel.MethodParam
+									  {
+										  Id = item3.AccountInfo.ConvertionMethodId,
+										  IsPurchase = IsPurchase(isIncome, item3.AccountOriginalCurrencyId, amountCurrency)
+									  });//TODO validate methodId not to be repeated
 			if (!methodIds.Any())
 				return dbValues;
 			var exchangeRateResultList = await _currencyService.GetExchangeRateResultAsync(methodIds, dateTime);
@@ -102,6 +121,43 @@ namespace MyFinanceBackend.Services
 				);
 			return dbValues;
 		}
+
+		private static bool IsPurchase(bool isIncome, int accountCurrencyId, int amountCurrencyId)
+		{
+			if (accountCurrencyId == amountCurrencyId)
+			{
+				return false;
+			}
+
+			if (accountCurrencyId != CountryCurrencyId && amountCurrencyId != CountryCurrencyId)
+			{
+				throw new Exception("Unable to convert to a non country currency");
+			}
+
+			bool res;
+			//dolares account
+			if (accountCurrencyId != CountryCurrencyId)
+			{
+				//isIncome
+				res = false;
+				if (!isIncome)
+				{
+					res = true;
+				}
+			}
+			else //colones account
+			{
+				//isIncome
+				res = true;
+				if (!isIncome)
+				{
+					res = false;
+				}
+			}
+
+			return res;
+		}
+
 		private static AddSpendAccountDbValues CreateAddSpendAccountDbValues(AccountModelCurrency accountModelCurrency,
 																	 ExchangeRateResult exchangeRateResult)
 		{

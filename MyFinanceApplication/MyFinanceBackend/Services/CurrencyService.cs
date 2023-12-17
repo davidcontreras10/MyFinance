@@ -13,8 +13,8 @@ namespace MyFinanceBackend.Services
 {
 	public interface ICurrencyService
 	{
-		Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime);
-		Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultAsync(IEnumerable<int> methodIds, DateTime dateTime);
+		Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime, bool isPurchase);
+		Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultAsync(IEnumerable<ExchangeRateResultModel.MethodParam> methodIds, DateTime dateTime);
 	}
 
 	public class CurrencyService : WebApiBaseService, ICurrencyService
@@ -41,12 +41,12 @@ namespace MyFinanceBackend.Services
 
 		#region Public Methods
 
-		public async Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime)
+		public async Task<ExchangeRateResult> GetExchangeRateResultAsync(int methodId, DateTime dateTime, bool isPurchase)
 		{
-			return await GetExchangeRateResultServiceAsync(methodId, dateTime);
+			return await GetExchangeRateResultServiceAsync(methodId, dateTime, isPurchase);
 		}
 
-		public async Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultAsync(IEnumerable<int> methodIds, DateTime dateTime)
+		public async Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultAsync(IEnumerable<ExchangeRateResultModel.MethodParam> methodIds, DateTime dateTime)
 		{
 			return methodIds == null || !methodIds.Any()
 				? new List<ExchangeRateResult>()
@@ -57,16 +57,21 @@ namespace MyFinanceBackend.Services
 
 		#region Private Methods
 
-		private async Task<ExchangeRateResult> GetExchangeRateResultServiceAsync(int methodId, DateTime dateTime)
+		private async Task<ExchangeRateResult> GetExchangeRateResultServiceAsync(int methodId, DateTime dateTime, bool isPurchase)
 		{
 			var requestDateTime = dateTime.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-			var parameters = new Dictionary<string, object> { { "methodId", methodId }, { "dateTime", requestDateTime } };
+			var parameters = new Dictionary<string, object>
+			{
+				{ "methodId", methodId },
+				{ "dateTime", requestDateTime },
+				{ "isPurchase", isPurchase}
+			};
 			var methodUrl = CreateMethodUrl(CONVERT_METHOD_NAME, parameters);
 			var request = new WebApiRequest(methodUrl, HttpMethod.Get);
 			return await GetResponseAsAsync<ExchangeRateResult>(request);
 		}
 
-		private async Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultServiceAsync(IEnumerable<int> methodIds, DateTime dateTime)
+		private async Task<IEnumerable<ExchangeRateResult>> GetExchangeRateResultServiceAsync(IEnumerable<ExchangeRateResultModel.MethodParam> methodIds, DateTime dateTime)
 		{
 			var methodUrl = CreateMethodUrl(CONVERT_METHOD_BY_LIST_NAME);
 			var exchangeRateResultModel = new ExchangeRateResultModel
@@ -86,7 +91,7 @@ namespace MyFinanceBackend.Services
 		{
 			return _serviceUrl;
 		}
-		
+
 
 		#endregion
 	}
