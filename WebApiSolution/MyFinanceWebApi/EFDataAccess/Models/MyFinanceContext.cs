@@ -194,7 +194,7 @@ namespace EFDataAccess.Models
 			modelBuilder.Entity<AmountType>(entity =>
 			{
 				entity.HasIndex(e => e.AmountTypeName)
-					.HasName("AmountTypeName_unique")
+					.HasDatabaseName("AmountTypeName_unique")
 					.IsUnique();
 
 				entity.Property(e => e.AmountTypeName)
@@ -208,7 +208,7 @@ namespace EFDataAccess.Models
 					.HasName("PK_User");
 
 				entity.HasIndex(e => e.Username)
-					.HasName("AppUser_Unq_Username")
+					.HasDatabaseName("AppUser_Unq_Username")
 					.IsUnique();
 
 				entity.Property(e => e.UserId).HasDefaultValueSql("(newid())");
@@ -240,7 +240,7 @@ namespace EFDataAccess.Models
 				entity.HasNoKey();
 
 				entity.HasIndex(e => new { e.UserId, e.OwnerUserId })
-					.HasName("ClusteredIndex-20210912-193500")
+					.HasDatabaseName("ClusteredIndex-20210912-193500")
 					.IsClustered();
 
 				entity.HasOne(d => d.OwnerUser)
@@ -277,7 +277,7 @@ namespace EFDataAccess.Models
 			modelBuilder.Entity<AutomaticTask>(entity =>
 			{
 				entity.HasIndex(e => e.AutomaticTaskId)
-					.HasName("AutomaticTask_Unq_AutomaticTaskId")
+					.HasDatabaseName("AutomaticTask_Unq_AutomaticTaskId")
 					.IsUnique();
 
 				entity.Property(e => e.AutomaticTaskId).ValueGeneratedNever();
@@ -391,7 +391,7 @@ namespace EFDataAccess.Models
 			modelBuilder.Entity<ExecutedTask>(entity =>
 			{
 				entity.HasIndex(e => e.ExecutedTaskId)
-					.HasName("ExecutedTask_Unq_ExecutedTaskId")
+					.HasDatabaseName("ExecutedTask_Unq_ExecutedTaskId")
 					.IsUnique();
 
 				entity.Property(e => e.ExecuteDatetime).HasColumnType("datetime");
@@ -423,7 +423,7 @@ namespace EFDataAccess.Models
 			modelBuilder.Entity<LoanRecord>(entity =>
 			{
 				entity.HasIndex(e => e.SpendId)
-					.HasName("LoanRecord_UQ_SpendId")
+					.HasDatabaseName("LoanRecord_UQ_SpendId")
 					.IsUnique();
 
 				entity.Property(e => e.LoanRecordName)
@@ -457,7 +457,7 @@ namespace EFDataAccess.Models
 				entity.HasNoKey();
 
 				entity.HasIndex(e => new { e.LoanRecordId, e.SpendId })
-					.HasName("PK_LoanSpend")
+					.HasDatabaseName("PK_LoanSpend")
 					.IsUnique()
 					.IsClustered();
 
@@ -526,7 +526,7 @@ namespace EFDataAccess.Models
 				entity.HasNoKey();
 
 				entity.HasIndex(e => new { e.ResourceActionId, e.ApplicationResourceId, e.ResourceAccessLevelId, e.ApplicationModuleId })
-					.HasName("ClusteredIndex-20210912-193313")
+					.HasDatabaseName("ClusteredIndex-20210912-193313")
 					.IsClustered();
 
 				entity.HasOne(d => d.ApplicationModule)
@@ -558,7 +558,7 @@ namespace EFDataAccess.Models
 				entity.HasNoKey();
 
 				entity.HasIndex(e => new { e.AccountId, e.AccountPeriodId, e.SpendId })
-					.HasName("ClusteredIndex-20210912-192807")
+					.HasDatabaseName("ClusteredIndex-20210912-192807")
 					.IsClustered();
 
 				entity.Property(e => e.AccountCurrencySymbol)
@@ -597,7 +597,7 @@ namespace EFDataAccess.Models
 			modelBuilder.Entity<SpInTrxDef>(entity =>
 			{
 				entity.HasIndex(e => e.SpInTrxDefId)
-					.HasName("SpInTrxDef_Unq_SpInTrxDefId")
+					.HasDatabaseName("SpInTrxDef_Unq_SpInTrxDefId")
 					.IsUnique();
 
 				entity.Property(e => e.SpInTrxDefId).ValueGeneratedNever();
@@ -645,7 +645,7 @@ namespace EFDataAccess.Models
 				entity.HasNoKey();
 
 				entity.HasIndex(e => new { e.SpendId, e.DependencySpendId })
-					.HasName("PK_SpendDependencies")
+					.HasDatabaseName("PK_SpendDependencies")
 					.IsUnique()
 					.IsClustered();
 
@@ -698,7 +698,7 @@ namespace EFDataAccess.Models
 				entity.HasKey(e => new { e.TransferRecordId, e.SpendId });
 
 				entity.HasIndex(e => new { e.TransferRecordId, e.SpendId })
-					.HasName("ClusteredIndex-20210912-192222")
+					.HasDatabaseName("ClusteredIndex-20210912-192222")
 					.IsClustered();
 
 				entity.HasOne(d => d.Spend)
@@ -711,7 +711,7 @@ namespace EFDataAccess.Models
 			modelBuilder.Entity<TransferTrxDef>(entity =>
 			{
 				entity.HasIndex(e => e.TransferTrxDefId)
-					.HasName("TransferTrxDef_Unq_TransferTrxDefId")
+					.HasDatabaseName("TransferTrxDef_Unq_TransferTrxDefId")
 					.IsUnique();
 
 				entity.Property(e => e.TransferTrxDefId).ValueGeneratedNever();
@@ -734,7 +734,7 @@ namespace EFDataAccess.Models
 				entity.HasNoKey();
 
 				entity.HasIndex(e => new { e.UserId, e.ResourceActionId, e.ApplicationResourceId, e.ResourceAccessLevelId })
-					.HasName("ClusteredIndex-20210912-193345")
+					.HasDatabaseName("ClusteredIndex-20210912-193345")
 					.IsClustered();
 
 				entity.HasOne(d => d.ApplicationResource)

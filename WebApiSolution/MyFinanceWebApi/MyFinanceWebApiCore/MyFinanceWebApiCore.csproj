@@ -7,8 +7,8 @@
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.32">
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -29,7 +29,7 @@
       <HintPath>..\..\..\Utilities\StUtilities\obj\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
     </Reference>
     <Reference Include="MyFinanceBackend">
-      <HintPath>..\..\..\MyFinanceApplication\MyFinanceBackend\bin\Debug\netstandard2.0\MyFinanceBackend.dll</HintPath>
+      <HintPath>..\..\..\MyFinanceApplication\MyFinanceBackend\bin\Debug\netstandard2.1\MyFinanceBackend.dll</HintPath>
     </Reference>
     <Reference Include="MyFinanceModel">
       <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\netstandard2.0\MyFinanceModel.dll</HintPath>
