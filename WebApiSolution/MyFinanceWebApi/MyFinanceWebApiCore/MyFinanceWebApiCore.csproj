@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DContre.MyFinance.StUtilities" Version="1.0.0" />
     <PackageReference Include="EPPlus" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
@@ -25,9 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DContre.MyFinance.StUtilities">
-      <HintPath>..\..\..\Utilities\StUtilities\obj\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
-    </Reference>
     <Reference Include="MyFinanceBackend">
       <HintPath>..\..\..\MyFinanceApplication\MyFinanceBackend\bin\Debug\netstandard2.1\MyFinanceBackend.dll</HintPath>
     </Reference>

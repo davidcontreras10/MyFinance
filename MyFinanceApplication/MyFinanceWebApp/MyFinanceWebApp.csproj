@@ -59,8 +59,8 @@
       <HintPath>..\packages\Autofac.Mvc5.4.0.1\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DContre.MyFinance.StUtilities">
-      <HintPath>..\..\Utilities\StUtilities\bin\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
+    <Reference Include="DContre.MyFinance.StUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DContre.MyFinance.StUtilities.1.0.0\lib\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus, Version=6.0.8.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.6.0.8\lib\net462\EPPlus.dll</HintPath>
