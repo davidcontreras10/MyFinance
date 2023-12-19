@@ -1,9 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>DContre.MyFinance.StUtilities</AssemblyName>
-    <RootNamespace>DContre.MyFinance.StUtilities</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AssemblyName>DContre.MyFinance.StUtilities</AssemblyName>
+		<RootNamespace>DContre.MyFinance.StUtilities</RootNamespace>
+		<PackageId>DContre.MyFinance.StUtilities</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>dcontre10</Authors>
+		<Description>String Utilities for .NET MyFinanceApp</Description>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
 
 </Project>
