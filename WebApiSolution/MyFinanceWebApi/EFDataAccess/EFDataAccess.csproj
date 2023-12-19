@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DContre.MyFinance.StUtilities" Version="1.0.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14">
@@ -35,9 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DContre.MyFinance.StUtilities">
-      <HintPath>..\..\..\Utilities\StUtilities\obj\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
-    </Reference>
     <Reference Include="MyFinanceBackend">
       <HintPath>..\..\..\MyFinanceApplication\MyFinanceBackend\bin\Debug\netstandard2.1\MyFinanceBackend.dll</HintPath>
     </Reference>

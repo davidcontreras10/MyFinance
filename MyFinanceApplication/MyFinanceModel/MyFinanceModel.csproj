@@ -36,11 +36,7 @@
     <OutputPath>bin\AzureProd\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DContre.MyFinance.StUtilities">
-      <HintPath>..\..\Utilities\StUtilities\bin\Debug\netstandard2.0\DContre.MyFinance.StUtilities.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="DContre.MyFinance.StUtilities" Version="1.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
