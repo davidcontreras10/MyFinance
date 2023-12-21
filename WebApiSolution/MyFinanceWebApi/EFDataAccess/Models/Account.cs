@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
@@ -39,6 +40,7 @@ namespace EFDataAccess.Models
         public virtual FinancialEntity FinancialEntity { get; set; }
         public virtual PeriodDefinition PeriodDefinition { get; set; }
         public virtual AppUser User { get; set; }
+        public virtual AccountNotes Notes { get; set; }
         public virtual ICollection<AccountInclude> AccountIncludeAccount { get; set; }
         public virtual ICollection<AccountInclude> AccountIncludeAccountIncludeNavigation { get; set; }
         public virtual ICollection<AccountPeriod> AccountPeriod { get; set; }
@@ -46,4 +48,12 @@ namespace EFDataAccess.Models
         public virtual ICollection<TransferTrxDef> TransferTrxDef { get; set; }
         public virtual ICollection<UserBankSummaryAccount> UserBankSummaryAccount { get; set; }
     }
+
+	[Owned]
+	public class AccountNotes
+	{
+		public string Title { get; set; }
+		public string Content { get; set; }
+	}
 }
+    

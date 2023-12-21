@@ -72,6 +72,7 @@ namespace EFDataAccess.Models
 
 			modelBuilder.Entity<Account>(entity =>
 			{
+				entity.OwnsOne(e => e.Notes);
 				entity.Property(e => e.AccountTypeId).HasDefaultValueSql("((1))");
 
 				entity.Property(e => e.HeaderColor).HasMaxLength(500);

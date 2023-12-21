@@ -19,7 +19,11 @@ namespace MyFinanceModel.ViewModel
 
         public int AccountId { get; set; }
 
-        public string AccountName { get; set; }
+		public string NoteTitle { get; set; }
+		
+        public string NoteBody { get; set; }
+
+		public string AccountName { get; set; }
 
         public int Position { get; set; }
 

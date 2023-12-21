@@ -12,10 +12,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AccountPeriod = EFDataAccess.Models.AccountPeriod;
-using SpendType = EFDataAccess.Models.SpendType;
 
 namespace EFDataAccess.Repositories
 {
@@ -386,7 +384,9 @@ namespace EFDataAccess.Repositories
 					CurrentPeriodId = AccountHelpers.GetCurrentAccountPeriod(dateTime, acc)?.AccountPeriodId ?? 0,
 					FrontStyle = CreateFrontStyleData(acc.HeaderColor),
 					Type = (FullAccountInfoViewModel.AccountType)acc.AccountTypeId,
-					Position = acc.Position ?? 0
+					Position = acc.Position ?? 0,
+					NoteBody = acc.Notes?.Content,
+					NoteTitle = acc.Notes?.Title,
 				};
 
 				((List<FullAccountInfoViewModel>)accgViewModel.Accounts).Add(newAcc);
