@@ -45,7 +45,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\MyFinanceModel\MyFinanceModel.csproj" />
-    <ProjectReference Include="..\WebApiBaseConsumer\WebApiBaseConsumer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
@@ -58,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DContre.MyFinance.StUtilities" Version="1.0.0" />
+    <PackageReference Include="DContre.MyFinance.WebApiBaseConsumer" Version="1.0.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
