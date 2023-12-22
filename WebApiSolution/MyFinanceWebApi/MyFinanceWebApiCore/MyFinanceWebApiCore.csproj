@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="DContre.MyFinance.StUtilities" Version="1.0.0" />
+    <PackageReference Include="DContre.MyFinance.WebApiBaseConsumer" Version="1.0.0" />
     <PackageReference Include="EPPlus" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
@@ -31,9 +32,6 @@
     </Reference>
     <Reference Include="MyFinanceModel">
       <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\netstandard2.0\MyFinanceModel.dll</HintPath>
-    </Reference>
-    <Reference Include="WebApiBaseConsumer">
-      <HintPath>..\..\..\MyFinanceApplication\WebApiBaseConsumer\bin\Debug\netstandard2.0\WebApiBaseConsumer.dll</HintPath>
     </Reference>
   </ItemGroup>
 

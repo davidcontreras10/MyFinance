@@ -15,9 +15,6 @@
     <Reference Include="MyFinanceModel">
       <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\netstandard2.0\MyFinanceModel.dll</HintPath>
     </Reference>
-    <Reference Include="WebApiBaseConsumer">
-      <HintPath>..\..\..\MyFinanceApplication\WebApiBaseConsumer\bin\Debug\netstandard2.0\WebApiBaseConsumer.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DContre.MyFinance.WebApiBaseConsumer" Version="1.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

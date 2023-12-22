@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using WebApiBaseConsumer;
 
+
 namespace Domain.Repositories
 {
 	public class BccrWebApiService : WebApiBaseService, IBccrCurrencyRepository
