@@ -107,4 +107,11 @@ namespace MyFinanceModel.ViewModel
         public int? FinancialEntityId { get; set; }
         public string FinancialEntityName { get; set; }
     }
+
+	public class AccountNotes
+	{
+		public string NoteTitle { get; set; }
+
+		public string NoteContent { get; set; }
+	}
 }

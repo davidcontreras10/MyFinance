@@ -49,6 +49,13 @@ namespace MyFinanceWebApiCore.Controllers
 			_accountService.AddAccount(userId, clientAddAccount);
 		}
 
+		[Route("{accountId}/notes")]
+		[HttpPost]
+		public async Task<AccountNotes> UpdateAccountNotes([FromRoute] int accountId, [FromBody]AccountNotes accountNotes)
+		{
+			return await _accountService.UpdateNotes(accountNotes, accountId);
+		}
+
 		[Route("finance")]
 		[HttpPost]
 		//[IncludeRestrictObjectHeader]

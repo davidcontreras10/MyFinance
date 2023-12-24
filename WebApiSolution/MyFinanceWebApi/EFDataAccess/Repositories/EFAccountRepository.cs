@@ -829,6 +829,19 @@ namespace EFDataAccess.Repositories
 			return result;
 		}
 
+		public async Task<MyFinanceModel.ViewModel.AccountNotes> UpdateNotes(MyFinanceModel.ViewModel.AccountNotes accountNotes, int accountId)
+		{
+			var account = await Context.Account.Where(acc => acc.AccountId ==  accountId).FirstAsync();
+			account.Notes = new Models.AccountNotes
+			{
+				Content = accountNotes.NoteContent,
+				Title = accountNotes.NoteTitle
+			};
+
+			await Context.SaveChangesAsync();
+			return accountNotes;
+		}
+
 		#endregion
 	}
 }

@@ -791,6 +791,11 @@ namespace MyFinanceBackend.Data
 			};
 		}
 
+		public Task<AccountNotes> UpdateNotes(AccountNotes accountNotes, int accountId)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		#region Internal classes
