@@ -50,7 +50,8 @@ namespace CurrencyServiceCore
 			var list = new List<ExchangeRateResult>();
 			foreach(var request in model.MethodIds)
 			{
-				list.Add(await GetExchangeRateResultAsync(request.Id, model.DateTime, request.IsPurchase));
+				var dateTime = request.DateTime ?? model.DateTime;
+				list.Add(await GetExchangeRateResultAsync(request.Id, dateTime, request.IsPurchase));
 			}
 			return list;
 		}
