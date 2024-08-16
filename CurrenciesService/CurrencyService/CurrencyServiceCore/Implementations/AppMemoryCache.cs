@@ -4,8 +4,15 @@ using System;
 
 namespace CurrencyServiceCore.Implementations
 {
-	public class AppMemoryCache(IMemoryCache memoryCache) : IAppMemoryCache
+	public class AppMemoryCache : IAppMemoryCache
 	{
+		private readonly IMemoryCache memoryCache;
+
+		public AppMemoryCache(IMemoryCache memoryCache)
+		{
+			this.memoryCache = memoryCache;
+		}
+
 		public T Get<T>(string key)
 		{
 			return memoryCache.Get<T>(key);

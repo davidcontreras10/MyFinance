@@ -18,7 +18,7 @@ namespace Domain.Repositories
 	{
 
 		protected override string ControllerName => string.Empty;
-		private const RequestSource SelectedRequestSource = RequestSource.PostBccr;
+		private const RequestSource SelectedRequestSource = RequestSource.GetBccrBridge;
 
 		public BccrWebApiService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
 		{
