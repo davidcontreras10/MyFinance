@@ -1,11 +1,12 @@
-﻿using System;
-using System.Data;
+﻿using Domain.Models;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Domain.Repositories
 {
 	public interface IBccrCurrencyRepository
 	{
-		Task<DataTable> GetIndicatorAsync(string indicator, DateTime initial, DateTime end);
+		Task<IEnumerable<BccrSingleVentanillaModel>> GetIndicatorAsync(string indicator, DateTime initial, DateTime end);
 	}
 }

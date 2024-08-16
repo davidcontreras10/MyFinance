@@ -1,7 +1,10 @@
-﻿using System;
+﻿using DContre.MyFinance.StUtilities;
+using Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,13 +18,13 @@ namespace Domain.Repositories
 	{
 
 		protected override string ControllerName => string.Empty;
-		private const RequestSource SelectedRequestSource = RequestSource.GetBccrBridge;
+		private const RequestSource SelectedRequestSource = RequestSource.PostBccr;
 
 		public BccrWebApiService(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
 		{
 		}
 
-		public async Task<DataTable> GetIndicatorAsync(string indicator, DateTime initial, DateTime end)
+		public async Task<IEnumerable<BccrSingleVentanillaModel>> GetIndicatorAsync(string indicator, DateTime initial, DateTime end)
 		{
 			switch (SelectedRequestSource)
 			{
@@ -38,7 +41,7 @@ namespace Domain.Repositories
 			}
 		}
 
-		private async Task<DataTable> GetIndicatorPostBccrAsync(string indicator, DateTime initial, DateTime end)
+		private async Task<IEnumerable<BccrSingleVentanillaModel>> GetIndicatorPostBccrAsync(string indicator, DateTime initial, DateTime end)
 		{
 			var inicio = initial.ToString("dd/MM/yyyy");
 			var final = end.ToString("dd/MM/yyyy");
@@ -77,11 +80,10 @@ namespace Domain.Repositories
 			var reader = new StringReader(jsonResponse);
 			var theDataSet = new DataSet();
 			theDataSet.ReadXml(reader);
-			//var theDataSet = await response.Content.ReadAsAsync<DataSet>();
-			return theDataSet.Tables.Count > 0 ? theDataSet.Tables[0] : null;
+			return Convert(theDataSet);
 		}
 
-		private async Task<DataTable> GetIndicatorGetBccrAsync(string indicator, DateTime initial, DateTime end)
+		private async Task<IEnumerable<BccrSingleVentanillaModel>> GetIndicatorGetBccrAsync(string indicator, DateTime initial, DateTime end)
 		{
 			var inicio = initial.ToString("dd/MM/yyyy");
 			var final = end.ToString("dd/MM/yyyy");
@@ -115,10 +117,10 @@ namespace Domain.Repositories
 			var reader = new StringReader(jsonResponse);
 			var theDataSet = new DataSet();
 			theDataSet.ReadXml(reader);
-			return theDataSet.Tables.Count > 1 ? theDataSet.Tables[1] : null;
+			return Convert(theDataSet);
 		}
 
-		private async Task<DataTable> GetIndicatorGetBccrBridgeAsync(string indicator, DateTime initial, DateTime end)
+		private async Task<IEnumerable<BccrSingleVentanillaModel>> GetIndicatorGetBccrBridgeAsync(string indicator, DateTime initial, DateTime end)
 		{
 			var inicio = initial.ToString("dd/MM/yyyy");
 			var final = end.ToString("dd/MM/yyyy");
@@ -149,7 +151,7 @@ namespace Domain.Repositories
 			var reader = new StringReader(jsonResponse);
 			var theDataSet = new DataSet();
 			theDataSet.ReadXml(reader);
-			return theDataSet.Tables.Count > 1 ? theDataSet.Tables[1] : null;
+			return Convert(theDataSet);
 		}
 
 		protected override string GetApiBaseDomain()
@@ -166,6 +168,46 @@ namespace Domain.Repositories
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+		}
+
+		private static IEnumerable<BccrSingleVentanillaModel> Convert(DataSet dataSet)
+		{
+			if (dataSet == null || dataSet.Tables.Count == 0)
+			{
+				return Array.Empty<BccrSingleVentanillaModel>();
+			}
+
+			var dataTable = dataSet.Tables[0];
+			return CreateBccrSingleVentanillaModel(dataTable);
+		}
+
+		private static IEnumerable<BccrSingleVentanillaModel> CreateBccrSingleVentanillaModel(DataTable dataTable)
+		{
+			if (dataTable == null)
+			{
+				return new List<BccrSingleVentanillaModel>();
+			}
+			IEnumerable<DataRow> enumerable = dataTable.Rows.Cast<DataRow>();
+			List<BccrSingleVentanillaModel> list = new List<BccrSingleVentanillaModel>();
+			foreach (DataRow row in enumerable)
+			{
+				list.Add(CreateBccrSingleVentanillaModel(row));
+			}
+			return list;
+		}
+		private static BccrSingleVentanillaModel CreateBccrSingleVentanillaModel(DataRow dataRow)
+		{
+			if (dataRow == null)
+			{
+				throw new ArgumentNullException("dataRow");
+			}
+			float value = SystemDataUtilities.GetFloat(dataRow, "NUM_VALOR");
+			DateTime lastUpdate = SystemDataUtilities.GetDateTime(dataRow, "DES_FECHA");
+			return new BccrSingleVentanillaModel
+			{
+				LastUpdate = lastUpdate,
+				Value = value
+			};
 		}
 
 		enum RequestSource
