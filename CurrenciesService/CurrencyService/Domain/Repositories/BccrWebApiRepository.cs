@@ -172,12 +172,12 @@ namespace Domain.Repositories
 
 		private static IEnumerable<BccrSingleVentanillaModel> Convert(DataSet dataSet)
 		{
-			if (dataSet == null || dataSet.Tables.Count == 0)
+			if (dataSet == null || dataSet.Tables.Count < 2)
 			{
 				return Array.Empty<BccrSingleVentanillaModel>();
 			}
 
-			var dataTable = dataSet.Tables[0];
+			var dataTable = dataSet.Tables[1];
 			return CreateBccrSingleVentanillaModel(dataTable);
 		}
 
