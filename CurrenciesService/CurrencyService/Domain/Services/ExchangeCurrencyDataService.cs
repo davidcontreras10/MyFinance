@@ -72,11 +72,9 @@ namespace Domain.Services
 
         private async Task<IEnumerable<BccrVentanillaModel>> GetBccrVentanillaModelWebServiceAsync(string entityName, DateTime dateTime)
         {
-            var initialDate = dateTime.AddMonths(-1);
-            var endDate = dateTime.AddDays(1);
             var codes = GetBccrWebServiceExchangeCodeByEntity(entityName);
-            var sellList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["sell"], initialDate, endDate);
-            var purchaseList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["purchase"], initialDate, endDate);
+            var sellList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["sell"], dateTime);
+            var purchaseList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["purchase"], dateTime);
             var list = CreateBccrVentanillaModel(sellList, purchaseList);
             return list;
         }

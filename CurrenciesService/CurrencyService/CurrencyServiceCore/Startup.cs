@@ -1,3 +1,4 @@
+using CurrencyServiceCore.Implementations;
 using DataAccess;
 using Domain.Repositories;
 using Domain.Services;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -78,6 +80,9 @@ namespace CurrencyServiceCore
 			services.AddScoped<IDolarColonesBccrService, DolarColonesBccrService>();
 			services.AddScoped<IBccrCurrencyService, BccrCurrencyService>();
 			services.AddScoped<IBccrCurrencyRepository, BccrWebApiService>();
+			services.AddScoped<IBccrExchangeCache, BccrExchangeCache>();
+			services.AddSingleton<IAppMemoryCache, AppMemoryCache>();
+			services.AddSingleton<IMemoryCache, MemoryCache>();
 		}
 	}
 

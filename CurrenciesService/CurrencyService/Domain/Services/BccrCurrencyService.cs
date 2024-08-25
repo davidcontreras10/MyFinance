@@ -1,66 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Models;
 using Domain.Repositories;
-using Utilities;
 
 namespace Domain.Services
 {
 	public interface IBccrCurrencyService
 	{
-		Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime initial, DateTime end);
+		Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime dateTime);
 	}
 
 	public class BccrCurrencyService : IBccrCurrencyService
 	{
 		private readonly IBccrCurrencyRepository _bccrCurrencyRepository;
+		private readonly IBccrExchangeCache _bccrExchangeCache;
 
-		public BccrCurrencyService(IBccrCurrencyRepository bccrCurrencyRepository)
+		public BccrCurrencyService(IBccrCurrencyRepository bccrCurrencyRepository, IBccrExchangeCache bccrExchangeCache)
 		{
 			_bccrCurrencyRepository = bccrCurrencyRepository;
+			_bccrExchangeCache = bccrExchangeCache;
 		}
 
-		public async Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime initial, DateTime end)
+		public async Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime dateTime)
 		{
-			var dataTable = await _bccrCurrencyRepository.GetIndicatorAsync(indicador, initial, end);
-			if (dataTable == null)
+			var cache = _bccrExchangeCache.Get(indicador, dateTime);
+			if (cache != null)
 			{
-				return new List<BccrSingleVentanillaModel>();
+				return new[] { cache };
 			}
-			return CreateBccrSingleVentanillaModel(dataTable);
+
+			var results = await GetFromDbBccrSingleVentanillaModelsAsync(indicador, dateTime);
+			if (results == null || !results.Any())
+			{
+				return Array.Empty<BccrSingleVentanillaModel>();
+			}
+
+			_bccrExchangeCache.Set(indicador, results);
+			return results;
 		}
 
-		private IEnumerable<BccrSingleVentanillaModel> CreateBccrSingleVentanillaModel(DataTable dataTable)
+		private async Task<IEnumerable<BccrSingleVentanillaModel>> GetFromDbBccrSingleVentanillaModelsAsync(string indicador, DateTime dateTime)
 		{
-			if (dataTable == null)
+			var initialDate = dateTime.AddMonths(-1);
+			var endDate = dateTime.AddDays(1);
+			var results = await _bccrCurrencyRepository.GetIndicatorAsync(indicador, initialDate, endDate);
+			if (results == null || !results.Any())
 			{
-				return new List<BccrSingleVentanillaModel>();
+				return Array.Empty<BccrSingleVentanillaModel>();
 			}
-			IEnumerable<DataRow> enumerable = dataTable.Rows.Cast<DataRow>();
-			List<BccrSingleVentanillaModel> list = new List<BccrSingleVentanillaModel>();
-			foreach (DataRow row in enumerable)
-			{
-				list.Add(CreateBccrSingleVentanillaModel(row));
-			}
-			return list;
-		}
 
-		private BccrSingleVentanillaModel CreateBccrSingleVentanillaModel(DataRow dataRow)
-		{
-			if (dataRow == null)
-			{
-				throw new ArgumentNullException("dataRow");
-			}
-			float value = SystemDataUtilities.GetFloat(dataRow, "NUM_VALOR");
-			DateTime lastUpdate = SystemDataUtilities.GetDateTime(dataRow, "DES_FECHA");
-			return new BccrSingleVentanillaModel
-			{
-				LastUpdate = lastUpdate,
-				Value = value
-			};
+			return results;
 		}
 	}
 }

@@ -76,7 +76,8 @@ namespace Domain.Services
 				MethodId = exchangeRateData.MethodId,
 				Success = true,
 				ResultTypeValue = exchangeRateData.ResultTypeValue,
-				ErrorType = exchangeRateData.ErrorType
+				ErrorType = exchangeRateData.ErrorType,
+				IsPurchase = isPurchase
 			};
 		}
 
@@ -91,7 +92,8 @@ namespace Domain.Services
 				MethodId = exchangeRateData.MethodId,
 				Success = true,
 				ResultTypeValue = exchangeRateData.ResultTypeValue,
-				ErrorType = exchangeRateData.ErrorType
+				ErrorType = exchangeRateData.ErrorType,
+				IsPurchase = isPurchase
 			};
 		}
 
