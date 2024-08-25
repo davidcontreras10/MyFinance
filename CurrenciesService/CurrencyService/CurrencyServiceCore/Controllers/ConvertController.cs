@@ -1,5 +1,4 @@
 ﻿using Domain.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyFinanceModel;
 using System.Threading.Tasks;
@@ -60,7 +59,7 @@ namespace CurrencyServiceCore
 		{
 			if (methodId == 0)
 			{
-				throw new ArgumentException("Cannot be 0", "methodId");
+				throw new ArgumentException("Cannot be 0", nameof(methodId));
 			}
 
 			var result = await _dolarColonesBccrService.GetExchangeRateResultByMethodIdAsync(methodId, isPurchase, dateTime);
