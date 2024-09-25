@@ -16,15 +16,22 @@ namespace Domain.Services
 	{
 		private readonly IBccrCurrencyRepository _bccrCurrencyRepository;
 		private readonly IBccrExchangeCache _bccrExchangeCache;
+		private readonly bool _allowCache;
 
 		public BccrCurrencyService(IBccrCurrencyRepository bccrCurrencyRepository, IBccrExchangeCache bccrExchangeCache)
 		{
 			_bccrCurrencyRepository = bccrCurrencyRepository;
 			_bccrExchangeCache = bccrExchangeCache;
+			_allowCache = false;
 		}
 
 		public async Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime dateTime)
 		{
+			if(!_allowCache)
+			{
+				return await GetFromDbBccrSingleVentanillaModelsAsync(indicador, dateTime);
+			}
+
 			var cache = _bccrExchangeCache.Get(indicador, dateTime);
 			if (cache != null)
 			{
