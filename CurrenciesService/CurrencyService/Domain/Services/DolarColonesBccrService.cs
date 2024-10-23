@@ -47,7 +47,9 @@ namespace Domain.Services
 		private async Task<ExchangeRateResult> GetExchangeRateResultByMethodIdAsync(EntityMethodInfo entityMethodInfo, DateTime dateTime, bool isPurchase)
 		{
 			if (entityMethodInfo == null)
+			{
 				throw new ArgumentNullException(nameof(entityMethodInfo));
+			}
 
 			if (entityMethodInfo.EntitySearchKey != null && entityMethodInfo.EntitySearchKey == "DEFAULT")
 			{

@@ -7,7 +7,7 @@ using MyFinanceModel.WebMethodsModel;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CurrencyServiceCore
+namespace CurrencyServiceCore.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
@@ -47,7 +47,7 @@ namespace CurrencyServiceCore
 			if (model.MethodIds == null || !model.MethodIds.Any())
 				throw new ArgumentException("Cannot be null or empty", nameof(model));
 			var list = new List<ExchangeRateResult>();
-			foreach(var request in model.MethodIds)
+			foreach (var request in model.MethodIds)
 			{
 				var dateTime = request.DateTime ?? model.DateTime;
 				list.Add(await GetExchangeRateResultAsync(request.Id, dateTime, request.IsPurchase));
