@@ -1,11 +1,10 @@
 ﻿using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
-using MyFinanceModel;
 using System.Threading.Tasks;
 using System;
-using MyFinanceModel.WebMethodsModel;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Models;
 
 namespace CurrencyServiceCore.Controllers
 {

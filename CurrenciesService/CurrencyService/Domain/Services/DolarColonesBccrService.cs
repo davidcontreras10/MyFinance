@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Models;
-using MyFinanceModel;
 
 namespace Domain.Services
 {

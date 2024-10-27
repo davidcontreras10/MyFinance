@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DataAccess;
 using System;
 using System.Data;
-using Ut = Utilities.SystemDataUtilities;
+using Ut = DContre.MyFinance.StUtilities.SystemDataUtilities;
 using System.Net;
 using System.Threading.Tasks;
 using Domain.Models;
 using Microsoft.Data.SqlClient;
+using DataAccess;
 
 namespace Domain.Services
 {

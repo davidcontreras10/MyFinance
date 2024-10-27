@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <UserSecretsId>661b84ac-efa4-4f4b-bff0-9ab5174ef3aa</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,17 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DataAccess">
-      <HintPath>..\..\..\MyFinanceApplication\DataAccess\bin\Debug\netstandard2.0\DataAccess.dll</HintPath>
-    </Reference>
-    <Reference Include="MyFinanceModel">
-      <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\netstandard2.0\MyFinanceModel.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="DContre.MyFinance.WebApiBaseConsumer" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

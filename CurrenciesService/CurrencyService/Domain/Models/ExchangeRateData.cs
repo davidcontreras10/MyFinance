@@ -1,5 +1,4 @@
-﻿using MyFinanceModel;
-
+﻿
 namespace Domain.Models
 {
     public class ExchangeRateData
