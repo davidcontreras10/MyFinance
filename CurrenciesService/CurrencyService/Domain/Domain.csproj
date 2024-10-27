@@ -6,27 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DContre.MyFinance.DataAccess" Version="1.0.0" />
+    <PackageReference Include="DContre.MyFinance.StUtilities" Version="1.0.0" />
     <PackageReference Include="DContre.MyFinance.WebApiBaseConsumer" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DataAccess">
-      <HintPath>..\..\..\MyFinanceApplication\DataAccess\bin\Debug\netstandard2.0\DataAccess.dll</HintPath>
-    </Reference>
-    <Reference Include="MyFinanceModel">
-      <HintPath>..\..\..\MyFinanceApplication\MyFinanceModel\bin\Debug\netstandard2.0\MyFinanceModel.dll</HintPath>
-    </Reference>
-    <Reference Include="Utilities">
-      <HintPath>..\..\..\Utilities\Utilities\bin\Debug\Utilities.dll</HintPath>
-    </Reference>
-    <Reference Include="WebApiBaseConsumer">
-      <HintPath>..\..\..\MyFinanceApplication\WebApiBaseConsumer\bin\Debug\netstandard2.0\WebApiBaseConsumer.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
