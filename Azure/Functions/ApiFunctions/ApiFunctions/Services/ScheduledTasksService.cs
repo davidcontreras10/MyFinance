@@ -143,7 +143,7 @@ namespace ApiFunctions.Services
 				var response = await client.SendAsync(httpRequest);
 				if (response.IsSuccessStatusCode)
 				{
-					return await response.Content.ReadAsAsync<T>();
+					return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
 				}
 
 				var stringRes = await response.Content.ReadAsStringAsync();
