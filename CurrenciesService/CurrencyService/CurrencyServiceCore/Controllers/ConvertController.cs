@@ -1,14 +1,12 @@
 ﻿using Domain.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MyFinanceModel;
 using System.Threading.Tasks;
 using System;
-using MyFinanceModel.WebMethodsModel;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.Models;
 
-namespace CurrencyServiceCore
+namespace CurrencyServiceCore.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
@@ -48,9 +46,10 @@ namespace CurrencyServiceCore
 			if (model.MethodIds == null || !model.MethodIds.Any())
 				throw new ArgumentException("Cannot be null or empty", nameof(model));
 			var list = new List<ExchangeRateResult>();
-			foreach(var request in model.MethodIds)
+			foreach (var request in model.MethodIds)
 			{
-				list.Add(await GetExchangeRateResultAsync(request.Id, model.DateTime, request.IsPurchase));
+				var dateTime = request.DateTime ?? model.DateTime;
+				list.Add(await GetExchangeRateResultAsync(request.Id, dateTime, request.IsPurchase));
 			}
 			return list;
 		}
@@ -59,7 +58,7 @@ namespace CurrencyServiceCore
 		{
 			if (methodId == 0)
 			{
-				throw new ArgumentException("Cannot be 0", "methodId");
+				throw new ArgumentException("Cannot be 0", nameof(methodId));
 			}
 
 			var result = await _dolarColonesBccrService.GetExchangeRateResultByMethodIdAsync(methodId, isPurchase, dateTime);

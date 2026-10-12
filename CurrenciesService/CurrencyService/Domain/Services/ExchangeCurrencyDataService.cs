@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DataAccess;
 using System;
 using System.Data;
-using Ut = Utilities.SystemDataUtilities;
+using Ut = DContre.MyFinance.StUtilities.SystemDataUtilities;
 using System.Net;
 using System.Threading.Tasks;
 using Domain.Models;
 using Microsoft.Data.SqlClient;
+using DataAccess;
 
 namespace Domain.Services
 {
@@ -72,11 +72,9 @@ namespace Domain.Services
 
         private async Task<IEnumerable<BccrVentanillaModel>> GetBccrVentanillaModelWebServiceAsync(string entityName, DateTime dateTime)
         {
-            var initialDate = dateTime.AddMonths(-1);
-            var endDate = dateTime.AddDays(1);
             var codes = GetBccrWebServiceExchangeCodeByEntity(entityName);
-            var sellList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["sell"], initialDate, endDate);
-            var purchaseList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["purchase"], initialDate, endDate);
+            var sellList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["sell"], dateTime);
+            var purchaseList = await _bccrWebService.GetBccrSingleVentanillaModelsAsync(codes["purchase"], dateTime);
             var list = CreateBccrVentanillaModel(sellList, purchaseList);
             return list;
         }

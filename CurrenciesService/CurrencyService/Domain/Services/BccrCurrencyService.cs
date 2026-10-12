@@ -1,66 +1,103 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Models;
 using Domain.Repositories;
-using Utilities;
 
 namespace Domain.Services
 {
 	public interface IBccrCurrencyService
 	{
-		Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime initial, DateTime end);
+		Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime dateTime);
 	}
 
 	public class BccrCurrencyService : IBccrCurrencyService
 	{
 		private readonly IBccrCurrencyRepository _bccrCurrencyRepository;
+		private readonly IBccrExchangeCache _bccrExchangeCache;
+		private readonly bool _allowCache;
 
-		public BccrCurrencyService(IBccrCurrencyRepository bccrCurrencyRepository)
+		public BccrCurrencyService(IBccrCurrencyRepository bccrCurrencyRepository, IBccrExchangeCache bccrExchangeCache)
 		{
 			_bccrCurrencyRepository = bccrCurrencyRepository;
+			_bccrExchangeCache = bccrExchangeCache;
+			_allowCache = true;
 		}
 
-		public async Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime initial, DateTime end)
+		public async Task<IEnumerable<BccrSingleVentanillaModel>> GetBccrSingleVentanillaModelsAsync(string indicador, DateTime dateTime)
 		{
-			var dataTable = await _bccrCurrencyRepository.GetIndicatorAsync(indicador, initial, end);
-			if (dataTable == null)
+			dateTime = AdjustDateTime(dateTime);
+			var initialDate = dateTime.Date.AddMonths(-1);
+			var endDate = dateTime.Date.AddDays(1);
+			if (!_allowCache)
 			{
-				return new List<BccrSingleVentanillaModel>();
+				var res = await GetFromDbBccrSingleVentanillaModelsAsync(indicador, dateTime, initialDate, endDate);
+				return res.BccrSingleVentanillaModels;
 			}
-			return CreateBccrSingleVentanillaModel(dataTable);
+
+			var cache = _bccrExchangeCache.Get(indicador, dateTime);
+			if (cache != null)
+			{
+				return new[] { cache };
+			}
+
+			var results = await GetFromDbBccrSingleVentanillaModelsAsync(indicador, dateTime, initialDate, endDate);
+			if (results?.BccrSingleVentanillaModels == null || !results.BccrSingleVentanillaModels.Any())
+			{
+				return Array.Empty<BccrSingleVentanillaModel>();
+			}
+
+			_bccrExchangeCache.Set(indicador, results);
+			return results.BccrSingleVentanillaModels;
 		}
 
-		private IEnumerable<BccrSingleVentanillaModel> CreateBccrSingleVentanillaModel(DataTable dataTable)
+		private async Task<BccrSingleVentanillaModelResponse> GetFromDbBccrSingleVentanillaModelsAsync(string indicador, DateTime reqDate, DateTime initialDate, DateTime endDate)
 		{
-			if (dataTable == null)
+			var results = await _bccrCurrencyRepository.GetIndicatorAsync(indicador, initialDate, endDate);
+			if (results == null || !results.Any())
 			{
-				return new List<BccrSingleVentanillaModel>();
+				results = Array.Empty<BccrSingleVentanillaModel>();
 			}
-			IEnumerable<DataRow> enumerable = dataTable.Rows.Cast<DataRow>();
-			List<BccrSingleVentanillaModel> list = new List<BccrSingleVentanillaModel>();
-			foreach (DataRow row in enumerable)
-			{
-				list.Add(CreateBccrSingleVentanillaModel(row));
-			}
-			return list;
-		}
 
-		private BccrSingleVentanillaModel CreateBccrSingleVentanillaModel(DataRow dataRow)
-		{
-			if (dataRow == null)
+			return new BccrSingleVentanillaModelResponse(results, reqDate, initialDate)
 			{
-				throw new ArgumentNullException("dataRow");
-			}
-			float value = SystemDataUtilities.GetFloat(dataRow, "NUM_VALOR");
-			DateTime lastUpdate = SystemDataUtilities.GetDateTime(dataRow, "DES_FECHA");
-			return new BccrSingleVentanillaModel
-			{
-				LastUpdate = lastUpdate,
-				Value = value
+				EndReqDate = endDate
 			};
+		}
+
+		private static DateTime AdjustDateTime(DateTime value)
+		{
+			// Get the server's current time zone
+			TimeZoneInfo serverTimeZone = TimeZoneInfo.Local;
+			DateTime serverNow = TimeZoneInfo.ConvertTime(DateTime.UtcNow, serverTimeZone);
+
+			// Determine how to treat the 'value' based on its DateTimeKind
+			DateTime valueInServerTimeZone;
+
+			if (value.Kind == DateTimeKind.Utc)
+			{
+				// Value is in UTC, convert it to server time
+				valueInServerTimeZone = TimeZoneInfo.ConvertTimeFromUtc(value, serverTimeZone);
+			}
+			else if (value.Kind == DateTimeKind.Local)
+			{
+				// Value is in local time (assumed to be the server's local time)
+				valueInServerTimeZone = value;
+			}
+			else
+			{
+				// DateTimeKind.Unspecified, assuming it's in server time zone for lack of other info
+				valueInServerTimeZone = value;
+			}
+
+			// If the value in server time is greater than the server's "now", set it to "now"
+			if (valueInServerTimeZone > serverNow)
+			{
+				return serverNow;
+			}
+
+			return valueInServerTimeZone;
 		}
 	}
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Models;
-using MyFinanceModel;
 
 namespace Domain.Services
 {
@@ -47,7 +46,9 @@ namespace Domain.Services
 		private async Task<ExchangeRateResult> GetExchangeRateResultByMethodIdAsync(EntityMethodInfo entityMethodInfo, DateTime dateTime, bool isPurchase)
 		{
 			if (entityMethodInfo == null)
+			{
 				throw new ArgumentNullException(nameof(entityMethodInfo));
+			}
 
 			if (entityMethodInfo.EntitySearchKey != null && entityMethodInfo.EntitySearchKey == "DEFAULT")
 			{
@@ -76,7 +77,8 @@ namespace Domain.Services
 				MethodId = exchangeRateData.MethodId,
 				Success = true,
 				ResultTypeValue = exchangeRateData.ResultTypeValue,
-				ErrorType = exchangeRateData.ErrorType
+				ErrorType = exchangeRateData.ErrorType,
+				IsPurchase = isPurchase
 			};
 		}
 
@@ -91,7 +93,8 @@ namespace Domain.Services
 				MethodId = exchangeRateData.MethodId,
 				Success = true,
 				ResultTypeValue = exchangeRateData.ResultTypeValue,
-				ErrorType = exchangeRateData.ErrorType
+				ErrorType = exchangeRateData.ErrorType,
+				IsPurchase = isPurchase
 			};
 		}
 
