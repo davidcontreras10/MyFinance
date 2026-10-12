@@ -351,3 +351,4 @@ MigrationBackup/
 
 MyFinanceApplication/MyFinanceWebApp/Scripts/NgClient/
 /WebApiSolution/MyFinanceWebApi/MyFinanceWebApiCore/appsettings.Local.json
+/Azure/Functions/ApiFunctions/ApiFunctions/local.settings.json

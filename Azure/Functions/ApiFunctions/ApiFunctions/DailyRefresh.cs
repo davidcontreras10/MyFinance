@@ -1,13 +1,19 @@
 using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
 namespace ApiFunctions
 {
-    public static class DailyRefresh
+    public class DailyRefresh
     {
+	    private readonly ILogger<DailyRefresh> _logger;
+
+	    public DailyRefresh(ILogger<DailyRefresh> logger)
+	    {
+		    _logger = logger;
+	    }
 	    
 	    // ReSharper disable UnusedMember.Local
 	    private const string TestCron = "0 */2 * * * *";
@@ -15,18 +21,18 @@ namespace ApiFunctions
 	    private const string WeeklyCron = "0 0 6 * * 1";
 	    // ReSharper restore UnusedMember.Local
 
-		[FunctionName(nameof(DailyRefresh))]
-        public static async Task Run([TimerTrigger(DailyCron)]TimerInfo myTimer, ILogger log)
+		[Function(nameof(DailyRefresh))]
+        public async Task Run([TimerTrigger(DailyCron)]TimerInfo myTimer)
         {
 	        var str = Environment.GetEnvironmentVariable("DefaultMYFNDB");
 	        if (string.IsNullOrWhiteSpace(str))
 	        {
 		        const string error = "Connection string DefaultMYFNDB not found";
-				log.LogError(error);
+				_logger.LogError(error);
 				throw new Exception(error);
 	        }
 
-			log.LogInformation("Connected. Executing script.");
+			_logger.LogInformation("Connected. Executing script.");
 			await using var conn = new SqlConnection(str);
 			conn.Open();
 			var text = @"
@@ -49,7 +55,7 @@ namespace ApiFunctions
 
 			await using var cmd = new SqlCommand(text, conn) {CommandTimeout = conn.ConnectionTimeout};
 			await cmd.ExecuteNonQueryAsync();
-			log.LogInformation("DailyRefresh. Executed");
+			_logger.LogInformation("DailyRefresh. Executed");
 		}
     }
 }
